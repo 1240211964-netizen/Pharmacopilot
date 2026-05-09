@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pharmacopilot | 教学导航</title>
+    <meta
+      name="description"
+      content="教学导航以面向药事管理本科生的管理学原理课程为例，围绕 SWOT 分析完成 20 环节教学设计训练。"
+    />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./styles.css?v=game-map-20260508" />
+    <script defer src="./app.js?v=game-map-20260508"></script>
+  </head>
+  <body data-page="navigation">
+    <header class="site-header">
+      <div class="topbar">
+        <a class="brand" href="./index.html" aria-label="Pharmacopilot 首页">
+          <span class="brand-mark" aria-hidden="true"><span class="brand-monogram">P</span></span>
+          <span class="brand-lockup">
+            <span class="brand-wordmark">Pharmacopilot</span>
+            <span class="brand-submark">药学教学智能体</span>
+          </span>
+        </a>
+        <button
+          class="nav-menu-toggle"
+          id="navMenuToggle"
+          type="button"
+          aria-label="打开导航菜单"
+          aria-controls="primaryNav"
+          aria-expanded="false"
+        >
+          <span aria-hidden="true"></span>
+        </button>
+        <nav class="topnav" id="primaryNav" aria-label="页面导航">
+          <a class="nav-link" data-nav="home" href="./index.html">首页</a>
+          <a class="nav-link active" data-nav="navigation" href="./navigation.html">教学导航</a>
+          <a class="nav-link" data-nav="practice" href="./practice.html">教学实践</a>
+          <a class="nav-link" data-nav="assets" href="./assets.html">教学资产</a>
+        </nav>
+        <div class="top-actions">
+          <a class="nav-primary-action" href="./practice.html">完成训练后进入实践</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="page-hero training-hero" aria-labelledby="navigation-title">
+        <p class="eyebrow">New teacher training camp</p>
+        <h1 id="navigation-title">教学导航：以管理学原理中的 SWOT 分析为例。</h1>
+        <p class="lede" id="navigationLede">
+          面向药事管理本科生，围绕《管理学原理》课程中的 SWOT 分析知识点，完成课程定位、目标设计、课堂活动、评价证据和复盘优化训练。
+        </p>
+      </section>
+
+      <section class="section-block game-map-section training-map-section" aria-labelledby="training-map-title">
+        <div class="section-head">
+          <p class="eyebrow">Strategy learning map</p>
+          <h2 id="training-map-title">20 环节教学能力地图</h2>
+          <p class="section-copy">
+            以偏策略游戏地图的方式呈现 20 个训练关卡：当前任务、已完成、建议复查和锁定状态会随训练进程实时更新。
+          </p>
+        </div>
+        <div class="training-map-shell game-map-shell">
+          <aside class="training-map-status game-map-status" aria-label="当前学习地图进度">
+            <p class="eyebrow">Current mission</p>
+            <h3 id="trainingMapCurrentTitle">当前关卡</h3>
+            <p id="trainingMapCurrentCopy">选择方案并确认环节后，学习地图会更新完成度和复查建议。</p>
+            <div class="map-progress-meter" aria-label="训练完成进度">
+              <span id="trainingMapProgressBar"></span>
+            </div>
+            <div class="map-progress-stats">
+              <div><span>已完成</span><strong id="trainingMapCompleted">0 / 20</strong></div>
+              <div><span>当前评分</span><strong id="trainingMapScore">未确认</strong></div>
+              <div><span>建议复查</span><strong id="trainingMapReview">0</strong></div>
+            </div>
+            <div class="map-legend" aria-label="学习地图图例">
+              <span class="map-node-complete">已完成</span>
+              <span class="map-node-current">当前关卡</span>
+              <span class="map-node-review">建议复查</span>
+              <span class="map-node-locked">锁定关卡</span>
+            </div>
+            <div class="map-density-legend game-terrain-legend" aria-label="阶段区域说明">
+              <strong>阶段浮岛</strong>
+              <span><i class="terrain-green"></i>课程定位与目标设计</span>
+              <span><i class="terrain-orange"></i>内容组织与活动设计</span>
+              <span><i class="terrain-teal"></i>资源、评价与支持设计</span>
+              <span><i class="terrain-violet"></i>实施、反馈与优化设计</span>
+            </div>
+          </aside>
+          <div class="learning-map-board game-map-board" aria-label="20 环节训练学习地图">
+            <svg class="learning-map-route game-map-route" viewBox="0 0 1000 620" preserveAspectRatio="none" aria-hidden="true">
+              <path class="route-direct" d="M170 210 C290 105 390 120 500 205 S725 290 850 190" />
+              <path class="route-direct" d="M815 255 C735 390 640 390 528 425 S300 505 190 410" />
+              <path class="route-indirect" d="M250 300 C390 250 430 335 500 355 S625 352 725 300" />
+              <path class="route-indirect" d="M505 245 C460 325 480 405 535 478" />
+            </svg>
+            <div id="trainingLearningMap" class="learning-map-track"></div>
+            <div class="landscape-route-legend game-map-route-legend" aria-label="路线图例">
+              <span><i class="route-line-solid"></i>主线推进</span>
+              <span><i class="route-line-dashed"></i>能力关联</span>
+              <span><i class="density-dot"></i>当前光晕</span>
+            </div>
+          </div>
+          <aside class="training-map-side-panel game-map-side-panel" aria-label="已解锁资产">
+            <section class="map-side-card">
+              <div class="map-side-title">
+                <span aria-hidden="true">▣</span>
+                <h3>已解锁资产</h3>
+              </div>
+              <div id="trainingMapAssets" class="map-asset-list"></div>
+            </section>
+          </aside>
+        </div>
+      </section>
+
+      <section id="training-camp" class="training-section" aria-labelledby="training-title">
+        <div class="section-head">
+          <p class="eyebrow">20-step training workflow</p>
+          <h2 id="training-title">新教师教学设计训练</h2>
+          <p class="section-copy" id="trainingIntroCopy">
+            这不是正式操作真实课程，而是通过系统示例课训练你完成一次完整教学设计判断。每一步都会给出优秀模板、环节专属 Rubric、4 维成熟度条形诊断图、低分维度诊断和改进建议。完成 20 环节后，系统再汇总生成六维教学设计质量综合诊断。
+          </p>
+        </div>
+
+        <div class="training-toolbar">
+          <button class="secondary-action" id="startTrainingFromBeginning" type="button">从头开始训练</button>
+          <button class="secondary-action" id="resetTraining" type="button">重置训练</button>
+          <button class="primary-action" id="generateTrainingReport" type="button">生成训练报告</button>
+        </div>
+
+        <div class="practice-workbench training-workbench">
+          <aside class="workflow-sidebar">
+            <div class="panel-title">
+              <p class="eyebrow">Training flow</p>
+              <h2>训练流程导航</h2>
+            </div>
+            <div id="trainingSidebar" class="workflow-steps" aria-live="polite"></div>
+          </aside>
+
+          <section class="decision-panel" aria-live="polite">
+            <div id="trainingCurrentStep"></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="final-report-section" aria-labelledby="training-report-title">
+        <div class="section-head">
+          <p class="eyebrow">Training report</p>
+          <h2 id="training-report-title">《新教师教学设计训练报告》</h2>
+          <p class="section-copy">完成 20 环节后生成完整训练报告，也可以随时基于当前确认内容预览草稿。</p>
+        </div>
+        <div class="report-actions">
+          <button class="primary-action" id="copyTrainingReport" type="button">复制训练报告</button>
+          <button class="secondary-action" id="downloadTrainingReport" type="button">导出 Markdown</button>
+          <button class="secondary-action" id="saveTrainingReportToAssets" type="button">保存到教学资产</button>
+          <a class="secondary-action" href="./practice.html">进入教学实践</a>
+        </div>
+        <article class="report-preview" id="trainingFinalReport">
+          <p class="muted">尚未生成训练报告。请先选择方案并确认环节，或点击“生成训练报告”预览当前训练结果。</p>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>

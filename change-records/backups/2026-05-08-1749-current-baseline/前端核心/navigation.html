@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pharmacopilot | 教学导航</title>
+    <meta
+      name="description"
+      content="教学导航以面向药事管理本科生的管理学原理课程为例，围绕 SWOT 分析完成 20 环节教学设计训练。"
+    />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./styles.css" />
+    <script defer src="./app.js"></script>
+  </head>
+  <body data-page="navigation">
+    <header class="site-header">
+      <div class="topbar">
+        <a class="brand" href="./index.html" aria-label="Pharmacopilot 首页">
+          <span class="brand-mark" aria-hidden="true"><span class="brand-monogram">P</span></span>
+          <span class="brand-lockup">
+            <span class="brand-wordmark">Pharmacopilot</span>
+            <span class="brand-submark">药学教学智能体</span>
+          </span>
+        </a>
+        <button
+          class="nav-menu-toggle"
+          id="navMenuToggle"
+          type="button"
+          aria-label="打开导航菜单"
+          aria-controls="primaryNav"
+          aria-expanded="false"
+        >
+          <span aria-hidden="true"></span>
+        </button>
+        <nav class="topnav" id="primaryNav" aria-label="页面导航">
+          <a class="nav-link" data-nav="home" href="./index.html">首页</a>
+          <a class="nav-link active" data-nav="navigation" href="./navigation.html">教学导航</a>
+          <a class="nav-link" data-nav="practice" href="./practice.html">教学实践</a>
+          <a class="nav-link" data-nav="assets" href="./assets.html">教学资产</a>
+        </nav>
+        <div class="top-actions">
+          <a class="nav-primary-action" href="./practice.html">完成训练后进入实践</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="page-hero training-hero" aria-labelledby="navigation-title">
+        <p class="eyebrow">New teacher training camp</p>
+        <h1 id="navigation-title">教学导航：以管理学原理中的 SWOT 分析为例。</h1>
+        <p class="lede" id="navigationLede">
+          面向药事管理本科生，围绕《管理学原理》课程中的 SWOT 分析知识点，完成课程定位、目标设计、课堂活动、评价证据和复盘优化训练。
+        </p>
+        <dl class="course-profile-grid compact-profile" aria-label="训练课程上下文">
+          <div class="profile-input-row">
+            <dt><label for="trainingCourseName">课程</label></dt>
+            <dd><input id="trainingCourseName" data-training-context-field="courseName" type="text" value="管理学原理" aria-label="课程名称" /></dd>
+          </div>
+          <div class="profile-input-row">
+            <dt><label for="trainingTopic">主题</label></dt>
+            <dd><input id="trainingTopic" data-training-context-field="topic" type="text" value="SWOT 分析" aria-label="课程主题" /></dd>
+          </div>
+          <div class="profile-input-row">
+            <dt><label for="trainingScenario">场景</label></dt>
+            <dd><input id="trainingScenario" data-training-context-field="scenario" type="text" value="连锁药店慢病服务决策" aria-label="课程场景" /></dd>
+          </div>
+          <div><dt>授课对象</dt><dd id="profileTeachingObject">药事管理本科生</dd></div>
+          <div><dt>使用者</dt><dd id="profileUserPersona">新教师</dd></div>
+          <div><dt>课时</dt><dd id="profileLessonLength">1次课 / 2学时</dd></div>
+        </dl>
+      </section>
+
+      <section class="section-block training-map-section" aria-labelledby="training-map-title">
+        <div class="section-head">
+          <p class="eyebrow">Capability landscape</p>
+          <h2 id="training-map-title">教学能力版图</h2>
+          <p class="section-copy">
+            用能力聚类地图呈现 20 环节训练全景：课程定位、活动设计、评价支持和实施优化会随训练状态实时更新。
+          </p>
+        </div>
+        <div class="training-map-shell">
+          <aside class="training-map-status" aria-label="当前学习地图进度">
+            <p class="eyebrow">版图说明</p>
+            <h3 id="trainingMapCurrentTitle">当前关卡</h3>
+            <p id="trainingMapCurrentCopy">选择方案并确认环节后，学习地图会更新完成度和复查建议。</p>
+            <div class="map-progress-meter" aria-label="训练完成进度">
+              <span id="trainingMapProgressBar"></span>
+            </div>
+            <div class="map-progress-stats">
+              <div><span>已完成</span><strong id="trainingMapCompleted">0 / 20</strong></div>
+              <div><span>当前评分</span><strong id="trainingMapScore">未确认</strong></div>
+              <div><span>建议复查</span><strong id="trainingMapReview">0</strong></div>
+            </div>
+            <div class="map-legend" aria-label="学习地图图例">
+              <span class="map-node-complete">已完成</span>
+              <span class="map-node-current">当前关卡</span>
+              <span class="map-node-review">建议复查</span>
+              <span class="map-node-locked">锁定关卡</span>
+            </div>
+            <div class="map-density-legend" aria-label="聚类强度说明">
+              <strong>聚类强度</strong>
+              <span><i class="density-high"></i>高密度区</span>
+              <span><i class="density-medium"></i>中密度区</span>
+              <span><i class="density-low"></i>低密度区</span>
+            </div>
+          </aside>
+          <div class="learning-map-board" aria-label="20 环节训练学习地图">
+            <svg class="learning-map-route" viewBox="0 0 1000 470" preserveAspectRatio="none" aria-hidden="true">
+              <path class="route-direct" d="M180 140 C330 88 470 118 610 152 S770 210 850 142" />
+              <path class="route-direct" d="M210 330 C350 270 505 300 620 330 S760 384 875 326" />
+              <path class="route-indirect" d="M275 220 C380 150 455 190 500 250 S560 360 690 280" />
+              <path class="route-indirect" d="M500 135 C455 225 478 310 540 355" />
+            </svg>
+            <div id="trainingLearningMap" class="learning-map-track"></div>
+            <div class="landscape-route-legend" aria-label="关联图例">
+              <span><i class="route-line-solid"></i>直接关联</span>
+              <span><i class="route-line-dashed"></i>间接关联</span>
+              <span><i class="density-dot"></i>聚类中心</span>
+            </div>
+          </div>
+          <aside class="training-map-side-panel" aria-label="教学能力诊断与资产">
+            <section class="map-side-card">
+              <div class="map-side-title">
+                <span aria-hidden="true">⌁</span>
+                <h3>教学诊断</h3>
+              </div>
+              <div id="trainingMapDiagnosisList" class="map-diagnostic-list"></div>
+              <a class="map-priority-card" href="#training-camp">
+                <span>建议优先优化</span>
+                <strong id="trainingMapPriority">完成当前环节</strong>
+              </a>
+            </section>
+            <section class="map-side-card">
+              <div class="map-side-title">
+                <span aria-hidden="true">▣</span>
+                <h3>已解锁资产</h3>
+              </div>
+              <div id="trainingMapAssets" class="map-asset-list"></div>
+            </section>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section-block" aria-labelledby="starter-title">
+        <div class="section-head">
+          <p class="eyebrow">First run path</p>
+          <h2 id="starter-title">新教师三步上手路径</h2>
+          <p class="section-copy">
+            先校准《管理学原理》课程中 SWOT 分析的教学目的，再完成 20 环节训练，最后把平台生成的数据、模板和经验沉淀为后续真实教学实践的依据。
+          </p>
+        </div>
+        <div class="steps-grid">
+          <article class="step-card">
+            <span>01</span>
+            <h3>明确教学目的和意义</h3>
+            <p>从“为什么在管理学原理中教 SWOT 分析”开始，帮助新教师明确本课对药事管理本科生的价值：学生不仅要记住 S、W、O、T 四类要素，更要学会在连锁药店慢病服务决策情境中进行证据判断与决策表达。</p>
+            <div class="step-card-list">
+              <strong class="step-card-list-title">植入教育学理念</strong>
+              <ul>
+                <li>目标导向：先明确学生完成本课后应能做什么，再设计课堂活动。</li>
+                <li>情境学习：把抽象管理工具放入连锁药店慢病服务决策情境。</li>
+                <li>证据学习：要求学生用患者需求、药师能力、医保支付、门店流程和监管要求支撑判断。</li>
+              </ul>
+            </div>
+          </article>
+          <article class="step-card">
+            <span>02</span>
+            <h3>完成 20 环节教育实践训练</h3>
+            <p>进入系统提供的 20 环节训练流程，依次完成课程定位、学习目标、学习者分析、教学方法、课堂活动、评价证据、风险预案和课程优化等决策。每一步都会提供 A-F 方案、通用优秀模板、环节专属 Rubric、4 维成熟度条形诊断图、低分维度诊断和改进建议。</p>
+            <div class="step-card-list">
+              <strong class="step-card-list-title">训练产出</strong>
+              <ul>
+                <li>形成一节 SWOT 分析课的完整教学设计草稿。</li>
+                <li>获得每个环节的优秀模板、评分和诊断建议。</li>
+                <li>训练新教师从“凭经验备课”转向“按证据设计教学”。</li>
+              </ul>
+            </div>
+          </article>
+          <article class="step-card">
+            <span>03</span>
+            <h3>总结平台数据和经验</h3>
+            <p>训练结束后，教师需要回看平台生成的数据和经验，包括 20 环节选择记录、多维评分结果、低分维度、优秀模板集合、系统诊断建议和训练报告。这些内容可以保存到教学资产，并作为后续连接泛雅真实课程时的备课依据。</p>
+            <div class="step-card-list">
+              <strong class="step-card-list-title">沉淀内容</strong>
+              <ul>
+                <li>数据：选择记录、评分结果、低分维度和复查环节。</li>
+                <li>经验：优秀模板、常见误区、系统建议和教师修改痕迹。</li>
+                <li>资产：训练报告、Rubric 草稿、课堂任务和可复用教学材料。</li>
+              </ul>
+            </div>
+          </article>
+        </div>
+
+        <article class="goal-calibrator-module" id="goalCalibrator" aria-labelledby="goal-calibrator-title">
+          <div class="goal-calibrator-header">
+            <div>
+              <p class="eyebrow">Step 01 calibration</p>
+              <h3 id="goal-calibrator-title">明确教学目的和意义</h3>
+              <p class="goal-calibrator-subtitle" id="goalCalibratorSubtitle">把“教 SWOT 分析”转化为“训练学生在连锁药店慢病服务决策中进行结构化判断与决策表达”。</p>
+            </div>
+            <button class="primary-action" id="jumpToTraining" type="button">确认目标，进入 20 环节训练设计</button>
+          </div>
+
+          <div class="goal-calibrator-grid">
+            <section class="calibrator-panel teacher-input-panel" aria-labelledby="teacher-input-title">
+              <div class="calibrator-panel-head">
+                <p class="eyebrow">Teacher choice</p>
+                <h4 id="teacher-input-title">教师输入与方案选择</h4>
+              </div>
+              <div class="calibrator-field">
+                <p class="calibrator-label">课程定位方案</p>
+                <div class="calibrator-plan-list" role="group" aria-label="课程定位 A-F 方案">
+                  <button class="calibrator-plan" type="button" data-calibrator-plan="A"><span>A</span><strong>知识传授型课程</strong></button>
+                  <button class="calibrator-plan is-active" type="button" data-calibrator-plan="B"><span>B</span><strong>能力训练型课程</strong></button>
+                  <button class="calibrator-plan" type="button" data-calibrator-plan="C"><span>C</span><strong>项目产出型课程</strong></button>
+                  <button class="calibrator-plan" type="button" data-calibrator-plan="D"><span>D</span><strong>问题探究型课程</strong></button>
+                  <button class="calibrator-plan" type="button" data-calibrator-plan="E"><span>E</span><strong>职业应用型课程</strong></button>
+                  <button class="calibrator-plan" type="button" data-calibrator-plan="F"><span>F</span><strong>综合素养型课程</strong></button>
+                </div>
+              </div>
+              <div class="calibrator-field">
+                <p class="calibrator-label">本节知识点</p>
+                <strong id="calibratorTopicLabel">SWOT 分析</strong>
+              </div>
+              <div class="calibrator-field">
+                <p class="calibrator-label">课程场景</p>
+                <strong id="calibratorScenarioLabel">连锁药店慢病服务决策</strong>
+              </div>
+              <div class="calibrator-field">
+                <p class="calibrator-label">目标能力层级</p>
+                <div class="calibrator-choice-group" role="group" aria-label="目标能力层级">
+                  <button class="calibrator-choice" type="button" data-calibrator-level="understand">理解</button>
+                  <button class="calibrator-choice" type="button" data-calibrator-level="apply">应用</button>
+                  <button class="calibrator-choice is-active" type="button" data-calibrator-level="analyze">分析</button>
+                  <button class="calibrator-choice" type="button" data-calibrator-level="evaluate">评价</button>
+                </div>
+              </div>
+              <div class="calibrator-field">
+                <p class="calibrator-label">学生基础</p>
+                <div class="calibrator-choice-group" role="group" aria-label="学生基础">
+                  <button class="calibrator-choice is-active" type="button" data-calibrator-foundation="new">首次接触管理学工具</button>
+                  <button class="calibrator-choice" type="button" data-calibrator-foundation="experienced">已有案例分析基础</button>
+                </div>
+              </div>
+            </section>
+
+            <section class="calibrator-panel generated-output-panel" aria-labelledby="generated-output-title">
+              <div class="calibrator-panel-head">
+                <p class="eyebrow">Generated result</p>
+                <h4 id="generated-output-title">系统生成结果</h4>
+              </div>
+              <div class="generated-card">
+                <h5>教学价值定位</h5>
+                <p id="calibratorValueOutput">SWOT 分析帮助药事管理本科生在连锁药店慢病服务决策场景中，识别门店资源与外部约束，并形成有证据支撑的管理判断。</p>
+              </div>
+              <div class="generated-card">
+                <h5>可评价学习目标</h5>
+                <p id="calibratorGoalOutput">学生能够基于一个药事管理案例，比较门店内部资源与外部环境，拆解优势、劣势、机会与威胁，构建 SWOT 矩阵，并判断管理策略是否与情境匹配。</p>
+              </div>
+              <div class="generated-card">
+                <h5>场景化课堂任务</h5>
+                <p id="calibratorTaskOutput">某连锁药店计划开展高血压慢病管理服务，请学生从门店资源、药师能力、患者需求、医保支付、监管要求和竞争环境等角度完成 SWOT 分析。</p>
+              </div>
+              <div class="generated-card">
+                <h5>评价证据</h5>
+                <p id="calibratorEvidenceOutput">评价学生的因素分类准确性、证据支撑充分性、策略匹配度和风险意识。</p>
+              </div>
+            </section>
+          </div>
+
+          <div class="theory-anchor-pills" aria-label="理论锚点">
+            <strong>理论锚点</strong>
+            <p>OBE：先明确学习产出，再设计课堂活动</p>
+            <p>反向设计：先确定评价证据，再安排教学过程</p>
+            <p>情境学习：将抽象工具嵌入真实专业场景</p>
+            <p>Bloom 目标分类：从理解应用推进到分析评价</p>
+          </div>
+        </article>
+      </section>
+
+      <section id="training-camp" class="training-section" aria-labelledby="training-title">
+        <div class="section-head">
+          <p class="eyebrow">20-step training workflow</p>
+          <h2 id="training-title">新教师教学设计训练</h2>
+          <p class="section-copy" id="trainingIntroCopy">
+            这不是正式操作真实课程，而是通过系统示例课训练你完成一次完整教学设计判断。每一步都会给出优秀模板、环节专属 Rubric、4 维成熟度条形诊断图、低分维度诊断和改进建议。完成 20 环节后，系统再汇总生成六维教学设计质量综合诊断。
+          </p>
+        </div>
+
+        <div class="training-toolbar">
+          <button class="secondary-action" id="startTrainingFromBeginning" type="button">从头开始训练</button>
+          <button class="secondary-action" id="resetTraining" type="button">重置训练</button>
+          <button class="primary-action" id="generateTrainingReport" type="button">生成训练报告</button>
+        </div>
+
+        <div class="practice-workbench training-workbench">
+          <aside class="workflow-sidebar">
+            <div class="panel-title">
+              <p class="eyebrow">Training flow</p>
+              <h2>训练流程导航</h2>
+            </div>
+            <div id="trainingSidebar" class="workflow-steps" aria-live="polite"></div>
+          </aside>
+
+          <section class="decision-panel" aria-live="polite">
+            <div id="trainingCurrentStep"></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="final-report-section" aria-labelledby="training-report-title">
+        <div class="section-head">
+          <p class="eyebrow">Training report</p>
+          <h2 id="training-report-title">《新教师教学设计训练报告》</h2>
+          <p class="section-copy">完成 20 环节后生成完整训练报告，也可以随时基于当前确认内容预览草稿。</p>
+        </div>
+        <div class="report-actions">
+          <button class="primary-action" id="copyTrainingReport" type="button">复制训练报告</button>
+          <button class="secondary-action" id="downloadTrainingReport" type="button">导出 Markdown</button>
+          <button class="secondary-action" id="saveTrainingReportToAssets" type="button">保存到教学资产</button>
+          <a class="secondary-action" href="./practice.html">进入教学实践</a>
+        </div>
+        <article class="report-preview" id="trainingFinalReport">
+          <p class="muted">尚未生成训练报告。请先选择方案并确认环节，或点击“生成训练报告”预览当前训练结果。</p>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>

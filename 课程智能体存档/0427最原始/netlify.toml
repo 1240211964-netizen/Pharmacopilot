@@ -1,0 +1,13 @@
+[build]
+  command = "npm run build:static"
+  publish = "dist"
+
+[[redirects]]
+  from = "/launch"
+  to = "/launch/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/flowchart"
+  to = "/flowchart/index.html"
+  status = 200

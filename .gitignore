@@ -1,0 +1,7 @@
+.env
+.server.pid
+.server.log
+node_modules/
+dist/
+.next/
+*.tsbuildinfo

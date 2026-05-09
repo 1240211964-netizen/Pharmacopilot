@@ -1,0 +1,10 @@
+{
+  "name": "coursepilot-agent",
+  "version": "0.1.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "build:static": "rm -rf dist && mkdir -p dist/launch dist/flowchart && cp index.html interface-review-improved.html app.js styles.css flowchart.html dist/ && cp index.html app.js styles.css dist/launch/ && cp flowchart.html dist/flowchart/index.html",
+    "start": "node server.js"
+  }
+}

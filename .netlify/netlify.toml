@@ -1,0 +1,54 @@
+functionsDirectory = "/Users/yandilei/Desktop/课程智能体/netlify/functions"
+functionsDirectoryOrigin = "default"
+redirectsOrigin = "config"
+plugins = []
+headers = []
+
+[build]
+publish = "/Users/yandilei/Desktop/课程智能体/dist"
+publishOrigin = "config"
+commandOrigin = "config"
+command = "npm run build:static"
+functions = "/Users/yandilei/Desktop/课程智能体/netlify/functions"
+
+[build.environment]
+
+[build.processing]
+
+[build.processing.css]
+
+[build.processing.html]
+
+[build.processing.images]
+
+[build.processing.js]
+
+[build.services]
+
+[functions]
+
+[functions."*"]
+
+[[redirects]]
+from = "/launch"
+to = "/launch/index.html"
+status = 200.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
+
+[[redirects]]
+from = "/flowchart"
+to = "/flowchart/index.html"
+status = 200.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]

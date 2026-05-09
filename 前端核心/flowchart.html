@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pharmacopilot | 教学流程图</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f6f7f2;
+        --panel: #fffdf8;
+        --ink: #1f2a1f;
+        --muted: #5f685f;
+        --line: #d8ddd2;
+        --accent: #3e6b53;
+        --accent-soft: #e4efe8;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+        background:
+          radial-gradient(circle at top left, rgba(98, 141, 112, 0.12), transparent 28%),
+          linear-gradient(180deg, #fbfcf8 0%, var(--bg) 100%);
+        color: var(--ink);
+      }
+
+      main {
+        width: min(1280px, calc(100vw - 48px));
+        margin: 0 auto;
+        padding: 40px 0 64px;
+      }
+
+      .hero {
+        display: grid;
+        gap: 12px;
+        margin-bottom: 24px;
+      }
+
+      .eyebrow {
+        margin: 0;
+        font-size: 12px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--accent);
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(28px, 4vw, 44px);
+        line-height: 1.08;
+      }
+
+      .lede {
+        margin: 0;
+        max-width: 900px;
+        color: var(--muted);
+        font-size: 16px;
+        line-height: 1.7;
+      }
+
+      .panel {
+        background: rgba(255, 253, 248, 0.92);
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        padding: 20px;
+        box-shadow: 0 16px 50px rgba(52, 70, 51, 0.08);
+        overflow: auto;
+      }
+
+      .tips {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 14px;
+        margin-top: 18px;
+      }
+
+      .tip {
+        background: var(--accent-soft);
+        border: 1px solid rgba(62, 107, 83, 0.12);
+        border-radius: 18px;
+        padding: 14px 16px;
+      }
+
+      .tip strong {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 14px;
+      }
+
+      .tip p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.6;
+        font-size: 14px;
+      }
+
+      .mermaid {
+        min-width: 1100px;
+        padding: 8px;
+      }
+
+      @media (max-width: 760px) {
+        main {
+          width: min(100vw - 24px, 1280px);
+          padding: 24px 0 40px;
+        }
+
+        .panel {
+          padding: 14px;
+          border-radius: 18px;
+        }
+
+        .mermaid {
+          min-width: 980px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="hero">
+        <p class="eyebrow">Pharmacopilot</p>
+        <h1>教学环节作用流程图</h1>
+        <p class="lede">
+          这张图把产品如何作用于课前准备、课中实施、课后评价与反馈、教师发展与课程建设四个阶段串成闭环，适合直接截图放进汇报或答辩材料。
+        </p>
+      </section>
+
+      <section class="panel">
+        <pre class="mermaid">
+flowchart LR
+    A["输入起点<br/>培养方案 / 课程大纲 / 教材章节 / 班级学情 / 泛雅课程上下文"] --> B["课前准备阶段"]
+    B --> B1["课程定位与目标设计<br/>生成课程-章节-课次三级目标"]
+    B --> B2["教学内容取舍<br/>识别重难点与推荐讲授顺序"]
+    B --> B3["药学场景转化<br/>把管理学概念转成药学案例"]
+    B --> B4["学情分析与教学预判<br/>生成前测问卷与差异化策略"]
+
+    B4 --> C["课中实施阶段"]
+    C --> C1["教学设计<br/>导入-讲授-互动-练习-总结-作业"]
+    C --> C2["PPT与教案起草<br/>输出教案初稿、PPT提纲、课堂话术"]
+    C --> C3["教学资源整合<br/>汇总政策、行业、文献、数据素材"]
+    C --> C4["课堂提问与互动<br/>生成分层提问、追问脚本、投票题"]
+    C --> C5["课堂节奏控制<br/>提供45/90分钟节奏模板与压缩建议"]
+    C --> C6["实践教学设计<br/>生成任务书、情境模拟与评价标准"]
+
+    C6 --> D["课后评价与反馈阶段"]
+    D --> D1["过程性评价设计<br/>目标映射到任务、Rubric、平时分"]
+    D --> D2["作业批改与反馈<br/>初批文本作业、归类错因、生成个性反馈"]
+    D --> D3["课程思政与专业融合<br/>识别价值议题并自然嵌入"]
+    D --> D4["考试命题与试卷设计<br/>生成题库、组卷并校验覆盖度"]
+
+    D4 --> E["教师发展与课程建设阶段"]
+    E --> E1["学科前沿跟踪<br/>追踪政策、行业与文献变化"]
+    E --> E2["课后复盘与教学反思<br/>生成结构化复盘报告与改进建议"]
+    E --> E3["教学督导与同行评价<br/>预评估教案与示范课风险点"]
+    E --> E4["教学团队协作与经验共享<br/>统一标准、共享案例与资源"]
+    E --> E5["跨轮次持续优化<br/>沉淀课程知识库与版本迭代记录"]
+    E --> E6["课堂管理与参与激励<br/>提供规则模板、激励方案、应对脚本"]
+
+    E6 --> F["输出结果<br/>更高质量的备课 / 更稳定的课堂实施 / 更可追踪的评价反馈 / 可持续积累的课程资产"]
+
+    G["泛雅连接能力"] -. "同步课程、作业、题库、学习数据" .-> B
+    G -. "课中发布任务与课后回收数据" .-> D
+    G -. "沉淀日志用于复盘和课程建设" .-> E
+        </pre>
+      </section>
+
+      <section class="tips">
+        <article class="tip">
+          <strong>用于网页展示</strong>
+          <p>启动本地服务后访问 <code>/flowchart</code>，适合现场演示和截图。</p>
+        </article>
+        <article class="tip">
+          <strong>用于 PPT</strong>
+          <p>浏览器打开后直接全屏截图，或者打印为 PDF 再插入演示文稿。</p>
+        </article>
+        <article class="tip">
+          <strong>用于继续改图</strong>
+          <p>源内容保留在 <code>docs/teaching-flowchart.md</code>，修改 Mermaid 文本即可同步更新。</p>
+        </article>
+      </section>
+    </main>
+
+    <script type="module">
+      import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: "default",
+        securityLevel: "loose",
+        flowchart: {
+          curve: "basis",
+          htmlLabels: true,
+          useMaxWidth: false,
+          nodeSpacing: 34,
+          rankSpacing: 60,
+        },
+        themeVariables: {
+          primaryColor: "#edf5ef",
+          primaryTextColor: "#223024",
+          primaryBorderColor: "#5d8268",
+          lineColor: "#5d8268",
+          secondaryColor: "#f5efe1",
+          tertiaryColor: "#eef2f9",
+          fontFamily: "PingFang SC, Hiragino Sans GB, Microsoft YaHei, sans-serif",
+        },
+      });
+    </script>
+  </body>
+</html>

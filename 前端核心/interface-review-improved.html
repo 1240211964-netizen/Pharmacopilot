@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pharmacopilot | 评审完善版</title>
+    <meta
+      name="description"
+      content="Pharmacopilot 是面向高校新教师的药学教学工作台，把教学导航、教学全景与教学资产收进同一个界面。"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      .review-path-band {
+        padding: 58px 0 72px;
+        border-top: 1px solid var(--soft-line);
+        background:
+          radial-gradient(circle at top left, rgba(47, 107, 86, 0.08), transparent 28%),
+          color-mix(in srgb, var(--surface) 88%, var(--bg));
+      }
+
+      .review-path-shell {
+        width: min(var(--max), calc(100% - 44px));
+        margin-inline: auto;
+      }
+
+      .review-path-head {
+        max-width: 760px;
+        margin-bottom: 22px;
+      }
+
+      .review-path-head h2 {
+        margin: 0;
+        font-family: var(--editorial);
+        font-size: clamp(2.2rem, 4vw, 3.6rem);
+        line-height: 1;
+        letter-spacing: -0.03em;
+      }
+
+      .review-path-head p:last-child {
+        max-width: 620px;
+        margin: 14px 0 0;
+        color: var(--muted);
+        line-height: 1.76;
+      }
+
+      .review-path-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .review-path-card {
+        padding: 20px;
+        border: 1px solid color-mix(in srgb, var(--sage) 20%, var(--line));
+        border-radius: 24px;
+        background: color-mix(in srgb, var(--panel) 92%, white);
+        box-shadow: 0 18px 48px rgba(24, 22, 18, 0.06);
+      }
+
+      .review-path-card strong {
+        display: block;
+        margin-bottom: 10px;
+        color: var(--ink);
+        font-size: 1.04rem;
+      }
+
+      .review-path-card p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .review-path-card ol {
+        display: grid;
+        gap: 8px;
+        margin: 14px 0 0;
+        padding-left: 20px;
+        color: var(--ink);
+      }
+
+      .review-path-card li {
+        line-height: 1.58;
+      }
+
+      .review-path-card.is-primary {
+        background:
+          linear-gradient(180deg, color-mix(in srgb, var(--sage) 12%, transparent), transparent 72%),
+          var(--panel);
+      }
+
+      @media (max-width: 1040px) {
+        .review-path-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+    <script defer src="./app.js"></script>
+  </head>
+  <body>
+    <svg class="icon-sprite" aria-hidden="true">
+      <symbol id="icon-spark" viewBox="0 0 24 24">
+        <path d="M12 2l1.6 6.1L20 10l-6.4 1.9L12 18l-1.6-6.1L4 10l6.4-1.9L12 2z" />
+      </symbol>
+      <symbol id="icon-link" viewBox="0 0 24 24">
+        <path d="M9.5 14.5l5-5" />
+        <path d="M8 11a4 4 0 0 1 0-5.7l1.3-1.3a4 4 0 0 1 5.7 5.7l-.8.8" />
+        <path d="M15.9 13.5a4 4 0 0 1 0 5.7l-1.3 1.3a4 4 0 0 1-5.7-5.7l.8-.8" />
+      </symbol>
+      <symbol id="icon-search" viewBox="0 0 24 24">
+        <path d="M10.8 18.1a7.3 7.3 0 1 1 0-14.6 7.3 7.3 0 0 1 0 14.6z" />
+        <path d="M16.1 16.1L21 21" />
+      </symbol>
+      <symbol id="icon-clock" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 7v5l3.4 2" />
+      </symbol>
+      <symbol id="icon-file" viewBox="0 0 24 24">
+        <path d="M6 3h8l4 4v14H6z" />
+        <path d="M14 3v5h5" />
+        <path d="M8.5 13h7" />
+        <path d="M8.5 17h7" />
+      </symbol>
+      <symbol id="icon-check" viewBox="0 0 24 24">
+        <path d="M4.5 12.5l5 5L20 7" />
+      </symbol>
+      <symbol id="icon-grid" viewBox="0 0 24 24">
+        <path d="M4 4h6v6H4z" />
+        <path d="M14 4h6v6h-6z" />
+        <path d="M4 14h6v6H4z" />
+        <path d="M14 14h6v6h-6z" />
+      </symbol>
+      <symbol id="icon-shield" viewBox="0 0 24 24">
+        <path d="M12 3l7 3v5c0 4.4-2.8 8.4-7 10-4.2-1.6-7-5.6-7-10V6z" />
+      </symbol>
+      <symbol id="icon-arrow" viewBox="0 0 24 24">
+        <path d="M5 12h14" />
+        <path d="M13 6l6 6-6 6" />
+      </symbol>
+    </svg>
+
+    <header class="site-header">
+      <div class="topbar">
+        <a class="brand" href="#top" aria-label="Pharmacopilot 首页">
+          <span class="brand-mark" aria-hidden="true">
+            <span class="brand-monogram">P</span>
+          </span>
+          <span class="brand-lockup">
+            <span class="brand-wordmark">Pharmacopilot</span>
+            <span class="brand-submark">新教师教学智能体</span>
+          </span>
+        </a>
+        <nav class="topnav" aria-label="页面导航">
+          <a class="nav-link has-caret" href="#review-path">评审路径</a>
+          <a class="nav-link has-caret" href="#demo">本次课运行中心</a>
+          <a class="nav-link has-caret" href="#painpoints">教学全景</a>
+          <a class="nav-link has-caret" href="#fanya">泛雅执行出口</a>
+        </nav>
+        <div class="top-actions">
+          <button class="nav-text-action" id="themeToggle" type="button" title="切换明暗外观" aria-label="切换明暗外观">
+            外观
+          </button>
+          <button class="nav-outline-action" id="openAgentTop" type="button">泛雅发布</button>
+          <button class="nav-outline-action" id="connectTop" type="button">校方授权</button>
+          <a class="nav-primary-action" href="#demo">进入运行中心</a>
+        </div>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="workbench" aria-labelledby="main-title">
+        <div class="workbench-copy">
+          <p class="eyebrow">新教师教学导航</p>
+          <h1 id="main-title">让第一次上课有路可走</h1>
+          <p class="lede">
+            Pharmacopilot 面向药事管理与药事服务课程，服务第一次独立备课、第一次组织课堂、第一次沉淀教学资产的新教师，把一节药学案例课从想法落到可执行任务。
+          </p>
+
+          <div class="prompt-box" role="search">
+            <svg aria-hidden="true"><use href="#icon-search"></use></svg>
+            <input
+              id="globalSearch"
+              type="search"
+              placeholder="搜索药学教学动作或输入课程主题，例如：SWOT 分析、药品政策案例、用药安全评价"
+              autocomplete="off"
+            />
+            <button id="generateDemo" type="button" title="生成本次课建议" aria-label="生成本次课建议">
+              <svg><use href="#icon-arrow"></use></svg>
+            </button>
+          </div>
+
+          <div class="action-row" aria-label="常用任务">
+            <button class="task-button" data-query="药事管理 课程目标自动拆解" type="button">
+              <svg><use href="#icon-file"></use></svg>
+              <span>生成教案</span>
+            </button>
+            <button class="task-button" data-query="SWOT 案例 课堂节奏" type="button">
+              <svg><use href="#icon-clock"></use></svg>
+              <span>药店案例</span>
+            </button>
+            <button class="task-button" data-query="药事服务 过程性评价 Rubric" type="button">
+              <svg><use href="#icon-check"></use></svg>
+              <span>评价 Rubric</span>
+            </button>
+            <button class="task-button" data-target="agent" data-query="慢病管理服务 教学设计" type="button">
+              <svg><use href="#icon-spark"></use></svg>
+              <span>生成发布稿</span>
+            </button>
+            <button class="task-button" data-target="fanya" data-query="超星泛雅 同步 作业 题库" type="button">
+              <svg><use href="#icon-link"></use></svg>
+              <span>同步泛雅</span>
+            </button>
+          </div>
+
+          <div class="launch-context" id="launchContext" hidden>
+            <span>泛雅课程上下文</span>
+            <strong id="launchCourse">未识别课程</strong>
+            <small id="launchClazz">等待班级参数</small>
+          </div>
+        </div>
+      </section>
+
+      <section class="metric-strip" aria-label="数据摘要">
+        <div class="metric">
+          <strong id="metricPainCount">20</strong>
+          <span>药学教学场景</span>
+        </div>
+        <div class="metric">
+          <strong>4</strong>
+          <span>教学阶段</span>
+        </div>
+        <div class="metric">
+          <strong id="metricFeatureCount">0</strong>
+          <span>药学能力动作</span>
+        </div>
+        <div class="metric">
+          <strong>1</strong>
+          <span>药学任务出口</span>
+        </div>
+      </section>
+
+      <section class="pharma-proof-strip" aria-label="药学特色证据">
+        <article>
+          <strong>药事服务</strong>
+          <span>医院药房、处方审核、慢病随访、患者教育</span>
+        </article>
+        <article>
+          <strong>药品经营</strong>
+          <span>药品政策、机构管理、组织决策、合规监管</span>
+        </article>
+        <article>
+          <strong>政策合规</strong>
+          <span>医保支付、药品监管、处方流转、资源公平</span>
+        </article>
+        <article>
+          <strong>用药安全</strong>
+          <span>患者利益、风险意识、职业伦理、证据决策</span>
+        </article>
+      </section>
+
+      <section class="review-path-band" id="review-path" aria-labelledby="review-path-title">
+        <div class="review-path-shell">
+          <div class="review-path-head">
+            <p class="eyebrow">Review-ready path</p>
+            <h2 id="review-path-title">3 分钟看懂教学闭环</h2>
+            <p>
+              完善版把评审视角和真实教师使用路径前置：先证明入口可访问，再展示本次课如何生成，最后看到它如何落到泛雅。
+            </p>
+          </div>
+          <div class="review-path-grid">
+            <article class="review-path-card is-primary">
+              <strong>评委演示路径</strong>
+              <p>让评审不用探索全站，也能快速看到课程智能体的核心闭环。</p>
+              <ol>
+                <li>打开泛雅第三方链接并识别课程参数</li>
+                <li>进入本次课运行中心查看药学案例教学建议</li>
+                <li>生成泛雅发布稿，展示药学任务落地动作</li>
+              </ol>
+            </article>
+            <article class="review-path-card">
+              <strong>新教师使用路径</strong>
+              <p>从“我第一次上这节课不知道怎么设计”出发，而不是从平台功能出发。</p>
+              <ol>
+                <li>输入药学课程主题、学情或教材章节</li>
+                <li>选择教学痛点和能力动作</li>
+                <li>复制发布稿到讨论、作业或资源说明</li>
+              </ol>
+            </article>
+            <article class="review-path-card">
+              <strong>泛雅落地证据</strong>
+              <p>把平台连接说清楚：当前可作为第三方入口，授权后再同步课程数据。</p>
+              <ol>
+                <li>读取 courseId、clazzId、cpi</li>
+                <li>保留教师确认后发布的流程</li>
+                <li>为后续作业、题库、学习数据接口预留位置</li>
+              </ol>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="workflow-band" id="workflow" aria-labelledby="workflow-title">
+        <div class="workflow-shell" id="workflowShell">
+          <div class="section-head workflow-head">
+            <p class="eyebrow">Teaching workflow</p>
+            <h2 id="workflow-title">从药学场景到课程资产沉淀</h2>
+            <p class="workflow-note">输入课程主题或上传材料后，四个阶段会把药学岗位能力、真实案例、课堂执行、评价证据与复盘资产串成连续工作流。</p>
+          </div>
+
+          <div class="workflow-summary">
+            <article class="workflow-summary-card workflow-input-card" id="workflowInputCard">
+              <p class="workflow-summary-label">输入</p>
+              <div class="workflow-intake-shell">
+                <label class="workflow-intake-label" for="workflowInputField">输入药学课程目标、教材章节、学情要求或平台上下文</label>
+                <textarea
+                  id="workflowInputField"
+                  class="workflow-intake-field"
+                  placeholder="例如：这次课讲 SWOT 分析，90 分钟授课，学生为药学本科三年级，希望用药事管理课堂案例，引入政策材料、组织资源和合规边界讨论。"
+                ></textarea>
+                <div class="workflow-intake-tools">
+                  <label class="workflow-upload-button" for="workflowFileInput">
+                    <svg aria-hidden="true"><use href="#icon-file"></use></svg>
+                    <span>上传文件</span>
+                  </label>
+                  <input
+                    id="workflowFileInput"
+                    class="workflow-file-input"
+                    type="file"
+                    multiple
+                    accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.csv,.txt,.md,.rtf,.json,.zip,.rar,.7z,image/*,audio/*,video/*"
+                  />
+                  <p class="workflow-intake-hint">支持 PDF、Word、PPT、Excel、图片、音视频、压缩包等格式。</p>
+                </div>
+                <div class="workflow-file-list" id="workflowFileList" aria-live="polite"></div>
+              </div>
+            </article>
+            <article class="workflow-summary-card workflow-output-card">
+              <p class="workflow-summary-label">输出</p>
+              <strong id="workflowOutputTitle">可执行药学案例课、评价反馈与持续迭代的课程资产</strong>
+              <p class="workflow-output-copy" id="workflowOutputCopy">
+                键入课程需求或上传文件后，系统会把文本线索、课件附件与平台上下文整理成统一输入，用于生成后续教学支持结果。
+              </p>
+              <div class="workflow-output-tags" id="workflowOutputTags" aria-live="polite"></div>
+            </article>
+          </div>
+
+          <div class="workflow-diagram" aria-label="教学工作流图">
+            <div class="workflow-board" id="workflowRail" aria-label="教学工作流通道"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="pain-band" id="painpoints" aria-labelledby="pain-title">
+        <div class="section-head">
+          <p class="eyebrow">Pharmacy teaching landscape</p>
+          <h2 id="pain-title">药事管理教学全景</h2>
+        </div>
+
+        <div class="filter-shell">
+          <div class="segmented" id="stageTabs" role="tablist" aria-label="教学阶段筛选"></div>
+          <div class="result-note" id="resultNote"></div>
+        </div>
+
+        <div class="pain-layout">
+          <div class="pain-list" id="painList" aria-live="polite"></div>
+          <aside class="detail-panel" aria-labelledby="detailTitle">
+            <p class="detail-kicker" id="detailStage">课前准备阶段</p>
+            <h3 id="detailTitle">课程目标自动拆解</h3>
+            <p class="detail-parent" id="detailParent">所属环节：课程定位与目标设计</p>
+            <p id="detailPain"></p>
+            <div class="feature-cloud" id="detailFeatures"></div>
+            <dl class="detail-grid">
+              <div>
+                <dt>这个动作会帮你完成</dt>
+                <dd id="detailManifestation"></dd>
+              </div>
+              <div>
+                <dt>点击后会具体产出</dt>
+                <dd id="detailSolution"></dd>
+              </div>
+              <div>
+                <dt>在这节课里的直接价值</dt>
+                <dd id="detailImpact"></dd>
+              </div>
+            </dl>
+            <section class="detail-scenario" aria-labelledby="detailScenarioTitle">
+              <p class="detail-scenario-kicker">当前课程示例输出</p>
+              <h4 id="detailScenarioTitle">当前课程示例：药事管理中的 SWOT 分析</h4>
+              <p id="detailScenarioContext"></p>
+              <ul class="detail-scenario-list" id="detailScenarioList"></ul>
+            </section>
+          </aside>
+        </div>
+      </section>
+
+      <section class="demo-band" id="demo" aria-labelledby="demo-title">
+        <div class="demo-layout">
+          <div class="section-head">
+              <p class="eyebrow">Pharmacy lesson operation</p>
+            <h2 id="demo-title">本次课运行中心</h2>
+            <p class="demo-note">
+              以纵向流程图呈现本次课从输入、诊断、设计、确认到泛雅发布稿的完整路径，节点之间的因果关系一眼可见。
+            </p>
+          </div>
+          <div class="lesson-flow-shell">
+            <div class="lesson-board">
+              <div class="lesson-header">
+                <span id="lessonTopic">管理学原理中的 SWOT 分析：药事管理本科课堂案例</span>
+                <span id="lessonMode">课程目标自动拆解</span>
+              </div>
+              <div class="timeline" id="timeline"></div>
+            </div>
+            <div class="answer-panel" id="answerPanel"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="integration-band" id="fanya" aria-labelledby="fanya-title">
+        <div class="section-head">
+          <p class="eyebrow">Platform context</p>
+          <h2 id="fanya-title">泛雅执行出口</h2>
+          <p class="integration-note">这里不只展示链接状态，而是承接本次课建议，生成可复制、可同步、可留痕的药学案例讨论、作业、测验和资源发布动作。</p>
+        </div>
+
+        <div class="integration-grid">
+          <article class="integration-card course-agent-card">
+            <div class="card-icon"><svg><use href="#icon-spark"></use></svg></div>
+            <h3>转为泛雅药学任务</h3>
+            <p id="courseAgentHint">本站可直接作为泛雅第三方链接打开，并自动识别 courseId、clazzId、cpi 等课程上下文。</p>
+            <div class="course-agent-meta">
+              <strong id="courseAgentName">Pharmacopilot 泛雅助手</strong>
+              <span id="courseAgentStatus">第三方入口已就绪</span>
+            </div>
+            <label class="course-agent-label" for="courseAgentInput">泛雅发布稿</label>
+            <textarea
+              id="courseAgentInput"
+              class="course-agent-input"
+              rows="5"
+              placeholder="点击“生成发布稿”，系统会基于当前药学课程、教学阶段和泛雅参数生成可复制到泛雅任务、讨论或作业说明中的文本。"
+            ></textarea>
+            <div class="agent-action-row">
+              <button class="primary-action" id="askCourseAgent" type="button">
+                <span>生成发布稿</span>
+                <svg><use href="#icon-arrow"></use></svg>
+              </button>
+              <button class="secondary-action" id="copyAgentPrompt" type="button">复制发布稿</button>
+            </div>
+            <div class="course-agent-reply is-muted" id="courseAgentReply">当前站点已按泛雅第三方链接方式接入。生成发布稿后，教师可先复制到泛雅；真实写入作业、讨论和题库需要学校或超星开放接口授权。</div>
+          </article>
+
+          <article class="integration-card connector-state">
+            <div class="card-icon"><svg><use href="#icon-link"></use></svg></div>
+            <h3>校方授权连接</h3>
+            <p id="connectHint">连接课程系统后，可同步课程、班级、作业、题库与学习数据，并将教学支持能力嵌入日常授课流程。</p>
+            <button class="primary-action" id="connectMain" type="button">
+              <span id="connectText">启用课程连接</span>
+              <svg><use href="#icon-arrow"></use></svg>
+            </button>
+          </article>
+
+          <article class="integration-card">
+            <div class="card-icon"><svg><use href="#icon-arrow"></use></svg></div>
+            <h3>课程启动链接</h3>
+            <p>平台可通过课程上下文直接唤起 Agent，使其在打开时自动进入对应课程与班级空间。</p>
+            <code class="launch-url" id="launchUrl">https://your-domain/launch?courseId=...</code>
+          </article>
+
+          <article class="integration-card integration-board">
+            <div class="card-icon"><svg><use href="#icon-grid"></use></svg></div>
+            <h3>连接内容分板块</h3>
+            <p>连接后，Agent 不是只读一组字段，而是进入教师日常使用的教学上下文。下面这些内容都可以按板块接入并服务不同教学动作。</p>
+            <div class="integration-module-grid">
+              <section class="integration-module">
+                <h4>学情分析</h4>
+                <p>班级名单、历史成绩、测验表现、讨论记录、学习进度。</p>
+                <ul class="integration-module-list">
+                  <li>生成班级知识基线画像</li>
+                  <li>识别薄弱知识点与高风险学生</li>
+                  <li>为课前预判和差异化教学提供依据</li>
+                </ul>
+              </section>
+
+              <section class="integration-module">
+                <h4>教学资源与备课</h4>
+                <p>课程大纲、教材章节、PPT、教案、资料库、公告内容。</p>
+                <ul class="integration-module-list">
+                  <li>自动对齐课程目标与章节目标</li>
+                  <li>生成教案、课件提纲与案例素材</li>
+                  <li>沉淀可复用的课程资源版本</li>
+                </ul>
+              </section>
+
+              <section class="integration-module">
+                <h4>课堂互动与任务发布</h4>
+                <p>签到、讨论、投票、随堂测、分组任务、课堂通知。</p>
+                <ul class="integration-module-list">
+                  <li>生成互动问题与课堂任务书</li>
+                  <li>按课堂节奏发布活动与提醒</li>
+                  <li>回收参与数据用于课堂复盘</li>
+                </ul>
+              </section>
+
+              <section class="integration-module">
+                <h4>作业评价与反馈</h4>
+                <p>作业提交、测验结果、题库、Rubric、错题与反馈记录。</p>
+                <ul class="integration-module-list">
+                  <li>支持初批、错因归类与个体反馈</li>
+                  <li>把课堂目标映射到评价任务</li>
+                  <li>形成班级共性问题画像与改课依据</li>
+                </ul>
+              </section>
+            </div>
+          </article>
+
+          <article class="integration-card">
+            <div class="card-icon"><svg><use href="#icon-shield"></use></svg></div>
+            <h3>权限与审计</h3>
+            <p>教师确认后发布，学生数据按最小权限读取，所有同步动作保留日志，便于教学督导和课程组协同复盘。</p>
+            <div class="audit-row">
+              <span>SSO</span>
+              <span>API Gateway</span>
+              <span>Review</span>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
