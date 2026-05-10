@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pharmacopilot | 首页</title>
+    <meta
+      name="description"
+      content="Pharmacopilot 为药学管理课程生成可审校、可复用的教学材料。"
+    />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./styles.css" />
+    <script defer src="./app.js"></script>
+  </head>
+  <body data-page="home" class="anthropic-inspired-home">
+    <header class="site-header">
+      <div class="topbar">
+        <a class="brand" href="./index.html" aria-label="Pharmacopilot 首页">
+          <span class="brand-mark" aria-hidden="true"><span class="brand-monogram">P</span></span>
+          <span class="brand-lockup">
+            <span class="brand-wordmark">Pharmacopilot</span>
+            <span class="brand-submark">药学教学智能体</span>
+          </span>
+        </a>
+        <button
+          class="nav-menu-toggle"
+          id="navMenuToggle"
+          type="button"
+          aria-label="打开导航菜单"
+          aria-controls="primaryNav"
+          aria-expanded="false"
+        >
+          <span aria-hidden="true"></span>
+        </button>
+        <nav class="topnav" id="primaryNav" aria-label="页面导航">
+          <a class="nav-link active" data-nav="home" href="./index.html">首页</a>
+          <a class="nav-link" data-nav="teaching-navigation" href="./teaching-navigation.html">教学导航</a>
+          <a class="nav-link" data-nav="practice" href="./practice.html">教学实践</a>
+          <a class="nav-link" data-nav="assets" href="./assets.html">教学资产</a>
+        </nav>
+        <div class="top-actions">
+          <a class="nav-outline-action home-login-action" href="./practice.html#fanyaAuthForm">登录</a>
+          <a class="nav-primary-action" href="./practice.html#fanyaAuthForm">注册</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero-split home-landing" aria-labelledby="main-title">
+        <div class="hero-copy reveal-on-load">
+          <p class="eyebrow">Teaching material workbench</p>
+          <h1 id="main-title">为药学管理课程生成可审校、可复用的教学材料。</h1>
+          <p class="lede">
+            围绕药学管理本科《管理学原理》SWOT 分析课，把课程资料、20 环节教学导航、Rubric、课堂任务和教学资产串联成一条可检查的备课路径。
+          </p>
+          <div class="hero-actions">
+            <a class="primary-action" href="./teaching-navigation.html">生成教学导航</a>
+            <a class="secondary-action" href="./practice.html#fanyaAuthForm">登录/注册</a>
+          </div>
+        </div>
+
+        <aside class="home-product-preview reveal-on-load" aria-label="Pharmacopilot 产品预览">
+          <div class="preview-toolbar">
+            <div>
+              <span class="panel-label">Product Preview</span>
+              <strong>SWOT 分析课材料包</strong>
+            </div>
+            <span class="preview-status">教师审校中</span>
+          </div>
+
+          <div class="preview-flow" aria-label="教学材料生成链路">
+            <div class="preview-step">
+              <span>01</span>
+              <strong>课程资料</strong>
+              <p>课程大纲、泛雅模拟学情数据、SWOT 案例材料</p>
+            </div>
+            <div class="preview-step">
+              <span>02</span>
+              <strong>20 环节教学导航</strong>
+              <p>课前、课中、课后路径与诊断检查点</p>
+            </div>
+            <div class="preview-step">
+              <span>03</span>
+              <strong>Rubric / 课堂任务</strong>
+              <p>学习证据、评分维度、课堂活动说明</p>
+            </div>
+            <div class="preview-step">
+              <span>04</span>
+              <strong>教学资产</strong>
+              <p>教案、反馈模板、复盘记录可继续复用</p>
+            </div>
+          </div>
+
+          <div class="preview-document" aria-label="输出文档预览">
+            <div class="document-title-row">
+              <span>Output Preview</span>
+              <strong>教学导航草稿</strong>
+            </div>
+            <div class="document-line strong"></div>
+            <div class="document-line"></div>
+            <div class="document-line short"></div>
+            <dl class="document-evidence-list">
+              <div>
+                <dt>学习起点</dt>
+                <dd>识别学生对 SWOT 四象限的常见混淆点。</dd>
+              </div>
+              <div>
+                <dt>评价证据</dt>
+                <dd>绑定小组矩阵、策略说明和课后修订记录。</dd>
+              </div>
+              <div>
+                <dt>资产沉淀</dt>
+                <dd>教师确认后保存为可复用教学材料。</dd>
+              </div>
+            </dl>
+          </div>
+        </aside>
+      </section>
+
+      <section class="section-block home-core-functions" aria-labelledby="core-functions-title">
+        <div class="section-head">
+          <p class="eyebrow">Teaching workflow</p>
+          <h2 id="core-functions-title">从训练到实践，再到资产沉淀</h2>
+          <p class="section-copy">先训练教学判断，再应用到真实课程上下文，最后沉淀为教师可复用的教学资产。</p>
+        </div>
+
+        <div class="core-feature-grid">
+          <article class="core-feature-card feature-navigation">
+            <div class="feature-card-head">
+              <span class="feature-index">01</span>
+              <span class="feature-tag">先训练</span>
+            </div>
+            <h3>教学导航</h3>
+            <p class="feature-copy">用示例课训练课程理解、教学设计、课堂实施和评价复盘判断，完成三阶段路径与 20 环节诊断。</p>
+            <div class="feature-chip-list" aria-label="教学导航核心能力">
+              <span>三阶段路径</span>
+              <span>20环节诊断</span>
+              <span>训练报告</span>
+            </div>
+            <a class="card-action" href="./teaching-navigation.html">进入教学导航</a>
+          </article>
+
+          <article class="core-feature-card feature-practice">
+            <div class="feature-card-head">
+              <span class="feature-index">02</span>
+              <span class="feature-tag">再实践</span>
+            </div>
+            <h3>教学实践</h3>
+            <p class="feature-copy">把训练结果应用到真实课程上下文，结合泛雅模拟授权、课程资料和教师约束生成课堂方案。</p>
+            <div class="feature-chip-list" aria-label="教学实践核心能力">
+              <span>泛雅模拟授权</span>
+              <span>真实课程上下文</span>
+              <span>课堂方案</span>
+            </div>
+            <a class="card-action" href="./practice.html">进入教学实践</a>
+          </article>
+
+          <article class="core-feature-card feature-assets">
+            <div class="feature-card-head">
+              <span class="feature-index">03</span>
+              <span class="feature-tag">后沉淀</span>
+            </div>
+            <h3>教学资产</h3>
+            <p class="feature-copy">把教师确认后的教案、Rubric、反馈模板与复盘记录沉淀下来，形成下一轮备课可复用的资产。</p>
+            <div class="feature-chip-list" aria-label="教学资产核心能力">
+              <span>教案 / Rubric</span>
+              <span>反馈模板</span>
+              <span>复盘记录</span>
+            </div>
+            <a class="card-action" href="./assets.html">查看教学资产</a>
+          </article>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
