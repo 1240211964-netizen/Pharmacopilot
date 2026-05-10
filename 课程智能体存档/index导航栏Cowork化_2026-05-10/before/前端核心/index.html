@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pharmacopilot | 首页</title>
+    <meta
+      name="description"
+      content="Pharmacopilot 教师登录与注册入口。"
+    />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./styles.css" />
+    <script defer src="./app.js"></script>
+  </head>
+  <body data-page="home" class="anthropic-inspired-home">
+    <header class="site-header">
+      <div class="topbar">
+        <a class="brand" href="./index.html" aria-label="Pharmacopilot 首页">
+          <span class="brand-mark" aria-hidden="true"><span class="brand-monogram">P</span></span>
+          <span class="brand-lockup">
+            <span class="brand-wordmark">Pharmacopilot</span>
+            <span class="brand-submark">药学教学智能体</span>
+          </span>
+        </a>
+        <button
+          class="nav-menu-toggle"
+          id="navMenuToggle"
+          type="button"
+          aria-label="打开导航菜单"
+          aria-controls="primaryNav"
+          aria-expanded="false"
+        >
+          <span aria-hidden="true"></span>
+        </button>
+        <nav class="topnav" id="primaryNav" aria-label="页面导航">
+          <a class="nav-link active" data-nav="home" href="./index.html">首页</a>
+          <a class="nav-link" data-nav="teaching-navigation" href="./teaching-navigation.html">教学导航</a>
+          <a class="nav-link" data-nav="practice" href="./practice.html">教学实践</a>
+          <a class="nav-link" data-nav="assets" href="./assets.html">教学资产</a>
+        </nav>
+        <div class="top-actions">
+          <a class="nav-outline-action home-login-action" href="./practice.html#fanyaAuthForm">登录</a>
+          <a class="nav-primary-action" href="./practice.html#fanyaAuthForm">注册</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero-split home-landing" aria-labelledby="main-title">
+        <div class="hero-copy reveal-on-load">
+          <p class="eyebrow">Teacher account access</p>
+          <h1 id="main-title">登录 Pharmacopilot，进入药学教学工作台。</h1>
+          <p class="lede">
+            教师可使用泛雅或校内账号登录；新用户可先注册或申请账号，完成授权后进入平台工作台。
+          </p>
+          <div class="hero-actions">
+            <a class="primary-action" href="./practice.html#fanyaAuthForm">登录</a>
+            <a class="secondary-action" href="./practice.html#fanyaAuthForm">注册</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-block home-core-functions" aria-labelledby="core-functions-title">
+        <div class="section-head">
+          <p class="eyebrow">Core functions</p>
+          <h2 id="core-functions-title">三个核心功能</h2>
+          <p class="section-copy">训练、实践、沉淀，形成新教师完整教学闭环。</p>
+        </div>
+
+        <div class="core-feature-grid">
+          <article class="core-feature-card feature-navigation">
+            <div class="feature-card-head">
+              <span class="feature-index">01</span>
+              <span class="feature-tag">Training</span>
+            </div>
+            <h3>教学导航</h3>
+            <p class="feature-copy">从课程理解、教学设计、课堂实施到评价复盘，完成新教师三步上手训练。</p>
+            <div class="feature-chip-list" aria-label="教学导航核心能力">
+              <span>20环节训练</span>
+              <span>Rubric诊断</span>
+              <span>训练报告</span>
+            </div>
+            <a class="card-action" href="./teaching-navigation.html">进入路线地图</a>
+          </article>
+
+          <article class="core-feature-card feature-practice">
+            <div class="feature-card-head">
+              <span class="feature-index">02</span>
+              <span class="feature-tag">Practice</span>
+            </div>
+            <h3>教学实践</h3>
+            <p class="feature-copy">连接真实课程与泛雅数据，把训练结果转化为课堂教学方案。</p>
+            <div class="feature-chip-list" aria-label="教学实践核心能力">
+              <span>泛雅授权</span>
+              <span>真实课程数据</span>
+              <span>课堂方案生成</span>
+            </div>
+            <a class="card-action" href="./practice.html">进入教学实践</a>
+          </article>
+
+          <article class="core-feature-card feature-assets">
+            <div class="feature-card-head">
+              <span class="feature-index">03</span>
+              <span class="feature-tag">Assets</span>
+            </div>
+            <h3>教学资产</h3>
+            <p class="feature-copy">沉淀教案、Rubric、反馈模板与复盘记录，形成教师个人教学资产。</p>
+            <div class="feature-chip-list" aria-label="教学资产核心能力">
+              <span>教案沉淀</span>
+              <span>Rubric复用</span>
+              <span>知识库积累</span>
+            </div>
+            <a class="card-action" href="./assets.html">查看教学资产</a>
+          </article>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
