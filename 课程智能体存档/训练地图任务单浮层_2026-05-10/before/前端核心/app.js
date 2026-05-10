@@ -2399,7 +2399,6 @@ function initNavigationTrainingPage() {
 
   $("#startTrainingFromBeginning")?.addEventListener("click", () => {
     trainingState.currentStepId = 1;
-    isTrainingMapTaskSheetOpen = false;
     saveTrainingState();
     renderTrainingWorkflow();
     $("#training-camp")?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -2411,14 +2410,6 @@ function initNavigationTrainingPage() {
     downloadMarkdown("pharmacopilot-new-teacher-training-report.md", trainingState.trainingReport || generateTrainingReport()),
   );
   $("#saveTrainingReportToAssets")?.addEventListener("click", saveTrainingReportToAssets);
-  document.addEventListener("click", (event) => {
-    if (document.body.dataset.page !== "navigation") return;
-    if (event.target.closest("[data-close-training-map-sheet]")) closeTrainingMapTaskSheet();
-  });
-  document.addEventListener("keydown", (event) => {
-    if (document.body.dataset.page !== "navigation") return;
-    if (event.key === "Escape") closeTrainingMapTaskSheet();
-  });
 }
 
 function renderTrainingWorkflow() {
@@ -2494,8 +2485,6 @@ const GAME_TRAINING_MAP_STAGE_META = [
   },
 ];
 
-let isTrainingMapTaskSheetOpen = false;
-
 function renderGameTrainingMap() {
   const map = $("#trainingLearningMap");
   if (!map || !trainingState) return;
@@ -2523,6 +2512,7 @@ function renderGameTrainingMap() {
 
   map.innerHTML = workflowConfig.map((stage, index) => renderGameMapIsland(stage, index)).join("");
   renderGameMapStepDetail();
+  renderGameMapAssets();
 
   $$("[data-map-step]", map).forEach((node) => {
     node.addEventListener("click", () => {
@@ -2533,7 +2523,6 @@ function renderGameTrainingMap() {
         return;
       }
       trainingState.currentStepId = stepId;
-      isTrainingMapTaskSheetOpen = true;
       saveTrainingState();
       renderTrainingWorkflow();
       requestAnimationFrame(() => $("#trainingMapDetailPanel")?.focus({ preventScroll: true }));
@@ -2650,18 +2639,8 @@ function renderGameMapAssets() {
 function renderGameMapStepDetail() {
   const container = $("#trainingMapStepDetail");
   if (!container) return;
-  const panel = $("#trainingMapDetailPanel");
-  if (!isTrainingMapTaskSheetOpen) {
-    if (panel) {
-      panel.classList.remove("is-open");
-      panel.setAttribute("aria-hidden", "true");
-    }
-    container.innerHTML = "";
-    return;
-  }
   const context = getTrainingCourseContext();
   const step = getContextualTrainingStep(getTrainingStep(trainingState.currentStepId), context);
-  const routeNode = getRouteNode(step.id);
   const choice = getChoice(step.id);
   const selectedOptionId = trainingState.currentSelections?.[String(step.id)] || choice.primary || "";
   const preview = selectedOptionId ? createStepPreview(step.id, selectedOptionId, "training") : null;
@@ -2669,10 +2648,6 @@ function renderGameMapStepDetail() {
   const scoreMeta = getTrainingSidebarScoreMeta(step.id);
   const selectedTitle = preview?.selectedOption?.title || (selectedOptionId ? step.options?.[selectedOptionId] : "");
   const advice = preview?.score?.improvementAdvice || preview?.analysis?.suggestions?.[0] || "选择一个方案后，系统会生成该环节的评价提示和改进建议。";
-  if (panel) {
-    panel.classList.add("is-open");
-    panel.setAttribute("aria-hidden", "false");
-  }
   const optionsMarkup = Object.entries(step.options || {})
     .map(([id, label]) => {
       const isSelected = selectedOptionId === id;
@@ -2697,11 +2672,6 @@ function renderGameMapStepDetail() {
         <span>${escapeHtml(step.stageTitle)}</span>
         <span>${escapeHtml(context.topic)} · ${escapeHtml(context.scenario)}</span>
       </div>
-      <dl class="game-map-task-list">
-        <div><dt>教师任务</dt><dd>${escapeHtml(routeNode.task)}</dd></div>
-        <div><dt>需要提交的产出物</dt><dd>${escapeHtml(routeNode.output)}</dd></div>
-        <div><dt>评价维度</dt><dd>${escapeHtml(routeNode.rubric)}</dd></div>
-      </dl>
       <div class="game-map-choice-block">
         <div class="game-map-choice-head">
           <span>选择方案</span>
@@ -2722,22 +2692,14 @@ function renderGameMapStepDetail() {
     </article>
   `;
 
-  if (panel) $("[data-close-training-map-sheet]", panel)?.addEventListener("click", closeTrainingMapTaskSheet);
   $$("[data-map-detail-primary]", container).forEach((button) =>
     button.addEventListener("click", () => selectGameMapPrimaryOption(button.dataset.mapDetailPrimary)),
   );
   $("#confirmGameMapStep")?.addEventListener("click", confirmGameMapStep);
   $("#openFullTrainingStep")?.addEventListener("click", () => {
-    isTrainingMapTaskSheetOpen = false;
-    renderGameMapStepDetail();
     renderTrainingCurrentStep();
     $("#training-camp")?.scrollIntoView({ behavior: "smooth", block: "start" });
   });
-}
-
-function closeTrainingMapTaskSheet() {
-  isTrainingMapTaskSheetOpen = false;
-  renderGameMapStepDetail();
 }
 
 function selectGameMapPrimaryOption(optionId) {
@@ -2749,21 +2711,14 @@ function selectGameMapPrimaryOption(optionId) {
   trainingState.currentSelections[String(step.id)] = optionId;
   trainingState.currentPreview = createStepPreview(step.id, optionId, "training");
   buildTrainingStepArtifacts(step);
-  isTrainingMapTaskSheetOpen = true;
   saveTrainingState();
   renderTrainingWorkflow();
   requestAnimationFrame(() => $("#trainingMapDetailPanel")?.focus({ preventScroll: true }));
 }
 
 function confirmGameMapStep() {
-  const step = getTrainingStep();
-  const choice = getChoice(step.id);
-  if (!choice.primary) {
-    showToast("请先选择一个主方案");
-    return;
-  }
-  isTrainingMapTaskSheetOpen = false;
   confirmTrainingStep();
+  requestAnimationFrame(() => $("#trainingMapDetailPanel")?.focus({ preventScroll: true }));
 }
 
 const routeTrainingNodes = [
@@ -5367,7 +5322,6 @@ function saveTrainingReportToAssets() {
 
 function resetTrainingState() {
   trainingState = createDefaultTrainingState();
-  isTrainingMapTaskSheetOpen = false;
   saveTrainingState();
   renderTrainingWorkflow();
   showToast("训练状态已重置为默认示例");

@@ -101,17 +101,23 @@
               <span><i class="route-line-dashed"></i>能力关联</span>
               <span><i class="density-dot"></i>当前光晕</span>
             </div>
-            <section class="map-task-sheet game-map-detail-card" id="trainingMapDetailPanel" tabindex="-1" aria-live="polite" aria-hidden="true" role="dialog" aria-labelledby="trainingMapTaskSheetTitle">
-              <div class="map-task-sheet-head">
-                <div>
-                  <span>Node task sheet</span>
-                  <h3 id="trainingMapTaskSheetTitle">节点任务单</h3>
-                </div>
-                <button class="map-task-sheet-close" type="button" data-close-training-map-sheet aria-label="关闭任务单">×</button>
+          </div>
+          <aside class="training-map-side-panel game-map-side-panel" aria-label="当前关卡详情">
+            <section class="map-side-card game-map-detail-card" id="trainingMapDetailPanel" tabindex="-1" aria-live="polite">
+              <div class="map-side-title">
+                <span aria-hidden="true">◎</span>
+                <h3>关卡详情</h3>
               </div>
               <div id="trainingMapStepDetail" class="game-map-step-detail"></div>
             </section>
-          </div>
+            <section class="map-side-card game-map-assets-card">
+              <div class="map-side-title">
+                <span aria-hidden="true">▣</span>
+                <h3>已解锁资产</h3>
+              </div>
+              <div id="trainingMapAssets" class="map-asset-list"></div>
+            </section>
+          </aside>
         </div>
       </section>
 
