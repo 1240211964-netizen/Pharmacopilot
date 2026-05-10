@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pharmacopilot | 首页</title>
+    <meta
+      name="description"
+      content="Pharmacopilot 以 Cowork 式任务工作台帮助教师生成、审校并沉淀药学管理课程教学材料。"
+    />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./styles.css" />
+    <script defer src="./app.js"></script>
+  </head>
+  <body data-page="home" class="anthropic-inspired-home">
+    <header class="site-header">
+      <div class="topbar">
+        <a class="brand" href="./index.html" aria-label="Pharmacopilot 首页">
+          <span class="brand-mark" aria-hidden="true"><span class="brand-monogram">P</span></span>
+          <span class="brand-lockup">
+            <span class="brand-wordmark">Pharmacopilot</span>
+            <span class="brand-submark">药学教学智能体</span>
+          </span>
+        </a>
+        <button
+          class="nav-menu-toggle"
+          id="navMenuToggle"
+          type="button"
+          aria-label="打开导航菜单"
+          aria-controls="primaryNav"
+          aria-expanded="false"
+        >
+          <span aria-hidden="true"></span>
+        </button>
+        <nav class="topnav" id="primaryNav" aria-label="页面导航">
+          <a class="nav-link active" data-nav="home" href="./index.html">首页</a>
+          <a class="nav-link" data-nav="teaching-navigation" href="./teaching-navigation.html">教学导航</a>
+          <a class="nav-link" data-nav="practice" href="./practice.html">教学实践</a>
+          <a class="nav-link" data-nav="assets" href="./assets.html">教学资产</a>
+        </nav>
+        <div class="top-actions">
+          <a class="nav-outline-action home-login-action" href="./practice.html#fanyaAuthForm">登录</a>
+          <a class="nav-primary-action" href="./practice.html#fanyaAuthForm">注册</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero-split home-landing home-cowork-hero" aria-labelledby="main-title">
+        <div class="hero-copy reveal-on-load">
+          <p class="eyebrow">Teaching Cowork</p>
+          <h1 id="main-title">把药学管理课程任务交给教学智能体，回来审校可交付成果。</h1>
+          <p class="lede">
+            上传课程材料、说明课堂目标和学情边界。Pharmacopilot 会生成教学导航、课堂任务、Rubric 与复盘草稿，教师确认后再进入教学实践和教学资产沉淀。
+          </p>
+          <div class="hero-actions">
+            <a class="primary-action" href="./teaching-navigation.html">开始生成教学导航</a>
+            <a class="secondary-action" href="./practice.html#fanyaAuthForm">登录或注册</a>
+          </div>
+          <div class="home-proof-row" aria-label="Pharmacopilot 工作流摘要">
+            <div><strong>3</strong><span>课前、课中、课后三阶段</span></div>
+            <div><strong>20</strong><span>后台教学诊断环节</span></div>
+            <div><strong>4</strong><span>来源边界与教师确认规则</span></div>
+          </div>
+        </div>
+
+        <aside class="home-cowork-board reveal-on-load" aria-label="教学智能体任务执行预览">
+          <div class="cowork-board-head">
+            <span>Pharmacopilot Cowork</span>
+            <strong><i aria-hidden="true"></i>模拟任务执行中</strong>
+          </div>
+          <div class="cowork-board-grid">
+            <article class="cowork-panel prompt-panel">
+              <span class="panel-label">Prompt</span>
+              <p>请基于药学管理本科《管理学原理》课程，设计一节 SWOT 分析课，包含学情分析、教学导航、课堂任务、Rubric 和课后复盘。</p>
+            </article>
+            <article class="cowork-panel attachment-panel">
+              <span class="panel-label">Attachments</span>
+              <div class="cowork-file-row"><b>DOC</b><span><strong>课程大纲</strong><small>课程目标、章节任务、学时约束</small></span></div>
+              <div class="cowork-file-row"><b>XLS</b><span><strong>泛雅模拟学情数据</strong><small>预习、测验、作业与讨论表现</small></span></div>
+              <div class="cowork-file-row"><b>PDF</b><span><strong>SWOT 案例材料</strong><small>药事管理案例、政策材料、证据线索</small></span></div>
+            </article>
+            <article class="cowork-panel activity-panel">
+              <span class="panel-label">Agent Activity</span>
+              <ol class="cowork-activity-list">
+                <li class="is-done"><span></span><strong>读取课程材料</strong><small>识别课程任务与药学管理情境</small></li>
+                <li class="is-done"><span></span><strong>诊断学情与学习起点</strong><small>整理学生基础、误区和支架需求</small></li>
+                <li class="is-live"><span></span><strong>生成三阶段 / 20 环节教学导航</strong><small>保持课前、课中、课后完整闭环</small></li>
+                <li><span></span><strong>配置 Rubric 与学习证据</strong><small>等待教师审校评价标准</small></li>
+                <li><span></span><strong>保存到教学资产</strong><small>教师确认后沉淀可复用材料</small></li>
+              </ol>
+            </article>
+            <article class="cowork-panel output-panel">
+              <span class="panel-label">Output Preview</span>
+              <div class="cowork-output-grid">
+                <div><strong>教学导航草稿</strong><small>三阶段路径与20环节诊断</small></div>
+                <div><strong>课堂任务</strong><small>案例探究、协作任务、展示追问</small></div>
+                <div><strong>Rubric</strong><small>评价维度、证据要求、反馈建议</small></div>
+                <div><strong>课后复盘</strong><small>学习数据、困难诊断、改进计划</small></div>
+              </div>
+            </article>
+          </div>
+        </aside>
+      </section>
+
+      <section class="section-block home-task-workbench" aria-labelledby="task-workbench-title">
+        <div class="section-head">
+          <p class="eyebrow">Daily teaching tasks</p>
+          <h2 id="task-workbench-title">教师日常教学任务工作台</h2>
+          <p class="section-copy">教师不需要从空白文档开始。先派发任务，系统组织材料和证据链，再由教师审校、复制到泛雅模拟流程或保存到教学资产。</p>
+        </div>
+
+        <div class="cowork-task-layout">
+          <div class="cowork-task-tabs" role="tablist" aria-label="教学任务类型">
+            <button class="cowork-task-tab is-active" type="button" role="tab" aria-selected="true" data-cowork-task="navigation">
+              <span>01</span><strong>生成教学导航</strong><small>把课程目标转化为课前、课中、课后三阶段教学路径。</small>
+            </button>
+            <button class="cowork-task-tab" type="button" role="tab" aria-selected="false" data-cowork-task="resources">
+              <span>02</span><strong>整理课程资源</strong><small>把大纲、案例和泛雅模拟数据整理为可引用材料。</small>
+            </button>
+            <button class="cowork-task-tab" type="button" role="tab" aria-selected="false" data-cowork-task="rubric">
+              <span>03</span><strong>配置评价量规</strong><small>为课堂任务生成 Rubric、证据要求和反馈建议。</small>
+            </button>
+            <button class="cowork-task-tab" type="button" role="tab" aria-selected="false" data-cowork-task="review">
+              <span>04</span><strong>生成复盘报告</strong><small>把学生表现和课堂数据转化为下一轮改课建议。</small>
+            </button>
+            <button class="cowork-task-tab" type="button" role="tab" aria-selected="false" data-cowork-task="assets">
+              <span>05</span><strong>沉淀教学资产</strong><small>把教案、Rubric、反馈语和学生样例归档复用。</small>
+            </button>
+          </div>
+
+          <article class="cowork-task-preview" aria-live="polite">
+            <div class="task-preview-head">
+              <span id="coworkTaskStatus">已实现路径</span>
+              <h3 id="coworkTaskTitle">生成教学导航</h3>
+              <p id="coworkTaskCopy">把课程目标转化为课前、课中、课后三阶段教学路径。</p>
+            </div>
+            <div class="task-preview-body">
+              <div>
+                <span class="panel-label">输入</span>
+                <p id="coworkTaskInput">课程大纲、SWOT 案例材料、教师设定的学习目标。</p>
+              </div>
+              <div>
+                <span class="panel-label">执行</span>
+                <p id="coworkTaskProcess">生成三阶段教学导航，并保留 20 环节后台诊断。</p>
+              </div>
+              <div>
+                <span class="panel-label">输出</span>
+                <p id="coworkTaskOutput">教学导航、环节 Rubric、训练报告草稿。</p>
+              </div>
+            </div>
+            <div class="task-preview-actions">
+              <a class="primary-action" id="coworkTaskPrimaryLink" href="./teaching-navigation.html">进入教学导航</a>
+              <a class="secondary-action" id="coworkTaskSecondaryLink" href="./assets.html">查看教学资产</a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-block home-boundary-section" aria-labelledby="boundary-title">
+        <div class="section-head">
+          <p class="eyebrow">Trust boundaries</p>
+          <h2 id="boundary-title">智能体执行任务，教师保留关键判断</h2>
+          <p class="section-copy">Pharmacopilot 把材料、过程和输出拆开呈现，避免把模拟能力包装成真实接入，也避免把生成结果直接当作最终教学决策。</p>
+        </div>
+        <div class="boundary-grid">
+          <article><span>01</span><h3>泛雅模拟</h3><p>当前使用测试账号、假 token 和模拟课程上下文验证流程；真实写入能力后续再接入。</p></article>
+          <article><span>02</span><h3>教师确认</h3><p>Rubric、课堂任务、复盘建议都需要教师审校后进入实践，不自动替代教师判断。</p></article>
+          <article><span>03</span><h3>来源边界</h3><p>输出保留课程资料、案例材料和平台数据的来源说明，避免混用未授权内容。</p></article>
+          <article><span>04</span><h3>资产沉淀</h3><p>确认后的教案、任务单、反馈模板和复盘记录进入教学资产库，支持下一轮复用。</p></article>
+        </div>
+      </section>
+
+      <section class="section-block home-planned-section" aria-labelledby="planned-title">
+        <div class="section-head">
+          <p class="eyebrow">Planned capability</p>
+          <h2 id="planned-title">规划中能力只作为路线提示，不进入当前承诺</h2>
+          <p class="section-copy">周期性复盘、手机派发任务和教学插件体系可以延展 Cowork 叙事，但当前首页只把它们标记为规划中能力。</p>
+        </div>
+        <div class="planned-capability-grid">
+          <article><span>规划中</span><h3>周期性教学复盘</h3><p>未来可按周整理课堂数据、作业表现和教师反思草稿。</p></article>
+          <article><span>规划中</span><h3>移动端任务派发</h3><p>未来可在课后快速描述任务，回到电脑端审校完整成果。</p></article>
+          <article><span>规划中</span><h3>教学插件体系</h3><p>未来把 ICAP+、OBE、形成性评价等方法沉淀为可配置插件。</p></article>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
