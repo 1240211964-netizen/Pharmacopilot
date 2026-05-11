@@ -3,7 +3,6 @@ const TRAINING_STATE_KEY = "pharmacopilot.trainingState";
 const FANYA_AUTH_KEY = "pharmacopilot-fanya-auth-state";
 const PRACTICE_WORKFLOW_KEY = "pharmacopilot-practice-workflow-state";
 const ASSETS_KEY = "pharmacopilot-assets";
-const ACCOUNT_SESSION_KEY = "pharmacopilot-account-session";
 const FANYA_MOCK_ACCOUNT = {
   account: "teacher.demo@pharmacopilot.test",
   token: "mock-fanya-token-2026",
@@ -2106,19 +2105,19 @@ const HOME_FEATURE_DEMOS = {
     label: "教学实践",
     short: "真实课程工作台",
     kicker: "从学情到课堂执行",
-    summary: "左侧输入模拟学情和课堂证据，右侧形成活动、追问、测验和评价量规草稿。",
+    summary: "左侧输入模拟学情和课堂证据，右侧形成活动、追问、测验和 Rubric 草稿。",
     prompt:
       "根据本周学生预习、随堂测和课堂反馈情况，帮我优化 SWOT 分析这节课的教学活动，并生成形成性评价方案。",
     attachments: [
       { title: "学情摘要", meta: "预习完成率 72% · 易错点集中", accent: "blue" },
       { title: "课堂证据", meta: "提问记录 · 小组讨论结果", accent: "amber" },
-      { title: "评价需求", meta: "随堂测 / 小组任务 / 评价量规", accent: "teal" },
+      { title: "评价需求", meta: "随堂测 / 小组任务 / Rubric", accent: "teal" },
     ],
     activity: [
       "读取学情摘要与课堂证据",
       "识别机会与威胁混淆等薄弱点",
       "转化为药学管理案例与追问提示",
-      "生成课堂活动、随堂测与评价量规",
+      "生成课堂活动、随堂测与 Rubric",
     ],
     outputTitle: "SWOT 分析授课工作台",
     outputSubtitle: "把学情诊断转化为课堂活动与形成性评价",
@@ -2132,7 +2131,7 @@ const HOME_FEATURE_DEMOS = {
       "请将本次 SWOT 教学单元的教案、活动设计、评价任务和课后反思归档，并整理成下一轮授课可复用的教学资产。",
     attachments: [
       { title: "教学设计", meta: "教案 · 活动单 · 案例材料", accent: "amber" },
-      { title: "评价材料", meta: "随堂测 · 小组任务评价量规", accent: "teal" },
+      { title: "评价材料", meta: "随堂测 · 小组任务 Rubric", accent: "teal" },
       { title: "复盘记录", meta: "课堂证据 · 教师反思", accent: "blue" },
     ],
     activity: [
@@ -2261,7 +2260,7 @@ function renderHomePracticePreview(activeAttachment) {
   const activities = [
     ["课前诊断", "5 题预习测，识别机会/威胁混淆"],
     ["课中活动", "药学企业市场进入案例，小组完成 SWOT 分析"],
-    ["形成性评价", "小组任务评价量规，同伴互评与教师反馈"],
+    ["形成性评价", "小组任务 Rubric，同伴互评与教师反馈"],
   ];
   const rubric = [
     ["概念准确", "58%"],
@@ -2295,7 +2294,7 @@ function renderHomePracticePreview(activeAttachment) {
         )
         .join("")}
     </div>
-    <div class="home-output-rubric" aria-label="评价量规预览">
+    <div class="home-output-rubric" aria-label="Rubric 预览">
       ${rubric
         .map(
           ([label, width]) => `
@@ -2316,7 +2315,7 @@ function renderHomeAssetsPreview(activeAttachment) {
     ["案例", "2"],
     ["活动", "3"],
     ["测验", "1"],
-    ["评价量规", "1"],
+    ["Rubric", "1"],
     ["复盘", "1"],
   ];
   const reuse = ["SWOT 小组活动模板", "药品市场进入案例包", "机会/威胁辨析测验", "课堂追问与复盘清单"];
@@ -2445,201 +2444,6 @@ function initHomeCoworkDemo() {
 function initHomePage() {
   renderBulletChart($("#homeDiagnosticBulletChart"), HOME_SAMPLE_DIAGNOSTIC);
   initHomeCoworkDemo();
-}
-
-function makeEmptyAccountSession() {
-  return {
-    isAuthenticated: false,
-    account: null,
-    updatedAt: null,
-  };
-}
-
-function loadAccountSession() {
-  const saved = loadFromLocalStorage(ACCOUNT_SESSION_KEY, null);
-  if (!saved || typeof saved !== "object") return makeEmptyAccountSession();
-  return {
-    ...makeEmptyAccountSession(),
-    ...saved,
-    account: saved.account && typeof saved.account === "object" ? saved.account : null,
-  };
-}
-
-function saveAccountSession(session) {
-  const nextSession = {
-    ...makeEmptyAccountSession(),
-    ...session,
-    updatedAt: new Date().toISOString(),
-  };
-  saveToLocalStorage(ACCOUNT_SESSION_KEY, nextSession);
-  return nextSession;
-}
-
-function clearAccountSession() {
-  localStorage.removeItem(ACCOUNT_SESSION_KEY);
-  return makeEmptyAccountSession();
-}
-
-function getAuthModeFromUrl() {
-  try {
-    const mode = new URLSearchParams(window.location.search).get("mode");
-    if (mode === "register" || mode === "login") return mode;
-  } catch {
-    // Ignore malformed URL state and use the route name below.
-  }
-  return /register/i.test(window.location.pathname || "") ? "register" : "login";
-}
-
-function setAuthMode(mode, shouldSyncUrl = true) {
-  const nextMode = mode === "register" ? "register" : "login";
-  const label = $("#authModeLabel");
-  document.body.dataset.authMode = nextMode;
-  if (label) label.textContent = nextMode === "register" ? "注册" : "登录";
-
-  $$("[data-auth-mode]").forEach((button) => {
-    const isActive = button.dataset.authMode === nextMode;
-    button.classList.toggle("is-active", isActive);
-    button.setAttribute("aria-selected", String(isActive));
-  });
-  $$("[data-auth-panel]").forEach((panel) => {
-    panel.hidden = panel.dataset.authPanel !== nextMode;
-  });
-
-  if (shouldSyncUrl && window.history?.replaceState) {
-    const url = new URL(window.location.href);
-    url.searchParams.set("mode", nextMode);
-    window.history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
-  }
-}
-
-function getReadableAuthTime(isoValue) {
-  if (!isoValue) return "刚刚";
-  const date = new Date(isoValue);
-  if (Number.isNaN(date.getTime())) return "刚刚";
-  return date.toLocaleString("zh-CN", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-}
-
-function validateAuthPassword(password) {
-  if (String(password || "").length < 6) {
-    showToast("密码至少需要 6 位");
-    return false;
-  }
-  return true;
-}
-
-function renderAccountSession(session = loadAccountSession()) {
-  const panel = $("#authStatusPanel");
-  if (!panel) return;
-  if (!session.isAuthenticated || !session.account) {
-    panel.innerHTML = `
-      <p class="eyebrow">Session</p>
-      <h2>尚未登录</h2>
-      <p>完成登录或注册后，可从这里继续进入教学导航、教学实践和教学资产。</p>
-      <div class="auth-session-actions">
-        <button class="secondary-action" type="button" data-auth-mode="login">切换到登录</button>
-        <button class="primary-action" type="button" data-auth-mode="register">创建账号</button>
-      </div>
-    `;
-    $$("[data-auth-mode]", panel).forEach((button) => {
-      button.addEventListener("click", () => setAuthMode(button.dataset.authMode));
-    });
-    return;
-  }
-
-  const account = session.account;
-  panel.innerHTML = `
-    <p class="eyebrow">Session</p>
-    <h2>已登录：${escapeHtml(account.teacherName || "课程教师")}</h2>
-    <p>当前账号会话保存在本机浏览器，可继续进入药学管理课程教学工作流。</p>
-    <dl class="auth-session-meta">
-      <div><dt>账号</dt><dd>${escapeHtml(account.identifier || account.email || "未填写")}</dd></div>
-      <div><dt>学校 / 院系</dt><dd>${escapeHtml(account.school || "待补充")}</dd></div>
-      <div><dt>最近登录</dt><dd>${escapeHtml(getReadableAuthTime(session.updatedAt))}</dd></div>
-    </dl>
-    <div class="auth-session-actions">
-      <a class="primary-action" href="./teaching-navigation.html">进入教学导航</a>
-      <a class="secondary-action" href="./practice.html">进入教学实践</a>
-      <a class="secondary-action" href="./assets.html">查看教学资产</a>
-      <button class="small-action" type="button" data-auth-logout>退出登录</button>
-    </div>
-  `;
-  $("[data-auth-logout]", panel)?.addEventListener("click", () => {
-    clearAccountSession();
-    renderAccountSession();
-    showToast("已退出登录");
-  });
-}
-
-function handleLoginSubmit(event) {
-  event.preventDefault();
-  const form = event.currentTarget;
-  const identifier = form.identifier?.value?.trim();
-  const password = form.password?.value || "";
-  if (!identifier) {
-    showToast("请输入邮箱或手机号");
-    return;
-  }
-  if (!validateAuthPassword(password)) return;
-  const teacherName = identifier.includes("@") ? identifier.split("@")[0] : "课程教师";
-  const session = saveAccountSession({
-    isAuthenticated: true,
-    account: {
-      teacherName,
-      identifier,
-      email: identifier.includes("@") ? identifier : "",
-      school: "",
-      source: "local-login",
-    },
-  });
-  renderAccountSession(session);
-  showToast("登录成功，已进入本地账号会话");
-}
-
-function handleRegisterSubmit(event) {
-  event.preventDefault();
-  const form = event.currentTarget;
-  const teacherName = form.teacherName?.value?.trim();
-  const school = form.school?.value?.trim();
-  const email = form.email?.value?.trim();
-  const password = form.password?.value || "";
-  const agreement = Boolean(form.agreement?.checked);
-  if (!teacherName || !school || !email) {
-    showToast("请补全注册信息");
-    return;
-  }
-  if (!validateAuthPassword(password)) return;
-  if (!agreement) {
-    showToast("请先确认本地账号会话说明");
-    return;
-  }
-  const session = saveAccountSession({
-    isAuthenticated: true,
-    account: {
-      teacherName,
-      identifier: email,
-      email,
-      school,
-      source: "local-register",
-    },
-  });
-  renderAccountSession(session);
-  showToast("账号已创建，已进入本地账号会话");
-}
-
-function initAuthPage() {
-  setAuthMode(getAuthModeFromUrl(), false);
-  $$("[data-auth-mode]").forEach((button) => {
-    button.addEventListener("click", () => setAuthMode(button.dataset.authMode));
-  });
-  $("#loginForm")?.addEventListener("submit", handleLoginSubmit);
-  $("#registerForm")?.addEventListener("submit", handleRegisterSubmit);
-  renderAccountSession();
 }
 
 function getTrainingStep(stepId = trainingState?.currentStepId || 1) {
@@ -8270,7 +8074,6 @@ document.addEventListener("DOMContentLoaded", () => {
   initTheoryAnchorToggles();
   const page = document.body.dataset.page;
   if (page === "home") initHomePage();
-  if (page === "auth") initAuthPage();
   if (page === "teaching-navigation") initTeachingNavigationPage();
   if (page === "navigation") initNavigationTrainingPage();
   if (page === "practice") initPracticePage();
@@ -8289,10 +8092,6 @@ window.loadFromLocalStorage = loadFromLocalStorage;
 window.renderHorizontalBarChart = renderHorizontalBarChart;
 window.renderStepHeatmap = renderStepHeatmap;
 window.renderBulletChart = renderBulletChart;
-window.initAuthPage = initAuthPage;
-window.loadAccountSession = loadAccountSession;
-window.saveAccountSession = saveAccountSession;
-window.clearAccountSession = clearAccountSession;
 window.initNavigationTrainingPage = initNavigationTrainingPage;
 window.renderTrainingWorkflow = renderTrainingWorkflow;
 window.renderTrainingSidebar = renderTrainingSidebar;

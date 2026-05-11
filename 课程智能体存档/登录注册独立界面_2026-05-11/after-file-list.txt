@@ -1,0 +1,7 @@
+课程智能体存档/登录注册独立界面_2026-05-11/after/package.json
+课程智能体存档/登录注册独立界面_2026-05-11/after/前端核心/app.js
+课程智能体存档/登录注册独立界面_2026-05-11/after/前端核心/auth.html
+课程智能体存档/登录注册独立界面_2026-05-11/after/前端核心/index.html
+课程智能体存档/登录注册独立界面_2026-05-11/after/前端核心/styles.css
+课程智能体存档/登录注册独立界面_2026-05-11/after/前端核心/teaching-navigation.html
+课程智能体存档/登录注册独立界面_2026-05-11/after/后端核心/src/http-utils.ts
