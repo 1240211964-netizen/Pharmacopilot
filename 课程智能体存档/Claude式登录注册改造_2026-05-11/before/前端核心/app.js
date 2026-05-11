@@ -2533,25 +2533,6 @@ function validateAuthPassword(password) {
   return true;
 }
 
-function handleAuthProviderClick(event) {
-  const provider = event.currentTarget?.dataset?.authProvider;
-  if (provider === "school") {
-    setAuthMode("login");
-    $("#loginIdentifier")?.focus();
-    showToast("校内账号入口目前为模拟入口，请用邮箱或手机号继续");
-    return;
-  }
-  if (provider === "google") {
-    setAuthMode("login");
-    $("#loginIdentifier")?.focus();
-    showToast("Google Workspace 登录为预留入口，当前请使用本地邮箱会话");
-    return;
-  }
-  if (provider === "sso") {
-    showToast("SSO 将在接入学校统一身份认证后启用");
-  }
-}
-
 function renderAccountSession(session = loadAccountSession()) {
   const panel = $("#authStatusPanel");
   if (!panel) return;
@@ -2658,9 +2639,6 @@ function initAuthPage() {
   });
   $("#loginForm")?.addEventListener("submit", handleLoginSubmit);
   $("#registerForm")?.addEventListener("submit", handleRegisterSubmit);
-  $$("[data-auth-provider]").forEach((button) => {
-    button.addEventListener("click", handleAuthProviderClick);
-  });
   renderAccountSession();
 }
 
