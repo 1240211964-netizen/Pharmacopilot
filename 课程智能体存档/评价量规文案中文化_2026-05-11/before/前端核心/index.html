@@ -51,7 +51,7 @@
           <p class="eyebrow">Teaching Agent Workbench</p>
           <h1 id="main-title">把药学管理课程备课任务交给教学智能体，回来审校可交付成果。</h1>
           <p class="lede">
-            输入教学目标、上传课程材料、设定课堂约束。Pharmacopilot 会围绕药学管理本科《管理学原理》SWOT 分析课，生成教学导航、课堂任务、评价量规和课后复盘草稿。
+            输入教学目标、上传课程材料、设定课堂约束。Pharmacopilot 会围绕药学管理本科《管理学原理》SWOT 分析课，生成教学导航、课堂任务、评价 Rubric 和课后复盘草稿。
           </p>
           <div class="hero-actions">
             <a class="primary-action" href="./teaching-navigation.html">生成教学导航</a>
@@ -67,7 +67,7 @@
               <span>课前、课中、课后阶段</span>
             </div>
             <div>
-              <strong>评价量规</strong>
+              <strong>Rubric</strong>
               <span>评价证据与教师审校</span>
             </div>
           </div>
@@ -84,7 +84,7 @@
             <section class="agent-dark-card agent-prompt-card" aria-labelledby="agent-prompt-title">
               <h2 id="agent-prompt-title">Prompt</h2>
               <p>
-                请基于药学管理本科《管理学原理》课程，设计一节 SWOT 分析课。要求包含学情与学习起点诊断、三阶段教学导航、课堂任务、评价量规和课后复盘。
+                请基于药学管理本科《管理学原理》课程，设计一节 SWOT 分析课。要求包含学情与学习起点诊断、三阶段教学导航、课堂任务、评价 Rubric 和课后复盘。
               </p>
               <div class="agent-file-list" aria-label="课程附件">
                 <div class="agent-file-row">
@@ -114,7 +114,7 @@
                 <div><span>✓</span><p><strong>读取课程材料</strong><em>课程目标、案例边界和评价约束已提取</em></p></div>
                 <div><span>✓</span><p><strong>诊断学情与学习起点</strong><em>识别 SWOT 四象限混淆和证据使用不足</em></p></div>
                 <div><span>✓</span><p><strong>生成三阶段 / 20 环节教学导航</strong><em>课前、课中、课后路径已展开</em></p></div>
-                <div class="is-live"><span>•</span><p><strong>配置评价量规与学习证据</strong><em>正在绑定课堂产出、评分维度和反馈规则</em></p></div>
+                <div class="is-live"><span>•</span><p><strong>配置 Rubric 与学习证据</strong><em>正在绑定课堂产出、评分维度和反馈规则</em></p></div>
                 <div><span>·</span><p><strong>等待教师确认</strong><em>确认后保存到教学资产</em></p></div>
               </div>
             </section>
@@ -126,7 +126,7 @@
               <div class="agent-step-list">
                 <div class="agent-step is-done"><span>✓</span><p><strong>材料读取</strong><small>课程大纲、模拟学情、案例材料</small></p></div>
                 <div class="agent-step is-done"><span>✓</span><p><strong>学习起点诊断</strong><small>定位基础差异与课堂风险</small></p></div>
-                <div class="agent-step is-live"><span>•</span><p><strong>评价量规配置</strong><small>建立评价维度和证据要求</small></p></div>
+                <div class="agent-step is-live"><span>•</span><p><strong>Rubric 配置</strong><small>建立评价维度和证据要求</small></p></div>
                 <div class="agent-step"><span>·</span><p><strong>教师确认</strong><small>确认后进入实践与资产沉淀</small></p></div>
               </div>
             </section>
@@ -135,7 +135,7 @@
               <div>
                 <span>Output Preview</span>
                 <h2 id="agent-output-title">SWOT 教学设计证据链</h2>
-                <p>已形成教学导航草稿、课堂任务、评价量规维度和课后复盘提纲，等待教师审校。</p>
+                <p>已形成教学导航草稿、课堂任务、Rubric 评价维度和课后复盘提纲，等待教师审校。</p>
               </div>
               <div class="agent-output-lines" aria-hidden="true">
                 <i></i>
@@ -173,7 +173,7 @@
             </button>
             <button class="home-task-tab" type="button" data-home-task="rubric">
               <span>03</span>
-              <strong>配置评价量规</strong>
+              <strong>配置评价 Rubric</strong>
               <small>生成维度、等级描述和学习证据要求。</small>
             </button>
             <button class="home-task-tab" type="button" data-home-task="review">
@@ -184,7 +184,7 @@
             <button class="home-task-tab" type="button" data-home-task="assets">
               <span>05</span>
               <strong>沉淀教学资产</strong>
-              <small>保存教案、评价量规、反馈模板和复盘记录。</small>
+              <small>保存教案、Rubric、反馈模板和复盘记录。</small>
             </button>
           </div>
 
@@ -210,7 +210,7 @@
                 <strong id="homeTaskOutputTitle">教学导航草稿</strong>
                 <span>Draft</span>
               </div>
-              <p id="homeTaskOutputText">输出包含目标、活动、学习证据、评价量规入口和教师审校提示，可继续进入教学实践页加工。</p>
+              <p id="homeTaskOutputText">输出包含目标、活动、学习证据、Rubric 入口和教师审校提示，可继续进入教学实践页加工。</p>
               <div class="document-bars" aria-hidden="true">
                 <i></i>
                 <i></i>

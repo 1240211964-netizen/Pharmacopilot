@@ -244,7 +244,7 @@ function getContextualTrainingStep(step, context = getTrainingCourseContext()) {
     options.C = "本课任务书";
     options.E = "证据模板与记录表";
   }
-  if (step.id === 8) options.F = "评价量规与证据清单";
+  if (step.id === 8) options.F = "Rubric 与证据清单";
   if (step.id === 12) options.C = `${getTrainingOutputLabel(context)}证据提取`;
   if (step.id === 17) options.A = `${getTrainingOutputLabel(context)}收集与归档`;
   if (step.id === 20) options.F = "下一轮教学改进计划";
@@ -369,7 +369,7 @@ const trainingWorkflowConfig = [
           C: "任务-协作序列",
           D: "展示-评价序列",
           E: "线上线下混合序列",
-          F: "评价量规与证据清单",
+          F: "Rubric 与证据清单",
         },
       },
     ],
@@ -464,7 +464,7 @@ const trainingWorkflowConfig = [
           A: "课堂提问反馈",
           B: "即时测验反馈",
           C: "过程表现观察",
-          D: "评价量规快速诊断",
+          D: "Rubric 快速诊断",
           E: "学生自评互评",
           F: "教学节奏即时调整",
         },
@@ -494,7 +494,7 @@ const trainingWorkflowConfig = [
         coreQuestion: "课后如何收集学生学习成果并进行可解释评价？",
         options: {
           A: "任务成果收集与归档",
-          B: "表现性评价量规",
+          B: "Rubric 表现性评价",
           C: "作业批改与批注",
           D: "学生作品样例分析",
           E: "过程证据整合",
@@ -535,7 +535,7 @@ const trainingWorkflowConfig = [
           A: "教学反思记录",
           B: "教案与课件修订",
           C: "案例资源沉淀",
-          D: "评价量规与反馈语复用",
+          D: "Rubric 与反馈语复用",
           E: "平台数据复盘",
           F: "下一轮教学改进计划",
         },
@@ -786,7 +786,7 @@ const workflowNodes = [
     id: "analysis",
     type: "main",
     title: "多维评价分析",
-    description: "评价量规、雷达图、证据链输出",
+    description: "Rubric、雷达图、证据链输出",
     x: 1930,
     y: 100,
     width: 160,
@@ -912,7 +912,7 @@ const workflowNodes = [
   {
     id: "rubric20",
     type: "evaluation",
-    title: "20 环节评价量规",
+    title: "20环节 Rubric",
     description: "环节级评价标准与证据要求",
     x: 1430,
     y: 735,
@@ -943,7 +943,7 @@ const workflowNodes = [
     id: "data-result",
     type: "data",
     title: "评价结果",
-    description: "评价量规分析、雷达图与证据链",
+    description: "Rubric 分析、雷达图与证据链",
     x: 1905,
     y: 1040,
     width: 210,
@@ -995,7 +995,7 @@ const workflowLanes = [
   {
     type: "evaluation",
     title: "评价依据层",
-    caption: "教学评价框架与 20 环节评价量规",
+    caption: "教学评价框架与 20 环节 Rubric",
     x: 1130,
     y: 680,
     width: 1230,
@@ -1117,7 +1117,7 @@ const FINAL_DIAGNOSTIC_DIMENSIONS = [
     shortLabel: "评价效度",
     weight: 0.2,
     theory: "Formative Assessment / Validity",
-    description: "评价量规、学生产出和反馈建议是否能够有效证明学习目标达成。",
+    description: "评价 Rubric、学生产出和反馈建议是否能够有效证明学习目标达成。",
   },
   {
     key: "reflection",
@@ -1280,7 +1280,7 @@ function inferTheorySourceKey(dimension = {}) {
   if (/情境|角色|冲突|案例|材料|利益相关者|药学情境|场景/.test(text)) return "authenticity";
   if (/学习者|学生|先备|误区|差异|支架|支持|新教师|可达|参与覆盖/.test(text)) return "learner";
   if (/Bloom|认知|高阶|分析|评价|创造|追问|讨论|协作|动机|问题层级/.test(text)) return "engagement";
-  if (/评价|评价量规|量规|评分|反馈|证据|效度|指标|等级|可操作/.test(text)) return "assessment";
+  if (/评价|Rubric|量规|评分|反馈|证据|效度|指标|等级|可操作/.test(text)) return "assessment";
   if (/数据|复盘|反思|资产|优化|风险|观察|沉淀|持续改进/.test(text)) return "reflection";
   return "alignment";
 }
@@ -1357,7 +1357,7 @@ const TRAINING_STEP_RUBRICS = [
   makeTrainingStepRubric(3, "教学目标与预期学习成果设计", "阶段一：课前教学设计与准备", "预期学习成果诊断", "评价教学目标是否可观察、可评价，并能导向学生的真实学习产出。", [
     rubricDimension("outcome_alignment", "成果导向一致性", "是否从课程目标推导出本课预期学习成果。", "学习成果是否能回应课程目标和专业能力要求？", "用 OBE 方式写清学生学完后能完成什么。"),
     rubricDimension("observable_behavior", "可观察行为清晰度", "是否使用分析、判断、论证、设计等可观察行为动词。", "目标是否能被课堂产出或作业表现观察到？", "把“理解”类目标改写为可观察的学习行为。"),
-    rubricDimension("assessment_match", "评价匹配度", "是否为每个目标配置对应的学生产出和评价证据。", "目标和评价任务是否一一对应？", "为每个目标匹配作业、展示、测验或评价量规证据。"),
+    rubricDimension("assessment_match", "评价匹配度", "是否为每个目标配置对应的学生产出和评价证据。", "目标和评价任务是否一一对应？", "为每个目标匹配作业、展示、测验或 Rubric 证据。"),
     rubricDimension("higher_order_goal_balance", "高阶目标比例", "是否包含应用、分析、评价或创造层面的高阶目标。", "本课是否不只停留在记忆和理解？", "至少加入一个需要证据判断或方案选择的目标。"),
   ], ["alignment", "engagement", "assessment"]),
   makeTrainingStepRubric(4, "教学内容重构与核心概念提炼", "阶段一：课前教学设计与准备", "内容重构质量诊断", "评价教师是否能将教材内容重构为适合课堂学习的问题链、概念链和任务链。", [
@@ -1387,7 +1387,7 @@ const TRAINING_STEP_RUBRICS = [
   makeTrainingStepRubric(8, "教学过程、活动序列与评价量规设计", "阶段一：课前教学设计与准备", "教学闭环设计诊断", "评价课前是否形成目标、活动、评价、时间和证据之间的完整教学闭环。", [
     rubricDimension("activity_sequence_logic", "活动序列逻辑", "活动是否从导入、讲解、探究、展示、评价逐步展开。", "课堂活动是否有清晰先后关系？", "按学习发生顺序组织活动，而不是罗列环节。"),
     rubricDimension("time_structure_fit", "时间结构适配度", "时间分配是否符合高校课堂课时和学生认知节奏。", "讲授、活动、展示和反馈的时间是否合理？", "控制讲授比例，为学生任务和反馈留足时间。"),
-    rubricDimension("rubric_operationality", "评价量规可操作性", "评价量规是否能让教师直接评价学生表现。", "评分标准是否具体、分层、可观察？", "用明确指标和表现等级替代抽象描述。"),
+    rubricDimension("rubric_operationality", "评价量规可操作性", "Rubric 是否能让教师直接评价学生表现。", "评分标准是否具体、分层、可观察？", "用明确指标和表现等级替代抽象描述。"),
     rubricDimension("evidence_chain_integrity", "学习证据链完整度", "是否明确每个活动会留下什么学习证据。", "课堂结束后能否判断学生是否学会？", "为提问、讨论、产出、展示和作业配置证据记录。"),
   ], ["alignment", "assessment", "reflection"]),
   makeTrainingStepRubric(9, "问题情境创设与学习动机激发", "阶段二：课中教学实施与调控", "课堂导入有效性诊断", "评价课堂开端是否能以真实问题激发学习动机并指向本课任务。", [
@@ -1438,9 +1438,9 @@ const TRAINING_STEP_RUBRICS = [
     rubricDimension("post_class_task_connection", "课后任务衔接度", "课后作业是否承接课堂成果并继续深化学习。", "课后任务是否只是重复练习，还是延伸课堂？", "把课堂产出转化为作业、反思或平台任务。"),
     rubricDimension("resource_recommendation_fit", "资源推荐适切性", "是否根据课堂表现推荐补充资源或拓展材料。", "不同学生是否得到适合的后续资源？", "根据薄弱点推荐补救材料、案例和拓展阅读。"),
   ], ["alignment", "learner", "reflection"]),
-  makeTrainingStepRubric(17, "学习成果收集与表现性评价", "阶段三：课后评价反馈与持续改进", "表现性评价质量诊断", "评价课后是否能收集学生成果并基于评价量规进行可解释评价。", [
+  makeTrainingStepRubric(17, "学习成果收集与表现性评价", "阶段三：课后评价反馈与持续改进", "表现性评价质量诊断", "评价课后是否能收集学生成果并基于 Rubric 进行可解释评价。", [
     rubricDimension("learning_product_collection", "学习成果收集完整性", "是否完整收集作业、课堂产出、展示材料和过程记录。", "学生学习成果是否可追踪、可归档？", "整理平台作业、课堂记录、小组产出和展示材料。"),
-    rubricDimension("rubric_scoring_validity", "评价量规评分效度", "评分是否依据清晰指标和学生实际表现。", "评分是否能解释学生为什么得分？", "用评价量规对照学生证据逐项评分并记录理由。"),
+    rubricDimension("rubric_scoring_validity", "Rubric 评分效度", "评分是否依据清晰指标和学生实际表现。", "评分是否能解释学生为什么得分？", "用 Rubric 对照学生证据逐项评分并记录理由。"),
     rubricDimension("performance_evidence_quality", "表现证据质量", "学生成果是否能证明目标达成程度。", "作业或作品是否体现了本课核心能力？", "保留能体现分析、判断、证据使用和表达的样例。"),
     rubricDimension("grading_feedback_preparation", "批改反馈准备度", "评价结果是否能转化为后续反馈和改进建议。", "评分结果是否能指导学生修改？", "把每个低分维度转化为具体反馈语和改进任务。"),
   ], ["assessment", "alignment", "reflection"]),
@@ -1458,7 +1458,7 @@ const TRAINING_STEP_RUBRICS = [
   ], ["learner", "assessment", "reflection"]),
   makeTrainingStepRubric(20, "教学反思、资源沉淀与持续改进", "阶段三：课后评价反馈与持续改进", "教学改进闭环诊断", "评价本轮教学是否能形成反思、资产沉淀和下一轮课程优化。", [
     rubricDimension("reflective_teaching_depth", "教学反思深度", "是否基于目标、活动、评价和学习数据进行反思。", "反思是否超越“课堂顺利/不顺利”的主观描述？", "按目标达成、活动质量、评价证据和学生困难进行反思。"),
-    rubricDimension("asset_deposition_value", "资源沉淀价值", "是否把教案、案例、评价量规、反馈语和学生样例沉淀为资产。", "哪些内容能复用于下一轮教学？", "将可复用材料保存到教学资产并标注来源边界。"),
+    rubricDimension("asset_deposition_value", "资源沉淀价值", "是否把教案、案例、Rubric、反馈语和学生样例沉淀为资产。", "哪些内容能复用于下一轮教学？", "将可复用材料保存到教学资产并标注来源边界。"),
     rubricDimension("iteration_plan_feasibility", "迭代计划可执行性", "是否形成具体、可验证的下一轮改进措施。", "下一次课或下一轮教学具体改什么？", "写出负责人、材料、时间、评价方式和预期变化。"),
     rubricDimension("data_review_continuity", "数据复盘连续性", "是否把本次数据与后续教学改进连接起来。", "本次数据会不会进入下一轮学情分析？", "把低分维度、学生反馈和平台数据纳入下一轮课前诊断。"),
   ], ["reflection", "assessment", "alignment"]),
@@ -1601,7 +1601,7 @@ function buildOptionLevelDimensionScores(step, rubric, optionId, label) {
       let score = profile.base + optionOffset + optionVector[index] + ((index % 2 === 0 ? 0.08 : -0.06) + index * 0.03);
       if (profile.keywords.some((keyword) => text.includes(keyword))) score += 0.32;
       if (/真实|情境|案例|药事|证据|专业|问题|角色|冲突/.test(text) && profile.authentic) score += 0.24;
-      if (/目标|产出|评价|评价量规|证据|对应|可测量|可收集/.test(text) && profile.alignment) score += 0.22;
+      if (/目标|产出|评价|Rubric|证据|对应|可测量|可收集/.test(text) && profile.alignment) score += 0.22;
       if (/学生|学习者|差异|支架|误区|先备|支持|参与/.test(text) && profile.learner) score += 0.24;
       if (/高阶|分析|评价|决策|探究|协作|讨论|追问|创造/.test(text) && profile.engagement) score += 0.2;
       if (/讲授|记忆|纸笔|课件/.test(label) && /高阶|真实|证据|产出|复盘|协作/.test(text)) score -= 0.35;
@@ -1658,8 +1658,8 @@ function getOptionQualityProfile(label) {
   if (/分层|支持|反馈|过程|概念解释|学习日志|个性化/.test(label)) {
     add(0.28, ["学生", "学习者", "支架", "误区", "反馈", "支持"], { learner: true, alignment: true });
   }
-  if (/量规|评价量规|评价|评分|证据|测验|答辩/.test(label)) {
-    add(0.25, ["评价", "评价量规", "证据", "指标", "反馈"], { alignment: true });
+  if (/量规|Rubric|评价|评分|证据|测验|答辩/.test(label)) {
+    add(0.25, ["评价", "Rubric", "证据", "指标", "反馈"], { alignment: true });
   }
   if (/数据|复盘|优化|反思|同行|课堂观察/.test(label)) {
     add(0.2, ["数据", "复盘", "改进", "资产", "反馈"], { alignment: true });
@@ -1785,7 +1785,7 @@ function createStepPreview(stepId, optionId, mode = "training", importedContext 
     ? createOptionDrivenAnalysis(step, selectedOption, score, mode, importedContext, secondaryLabels)
     : {
         retainAdvice: "请选择一个主方案后，系统将基于当前方案更新本环节成熟度。",
-        nextReminder: "当前显示为评价量规预览态。",
+        nextReminder: "当前显示为 Rubric 预览态。",
         strengths: [],
         risks: [],
         suggestions: [],
@@ -1828,7 +1828,7 @@ function createOptionDrivenAnalysis(step, selectedOption, score, mode = "trainin
   return {
     strengths: [
       `当前选择“${selectedOption.title}”，最高维度为“${highest?.label || "待判断"}”，说明该方案在本环节有明确优势。`,
-      `方案已被放入${contextText}中进行判断，而不是沿用默认评价量规分数。`,
+      `方案已被放入${contextText}中进行判断，而不是沿用默认 Rubric 分数。`,
       secondaryLabels.length ? `辅助方案“${secondaryLabels.join("、")}”可作为后续文本生成支撑，但本次成熟度主评分来自主方案。` : "本次成熟度评分来自当前主方案。",
     ],
     risks: [
@@ -1867,9 +1867,9 @@ function enhancePracticeScoredDimensions(step, dimensions, selectedOption, impor
         reasons.push("缺少课堂案例证据表，资源可行性存在扣分。");
       }
     }
-    if (/评价|证据|评价量规|反馈|产出|目标/.test(text)) {
+    if (/评价|证据|Rubric|反馈|产出|目标/.test(text)) {
       if (weakText.includes("证据引用不足") || learnerText.includes("证据") || misconceptionText.includes("证据来源")) {
-        delta += has(["证据", "过程性评价", "学习过程文档", "任务成果评价", "分析深度标准", "矩阵成果评价", "评价量规"]) ? 0.34 : -0.18;
+        delta += has(["证据", "过程性评价", "学习过程文档", "任务成果评价", "分析深度标准", "矩阵成果评价", "Rubric"]) ? 0.34 : -0.18;
         reasons.push("作业薄弱点集中在证据引用，已对评价证据维度进行数据增强。");
       }
     }
@@ -2087,7 +2087,7 @@ const HOME_TASK_PANEL_CONTENT = {
     status: "待教师审校",
     flow: ["读取课程目标", "诊断学习起点", "生成三阶段路径", "绑定 20 环节检查点"],
     outputTitle: "教学导航草稿",
-    outputText: "输出包含目标、活动、学习证据、评价量规入口和教师审校提示，可继续进入教学实践页加工。",
+    outputText: "输出包含目标、活动、学习证据、Rubric 入口和教师审校提示，可继续进入教学实践页加工。",
     actionLabel: "进入教学导航",
     actionHref: "./teaching-navigation.html",
   },
@@ -2103,12 +2103,12 @@ const HOME_TASK_PANEL_CONTENT = {
     actionHref: "./practice.html",
   },
   rubric: {
-    kicker: "评价证据",
-    title: "配置评价量规",
+    kicker: "Rubric evidence",
+    title: "配置评价 Rubric",
     summary: "为 SWOT 矩阵、策略说明、小组讨论和课后修订配置评价维度与证据要求。",
     status: "证据待确认",
     flow: ["识别评价对象", "生成评价维度", "写入等级描述", "绑定学习证据"],
-    outputTitle: "评价量规草稿",
+    outputTitle: "Rubric 草稿",
     outputText: "输出归类准确性、证据充分性、策略可行性、互动共建和反馈修订等维度，教师可继续审校。",
     actionLabel: "生成课堂材料",
     actionHref: "./practice.html",
@@ -2127,9 +2127,9 @@ const HOME_TASK_PANEL_CONTENT = {
   assets: {
     kicker: "Asset library",
     title: "沉淀教学资产",
-    summary: "把教师确认后的教案、评价量规、反馈模板和复盘记录保存为下一轮备课可复用材料。",
+    summary: "把教师确认后的教案、Rubric、反馈模板和复盘记录保存为下一轮备课可复用材料。",
     status: "可复用资产",
-    flow: ["教师审校", "保存教案", "沉淀评价量规", "复用到下一轮课程"],
+    flow: ["教师审校", "保存教案", "沉淀 Rubric", "复用到下一轮课程"],
     outputTitle: "教学资产条目",
     outputText: "输出可审校文档预览、来源边界、标签和复用动作，帮助教师在后续课程中继续调用。",
     actionLabel: "查看教学资产",
@@ -2367,7 +2367,7 @@ function renderTrainingContextSummary() {
   );
   setText(
     "#trainingIntroCopy",
-    `这不是正式操作真实课程，而是以“${context.courseName}｜${context.topic}｜${context.scenario}”为例，训练你完成一次覆盖课前、课中、课后的教学判断。每一步都会给出优秀模板、环节专属评价量规、4 维成熟度条形诊断图、低分维度诊断和改进建议。`,
+    `这不是正式操作真实课程，而是以“${context.courseName}｜${context.topic}｜${context.scenario}”为例，训练你完成一次覆盖课前、课中、课后的教学判断。每一步都会给出优秀模板、环节专属 Rubric、4 维成熟度条形诊断图、低分维度诊断和改进建议。`,
   );
 }
 
@@ -2721,7 +2721,7 @@ function renderGameMapAssets() {
       unlocked: completedCount >= 1,
     },
     {
-      title: "课堂评价量规",
+      title: "课堂 Rubric",
       copy: "形成性与总结性评价量规",
       unlocked: trainingState.completedStepIds.includes(18) || completedCount >= 12,
     },
@@ -2966,8 +2966,8 @@ const routeTrainingNodes = [
     x: 74,
     y: 42,
     goal: "形成目标、活动、资源、评价和时间安排一致的课堂方案。",
-    task: "设计活动序列、学生任务、评价量规与学习证据清单。",
-    output: "教学过程设计表与评价量规草案。",
+    task: "设计活动序列、学生任务、Rubric 与学习证据清单。",
+    output: "教学过程设计表与 Rubric 草案。",
     rubric: "教学活动、学习产出和评价证据是否一致，课堂节奏是否可执行。",
     theory: "教学设计 / 逆向设计。",
   },
@@ -3083,10 +3083,10 @@ const routeTrainingNodes = [
     x: 25,
     y: 52,
     goal: "收集学生作品、课堂表现和任务成果，开展表现性评价。",
-    task: "依据评价量规评价 SWOT 矩阵、决策建议和学习反思。",
+    task: "依据 Rubric 评价 SWOT 矩阵、决策建议和学习反思。",
     output: "学习成果归档与评价记录。",
     rubric: "评价证据是否完整，评分依据是否清楚，结果是否能反馈学习目标达成。",
-    theory: "表现性评价 / 评价量规应用。",
+    theory: "表现性评价 / Rubric 评价。",
   },
   {
     id: 18,
@@ -3653,7 +3653,7 @@ function renderTrainingCurrentStep() {
             <button class="secondary-action" id="copyTrainingStepDraft" type="button">复制写入文本</button>
           </div>
         `
-        : `<p class="muted">请选择一个主方案。点击方案后，将显示本环节专属评价量规、成熟度评分、诊断理由和改进建议。</p>`
+        : `<p class="muted">请选择一个主方案。点击方案后，将显示本环节专属 Rubric、成熟度评分、诊断理由和改进建议。</p>`
     }
   `;
 
@@ -3858,7 +3858,7 @@ function buildStepRubricDimensionScores(step, primaryLabel, secondaryLabels = []
       if (has(["案例", "药学", "慢病", "医保", "合规", "监管", "情境"]) && /情境|案例|药学|真实|证据|主题|专业|问题/.test(text)) value += 0.22;
       if (has(["项目", "任务", "成果", "SWOT 矩阵", "产出"]) && /产出|任务|成果|可收集|目标|展开|证据/.test(text)) value += 0.2;
       if (has(["分层", "支持", "学习者", "过程指导", "反馈"]) && /学生|学习者|差异|支架|支持|误区|先备/.test(text)) value += 0.22;
-      if (has(["评价", "量规", "评价量规", "证据", "反馈"]) && /评价|反馈|评价量规|证据|指标|等级/.test(text)) value += 0.24;
+      if (has(["评价", "量规", "Rubric", "证据", "反馈"]) && /评价|反馈|Rubric|证据|指标|等级/.test(text)) value += 0.24;
       if (has(["讲授", "记忆", "知识传授"]) && /高阶|决策|协作|真实|证据|评价|复盘/.test(text)) value -= 0.22;
       if (step.id === 1) {
         const preset = [3.1, 3.2, 3.2, 3.3][index] || 3.2;
@@ -4033,7 +4033,7 @@ function getDimensionDiagnosisReason(definition, scoreValue, step, primaryLabel,
     authenticity: `${prefix}，重点判断本课主题是否被放入真实药事管理问题，而不是停留在概念说明。`,
     learner: `${prefix}，关注学生已有基础、常见误区和完成任务时需要的结构化支架。`,
     engagement: `${prefix}，观察学生是否需要分析证据、比较方案、提出判断并表达决策理由。`,
-    assessment: `${prefix}，检查课堂产出、评价量规、过程记录和反馈证据是否足以判断学习质量。`,
+    assessment: `${prefix}，检查课堂产出、Rubric、过程记录和反馈证据是否足以判断学习质量。`,
     reflection: `${prefix}，关注本环节是否能留下可复查数据，并支持课后改进下一轮教学设计。`,
   };
   return `${reasons[definition.key]}当前为${getAcademicLevel(scoreValue)}。`;
@@ -4046,7 +4046,7 @@ function getDimensionImprovement(definition, scoreValue) {
     authenticity: "加入更具体的药事服务、医保支付、门店流程或监管边界证据。",
     learner: "说明学生常见困难，并增加分层材料、过程提示或教师追问支架。",
     engagement: "把听讲或讨论转化为分析、论证、协作产出和决策表达任务。",
-    assessment: "明确评价量规指标、过程证据和反馈方式，避免只评价最终结论。",
+    assessment: "明确 Rubric 指标、过程证据和反馈方式，避免只评价最终结论。",
     reflection: "预留低分维度、学生反馈、课堂观察和作业结果的复盘入口。",
   };
   return improvements[definition.key];
@@ -4415,7 +4415,7 @@ function renderStepDiagnosticPanel(score, analysis) {
   return `
     <section class="step-diagnostic-panel" id="selectionInsightPanel" aria-live="polite">
       <div class="step-diagnostic-header">
-        <p class="eyebrow">环节专属评价量规</p>
+        <p class="eyebrow">Step-specific rubric</p>
         <h3>${escapeHtml(score.assessmentTitle)}</h3>
         <p>${escapeHtml(score.assessmentFocus)}</p>
       </div>
@@ -4447,7 +4447,7 @@ function renderStepDiagnosticPanel(score, analysis) {
           <h4>${escapeHtml(lowest ? `优先改进维度：${lowest.label}` : "优先改进维度：待评分")}</h4>
           <p>${escapeHtml(
             score.pending
-              ? "当前为评价量规预览态。选择主方案后，系统会刷新 4 维成熟度条形诊断、低分维度诊断和改进建议。"
+              ? "当前为 Rubric 预览态。选择主方案后，系统会刷新 4 维成熟度条形诊断、低分维度诊断和改进建议。"
               : lowest
               ? lowest.improvementHint || lowest.improvement
               : analysis?.retainAdvice || "当前选择可保留。",
@@ -4486,7 +4486,7 @@ function renderStepDiagnosticPanel(score, analysis) {
       ${renderTheoryAnchorPanel(score.dimensions)}
       <div class="step-diagnostic-footer">
         <span>本环节结果将计入最终维度：${escapeHtml(finalMappings.join("、") || "待配置")}</span>
-        ${hasReview ? `<strong>建议复查：存在低于 2.5 的评价量规维度。</strong>` : `<strong>${escapeHtml(analysis?.retainAdvice || "当前选择可保留。")}</strong>`}
+        ${hasReview ? `<strong>建议复查：存在低于 2.5 的 Rubric 维度。</strong>` : `<strong>${escapeHtml(analysis?.retainAdvice || "当前选择可保留。")}</strong>`}
       </div>
     </section>
   `;
@@ -4840,11 +4840,11 @@ function getFinalDimensionImprovement(dimension, score, sourceCount) {
   if (!sourceCount) return "继续完成映射到该维度的训练环节。";
   if (score >= 3.4) return "保留当前做法，并将优秀模板沉淀为后续真实课程实践的参考。";
   const suggestions = {
-    alignment: "优先检查学习目标、课堂任务、学生产出和评价量规是否一一对应。",
+    alignment: "优先检查学习目标、课堂任务、学生产出和 Rubric 是否一一对应。",
     authenticity: `继续补充“${context.scenario}”中的真实角色、关键冲突和课程证据。`,
     learner: "补充学生先备知识、常见误区、分层支架和过程性支持。",
     engagement: "把低阶讲授任务改造成分析、比较、评价和决策表达任务。",
-    assessment: "细化评价量规、形成性评价节点和可操作反馈语。",
+    assessment: "细化 Rubric、形成性评价节点和可操作反馈语。",
     reflection: "明确课后要回看哪些平台数据、学生产出和低分维度，并形成修订清单。",
   };
   return suggestions[dimension.key];
@@ -5001,7 +5001,7 @@ function renderableActionPlan(stepResults, finalDiagnostic, priorityReview) {
     .slice(0, 3);
   const nextRound = nextRoundSteps.length
     ? nextRoundSteps.map((result) => `优先完成 ${String(result.stepId).padStart(2, "0")}. ${result.title}，用于补足“${finalDiagnostic?.lowestDimension?.label || "当前低分维度"}”。`)
-    : ["继续确认未完成环节，并关注低于 2.5 分的评价量规维度。"];
+    : ["继续确认未完成环节，并关注低于 2.5 分的 Rubric 维度。"];
   const lowKeys = new Set((finalDiagnostic?.dimensions || []).filter((dimension) => dimension.score < 2.8 && dimension.sourceCount).map((dimension) => dimension.key));
   const practicePrep = [];
   if (lowKeys.has("assessment")) practicePrep.push("整理学生作业样例、评分标准和反馈语，进入教学实践后优先校准评价证据。");
@@ -5009,7 +5009,7 @@ function renderableActionPlan(stepResults, finalDiagnostic, priorityReview) {
   if (lowKeys.has("learner")) practicePrep.push("补充班级学情、常见误区和分层支架材料，避免真实课程中只按平均水平设计。");
   if (!practicePrep.length) {
     practicePrep.push("进入教学实践前，准备学生作业、测验数据、讨论记录和教师上传材料。");
-    practicePrep.push("把已确认环节的优秀模板转化为真实课程的教案、评价量规和课堂任务。");
+    practicePrep.push("把已确认环节的优秀模板转化为真实课程的教案、Rubric 和课堂任务。");
   }
   return {
     immediate: immediate.length ? immediate : ["先确认至少一个训练环节，系统会基于最低分维度生成立即修改建议。"],
@@ -5084,7 +5084,7 @@ function nextPracticeAdviceText() {
     "- 测验数据：用于识别先备知识缺口、概念误区和低分知识点。",
     "- 讨论数据：用于分析学生是否能提出证据、比较方案和表达决策理由。",
     "- 学生反馈：用于复盘任务难度、材料可读性和课堂节奏。",
-    "- 教师上传材料：用于补足案例证据、政策文件、评价量规和反馈语模板。",
+    "- 教师上传材料：用于补足案例证据、政策文件、Rubric 和反馈语模板。",
   ].join("\n");
 }
 
@@ -5449,7 +5449,7 @@ function saveTrainingReportToAssets() {
     boundary: "来源于教学导航页系统示例课的 20 环节训练，不包含真实泛雅课程数据。",
     summary: `面向新教师的${context.courseName}「${context.topic}」训练报告，包含模板、评分、诊断建议和进入实践建议。`,
     usage: "用于进入泛雅实践前校准教学设计思路。",
-    reuse: "可作为下一次生成教案、评价量规、课堂活动和复盘建议的依据。",
+    reuse: "可作为下一次生成教案、Rubric、课堂活动和复盘建议的依据。",
     risk: "示例训练不等同于真实班级数据，进入教学实践后需结合授权课程上下文调整。",
     content: report,
     stepDiagnostics,
@@ -5548,7 +5548,7 @@ function makePracticeCourseData(teacherName = "示例教师") {
         submissionRate: 82,
         averageScore: 76,
         weakPoints: ["SWOT 分类边界不清", "药学证据引用不足", "决策建议可行性弱", "证据引用不足"],
-        rubricHistory: ["案例分析评价量规", "课堂展示评价量规"],
+        rubricHistory: ["案例分析 Rubric", "课堂展示 Rubric"],
       },
       learningAnalytics: {
         previewCompletionRate: 68,
@@ -5611,7 +5611,7 @@ function makePracticeCourseData(teacherName = "示例教师") {
         submissionRate: 88,
         averageScore: 79,
         weakPoints: ["案例证据引用不足", "合规风险解释不完整"],
-        rubricHistory: ["法规案例分析评价量规"],
+        rubricHistory: ["法规案例分析 Rubric"],
       },
       learningAnalytics: {
         previewCompletionRate: 64,
@@ -5674,7 +5674,7 @@ function makePracticeCourseData(teacherName = "示例教师") {
         submissionRate: 91,
         averageScore: 83,
         weakPoints: ["数据解释深度不足", "风险预案较弱"],
-        rubricHistory: ["项目报告评价量规"],
+        rubricHistory: ["项目报告 Rubric"],
       },
       learningAnalytics: {
         previewCompletionRate: 76,
@@ -5998,7 +5998,7 @@ function savePracticeTaskToAssets() {
     boundary: "来源于教学实践页的泛雅模拟授权课程上下文；第一版未读取真实学生个人数据。",
     summary: "用于真实课程发布前复制到泛雅课程对应位置的教学任务、提交要求和评价材料。",
     usage: "可粘贴到泛雅课程任务、作业或课堂活动说明中。",
-    reuse: "可作为下一次生成作业反馈模板、评价量规或课程复盘建议的基础。",
+    reuse: "可作为下一次生成作业反馈模板、Rubric 或课程复盘建议的基础。",
     risk: "第一版不会向泛雅写入内容，教师需要人工复制并核验。",
     content: fanyaAuthState.currentPracticeTask,
     relatedFiles: [],
@@ -6411,7 +6411,7 @@ function getPracticeDataHints(step, context) {
       `近期作业提交率：${assignmentProfile.submissionRate}%`,
       `近期平均分：${assignmentProfile.averageScore}`,
       `作业薄弱点：${assignmentProfile.weakPoints.slice(0, 3).join("、")}`,
-      `已有评价量规：${assignmentProfile.rubricHistory.join("、")}`,
+      `已有 Rubric：${assignmentProfile.rubricHistory.join("、")}`,
     ];
   }
   if ([17, 19, 20].includes(step.id)) {
@@ -6643,7 +6643,7 @@ function generatePracticeFragment(step, primaryLabel, secondaryLabels = [], impo
   if (step.id === 3) {
     return `根据泛雅导入的班级学情数据，本班为${importedContext.className}，共 ${learnerProfile.studentCount} 人，预习完成率为 ${learningAnalytics.previewCompletionRate}%，讨论参与率为 ${learningAnalytics.discussionParticipation}%。既往作业显示学生主要困难集中在 ${assignmentProfile.weakPoints.slice(0, 3).join("、")}。因此，本课学情分析与学习起点诊断建议采用“${primaryLabel}”作为主方案${secondaryLabels.length ? `，并配套“${secondaryLabels.join("、")}”` : ""}，帮助教师为不同基础学生提供结构化支架和案例分析框架。`;
   }
-  return `在“${step.title}”环节，教师基于泛雅模拟导入的${importedContext.className}课程上下文，选择“${primaryLabel}”作为主方案${secondaryLabels.length ? `，辅以“${secondaryLabels.join("、")}”` : ""}。该决策引用了课程资源、班级学情、作业薄弱点和学习过程数据：预习完成率 ${learningAnalytics.previewCompletionRate}%，讨论参与率 ${learningAnalytics.discussionParticipation}%，近期作业薄弱点为 ${assignmentProfile.weakPoints.slice(0, 3).join("、")}。本环节将服务于“${courseProfile.lessonTitle}”的真实课程实施，并为课堂任务、评价量规和复盘建议提供依据。`;
+  return `在“${step.title}”环节，教师基于泛雅模拟导入的${importedContext.className}课程上下文，选择“${primaryLabel}”作为主方案${secondaryLabels.length ? `，辅以“${secondaryLabels.join("、")}”` : ""}。该决策引用了课程资源、班级学情、作业薄弱点和学习过程数据：预习完成率 ${learningAnalytics.previewCompletionRate}%，讨论参与率 ${learningAnalytics.discussionParticipation}%，近期作业薄弱点为 ${assignmentProfile.weakPoints.slice(0, 3).join("、")}。本环节将服务于“${courseProfile.lessonTitle}”的真实课程实施，并为课堂任务、Rubric 和复盘建议提供依据。`;
 }
 
 function confirmPracticeStep() {
@@ -6919,7 +6919,7 @@ function saveFinalPracticePlanToAssets() {
     tags: ["教学实践", "泛雅模拟", "20环节", "学情驱动"],
     boundary: "来源于教学实践页的泛雅模拟授权课程上下文；第一版未读取真实学生个人数据。",
     summary: "基于泛雅模拟导入的教师信息、课程资源、班级学情、作业记录和学习过程数据生成的 20 环节真实课程教学实践方案。",
-    usage: "用于真实课程备课、课堂任务发布、评价量规设计和课后复盘。",
+    usage: "用于真实课程备课、课堂任务发布、Rubric 设计和课后复盘。",
     reuse: "可作为下一次教学实践、泛雅课程任务复制和教学资产迭代的基础。",
     risk: "第一版仅使用前端模拟导入数据，未接入真实泛雅 API；教师需基于真实课程情况二次核验。",
     content,
@@ -7026,7 +7026,7 @@ function handleAssetUpload(event) {
     tags: tags.length ? tags : ["课程知识库"],
     boundary: boundary || databaseBoundary || "教师在上传表单中限定的课程知识范围。",
     summary: description || "教师上传或限定的课程材料元数据。",
-    usage: "可作为后续教学设计、案例生成、评价量规生成和课程复盘的来源边界。",
+    usage: "可作为后续教学设计、案例生成、Rubric 生成和课程复盘的来源边界。",
     reuse: "下一次生成前可选择该材料条目作为课程知识库范围。",
     risk: usageLimit || "浏览器第一版仅保存文件元数据，不读取本地文件正文；正式引用前需教师核验来源。",
     content: [
@@ -7175,12 +7175,12 @@ function getExampleAssets() {
   return [
     {
       id: "example-rubric",
-      title: "SWOT 矩阵评价量规",
-      type: "评价量规",
+      title: "SWOT 矩阵评价 Rubric",
+      type: "Rubric",
       source: "示例资产",
       course: defaultTrainingCourse.courseName,
       updatedAt: new Date().toISOString(),
-      tags: ["评价量规", "评价", "证据"],
+      tags: ["Rubric", "评价", "证据"],
       boundary: "示例内容，仅用于展示资产结构。",
       summary: "从分类准确性、药学证据质量、决策可行性和风险意识评价学生成果。",
       usage: "用于课堂展示评分和课后反馈。",
