@@ -2198,7 +2198,6 @@ function homeOutputHighlight(index, activeAttachment) {
 }
 
 function renderHomeNavigationPreview(activeAttachment) {
-  const phases = ["准备", "设计", "实施", "复盘"];
   const stages = [
     ["课前教学设计与准备", "课程目标、学情分析与学习起点诊断、资源与预习任务"],
     ["课中教学实施与调控", "问题情境、案例探究、课堂追问与形成性评价"],
@@ -2212,17 +2211,7 @@ function renderHomeNavigationPreview(activeAttachment) {
     ["05", "学习资源与案例材料开发"],
     ["20", "教学反思、资源沉淀与持续改进"],
   ];
-  const activePhase = activeAttachment === null ? 0 : activeAttachment;
   return `
-    <div class="home-output-phase-switch" aria-label="教学导航阶段">
-      ${phases
-        .map(
-          (phase, index) => `
-            <span class="${index === activePhase ? "is-active" : ""}">${escapeHtml(phase)}</span>
-          `,
-        )
-        .join("")}
-    </div>
     <div class="home-output-stage-grid">
       ${stages
         .map(
@@ -2359,15 +2348,9 @@ function renderHomeCoworkOutput(featureKey, activeAttachment) {
         : renderHomeNavigationPreview(activeAttachment);
   return `
     <div class="home-output-head">
-      <div>
-        <span>Output Preview</span>
-        <h3>${escapeHtml(feature.outputTitle)}</h3>
-        <p>${escapeHtml(feature.outputSubtitle)}</p>
-      </div>
-      <div class="home-output-actions" aria-hidden="true">
-        <button type="button" tabindex="-1">预览</button>
-        <button type="button" tabindex="-1">编辑</button>
-      </div>
+      <span>Output Preview</span>
+      <h3>${escapeHtml(feature.outputTitle)}</h3>
+      <p>${escapeHtml(feature.outputSubtitle)}</p>
     </div>
     ${body}
   `;
