@@ -4,7 +4,6 @@ const FANYA_AUTH_KEY = "pharmacopilot-fanya-auth-state";
 const PRACTICE_WORKFLOW_KEY = "pharmacopilot-practice-workflow-state";
 const ASSETS_KEY = "pharmacopilot-assets";
 const ACCOUNT_SESSION_KEY = "pharmacopilot-account-session";
-const HOME_TASK_ENTRY_KEY = "pharmacopilot-home-task-entry";
 const FANYA_MOCK_ACCOUNT = {
   account: "teacher.demo@pharmacopilot.test",
   token: "mock-fanya-token-2026",
@@ -2148,110 +2147,9 @@ const HOME_FEATURE_DEMOS = {
 };
 
 const HOME_FEATURE_KEYS = ["navigation", "practice", "assets"];
-const HOME_TASK_TARGETS = {
-  navigation: {
-    label: "教学导航",
-    page: "teaching-navigation",
-    href: "./teaching-navigation.html",
-  },
-  practice: {
-    label: "教学实践",
-    page: "practice",
-    href: "./practice.html",
-  },
-  assets: {
-    label: "教学资产",
-    page: "assets",
-    href: "./assets.html",
-  },
-};
 
 function getHomeFeatureDemo(featureKey) {
   return HOME_FEATURE_DEMOS[featureKey] || HOME_FEATURE_DEMOS.navigation;
-}
-
-function inferHomeTaskTarget(text = "") {
-  const content = String(text).trim();
-  if (/资产|沉淀|复用|归档|资源库|模板库|案例库|历史|整理/.test(content)) return "assets";
-  if (/课堂|活动|教案|实践|泛雅|学情|测验|作业|反馈|评价|量规|复盘|随堂/.test(content)) return "practice";
-  return "navigation";
-}
-
-function getHomeTaskTarget(target) {
-  return HOME_TASK_TARGETS[target] || HOME_TASK_TARGETS.navigation;
-}
-
-function saveHomeTaskEntry(prompt, target) {
-  const targetConfig = getHomeTaskTarget(target);
-  const entry = {
-    prompt,
-    target: Object.keys(HOME_TASK_TARGETS).includes(target) ? target : "navigation",
-    targetLabel: targetConfig.label,
-    createdAt: new Date().toISOString(),
-  };
-  saveToLocalStorage(HOME_TASK_ENTRY_KEY, entry);
-  return entry;
-}
-
-function readHomeTaskEntry() {
-  const entry = loadFromLocalStorage(HOME_TASK_ENTRY_KEY, null);
-  if (!entry || typeof entry !== "object") return null;
-  return entry;
-}
-
-function initHomeTaskEntry() {
-  const form = $("#homeTaskEntryForm");
-  const input = $("#homeTaskInput");
-  if (!form || !input) return;
-  form.dataset.homeTaskTarget = "navigation";
-
-  const presetButtons = $$("[data-home-task-preset]", form);
-  function activatePreset(button) {
-    presetButtons.forEach((item) => item.classList.toggle("is-active", item === button));
-    form.dataset.homeTaskTarget = button.dataset.homeTaskTarget || "navigation";
-    if (button.dataset.homeTaskText) input.value = button.dataset.homeTaskText;
-  }
-
-  presetButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      activatePreset(button);
-      input.focus();
-    });
-  });
-  input.addEventListener("input", () => {
-    const activePreset = presetButtons.find((button) => button.classList.contains("is-active"));
-    if (!activePreset || input.value === activePreset.dataset.homeTaskText) return;
-    presetButtons.forEach((button) => button.classList.remove("is-active"));
-    delete form.dataset.homeTaskTarget;
-  });
-
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
-    const prompt = input.value.trim();
-    if (!prompt) {
-      showToast("请先输入要准备的教学任务");
-      input.focus();
-      return;
-    }
-    const target = form.dataset.homeTaskTarget || inferHomeTaskTarget(prompt);
-    const entry = saveHomeTaskEntry(prompt, target);
-    const targetConfig = getHomeTaskTarget(entry.target);
-    const url = new URL(targetConfig.href, window.location.href);
-    url.searchParams.set("from", "home-task");
-    window.location.href = url.href;
-  });
-}
-
-function surfaceHomeTaskEntry(page) {
-  if (!["teaching-navigation", "practice", "assets"].includes(page)) return;
-  const params = new URLSearchParams(window.location.search);
-  if (params.get("from") !== "home-task") return;
-  const entry = readHomeTaskEntry();
-  if (!entry || getHomeTaskTarget(entry.target).page !== page) return;
-  const preview = entry.prompt.length > 28 ? `${entry.prompt.slice(0, 28)}...` : entry.prompt;
-  window.setTimeout(() => {
-    showToast(`已接收首页任务：${preview}`);
-  }, 320);
 }
 
 function renderHomeFeatureTabs(activeKey) {
@@ -2546,7 +2444,6 @@ function initHomeCoworkDemo() {
 
 function initHomePage() {
   renderBulletChart($("#homeDiagnosticBulletChart"), HOME_SAMPLE_DIAGNOSTIC);
-  initHomeTaskEntry();
   initHomeCoworkDemo();
 }
 
@@ -8401,7 +8298,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if (page === "practice") initPracticePage();
   if (page === "assets") initAssetsPage();
   if (page === "workflow") initWorkflowPage();
-  surfaceHomeTaskEntry(page);
 });
 
 window.defaultTrainingCourse = defaultTrainingCourse;
