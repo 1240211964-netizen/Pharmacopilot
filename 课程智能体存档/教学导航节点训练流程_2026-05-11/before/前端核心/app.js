@@ -3742,51 +3742,10 @@ const routeStatusTone = {
 let selectedRouteNodeId = 6;
 let routeRubricExpanded = false;
 let routeNodeCardOpen = false;
-let routeNodeCardMode = "explain";
-let routeNodeRecommendationMessage = "";
+let routeNodeCardExpanded = false;
 
 function getRouteNode(nodeId = selectedRouteNodeId) {
   return routeTrainingNodes.find((node) => node.id === Number(nodeId)) || routeTrainingNodes.find((node) => node.status === "current") || routeTrainingNodes[0];
-}
-
-function getRouteNodeInputRequirements(node) {
-  if (Number(node?.stage) === 2) {
-    return ["课前诊断结果与学生疑问", "案例材料、课堂时间与分组约束", "课堂组织方式、评价任务与教师观察点"];
-  }
-  if (Number(node?.stage) === 3) {
-    return ["学生作品、作业与课堂产出", "泛雅模拟数据、课堂观察与评价记录", "教师反思、学生反馈与可复用资源"];
-  }
-  return ["课程大纲与本次课章节定位", "学情资料与学习起点诊断", "课程材料、案例资料与平台数据边界"];
-}
-
-function getRouteNodeRubricDimensionLabels(stepId) {
-  const rubric = getTrainingStepRubric(stepId);
-  return (rubric?.dimensions || [])
-    .map((dimension) => dimension.label || dimension.shortLabel)
-    .filter(Boolean)
-    .slice(0, 4);
-}
-
-function renderRouteNodeInputList(node) {
-  return `
-    <ul class="route-node-input-list">
-      ${getRouteNodeInputRequirements(node)
-        .map((item) => `<li>${escapeHtml(item)}</li>`)
-        .join("")}
-    </ul>
-  `;
-}
-
-function renderRouteNodeQualification(node, stepId) {
-  const dimensions = getRouteNodeRubricDimensionLabels(stepId);
-  return `
-    <p>${escapeHtml(node.rubric)}</p>
-    ${
-      dimensions.length
-        ? `<div class="route-node-dimension-tags">${dimensions.map((dimension) => `<span>${escapeHtml(dimension)}</span>`).join("")}</div>`
-        : ""
-    }
-  `;
 }
 
 function initTeachingNavigationPage() {
@@ -3950,8 +3909,7 @@ function renderNewTeacherMap() {
       selectedRouteNodeId = Number(button.dataset.routeNode);
       routeRubricExpanded = false;
       routeNodeCardOpen = true;
-      routeNodeCardMode = "explain";
-      routeNodeRecommendationMessage = "";
+      routeNodeCardExpanded = false;
       renderTeachingNavigationPage();
       requestAnimationFrame(() => $("#teachingNodeDetail")?.focus?.({ preventScroll: true }));
     });
@@ -3988,7 +3946,7 @@ function renderNodeDetailPanel() {
   const panel = container.closest(".route-detail-card");
   if (!routeNodeCardOpen) {
     container.innerHTML = "";
-    panel?.classList.remove("is-open", "is-expanded", "is-explain-mode", "is-training-mode", "is-locked-node");
+    panel?.classList.remove("is-open", "is-expanded");
     panel?.setAttribute("aria-hidden", "true");
     return;
   }
@@ -4008,15 +3966,9 @@ function renderNodeDetailPanel() {
   const statusLabel = routeStatusLabels[status] || status;
   const scoreMeta = getTrainingSidebarScoreMeta(stepId);
   const isConfirmed = Boolean(trainingState.stepResults?.[String(stepId)]);
-  const isLocked = status === "locked";
-  const isTrainingMode = routeNodeCardMode === "training" && !isLocked;
-  if (isLocked && routeNodeCardMode === "training") routeNodeCardMode = "explain";
   container.setAttribute("tabindex", "-1");
   panel?.classList.add("is-open");
-  panel?.classList.toggle("is-expanded", isTrainingMode);
-  panel?.classList.toggle("is-explain-mode", !isTrainingMode);
-  panel?.classList.toggle("is-training-mode", isTrainingMode);
-  panel?.classList.toggle("is-locked-node", isLocked);
+  panel?.classList.toggle("is-expanded", routeNodeCardExpanded);
   panel?.setAttribute("aria-hidden", "false");
 
   const commonHeader = `
@@ -4041,55 +3993,29 @@ function renderNodeDetailPanel() {
         </div>
       </header>`;
 
-  if (!isTrainingMode) {
+  if (!routeNodeCardExpanded) {
     container.innerHTML = `
-      <article class="route-node-detail-card route-workbench-card route-node-summary-card route-node-explain-card" data-route-workbench-step="${stepId}">
+      <article class="route-node-detail-card route-workbench-card route-node-summary-card" data-route-workbench-step="${stepId}">
         ${commonHeader}
-        ${
-          routeNodeRecommendationMessage
-            ? `<div class="route-next-recommendation" role="status">${escapeHtml(routeNodeRecommendationMessage)}</div>`
-            : ""
-        }
-        <section class="route-workbench-block route-explain-workbench" aria-labelledby="route-explain-title-${stepId}">
+        <section class="route-workbench-block route-task-workbench" aria-labelledby="route-task-title-${stepId}">
           <div class="route-block-head">
             <div>
-              <p class="eyebrow">Before training</p>
-              <h4 id="route-explain-title-${stepId}">开始前先理解这个环节</h4>
+              <p class="eyebrow">Node task</p>
+              <h4 id="route-task-title-${stepId}">节点任务摘要</h4>
             </div>
           </div>
-          <div class="route-explain-grid">
-            <article>
-              <span>为什么存在</span>
-              <p>${escapeHtml(node.goal)}</p>
-            </article>
-            <article>
-              <span>需要输入什么</span>
-              ${renderRouteNodeInputList(node)}
-            </article>
-            <article>
-              <span>生成什么</span>
-              <p>${escapeHtml(node.output)}</p>
-            </article>
-            <article>
-              <span>如何合格</span>
-              ${renderRouteNodeQualification(node, stepId)}
-            </article>
+          <div class="route-task-grid">
+            <div><span>教师任务</span><p>${escapeHtml(node.task)}</p></div>
+            <div><span>产出物</span><p>${escapeHtml(node.output)}</p></div>
           </div>
           <div class="route-detail-actions route-popover-summary-actions">
-            <button class="primary-action" data-route-action="start-training" type="button" ${isLocked ? "disabled aria-disabled=\"true\"" : ""}>
-              ${isLocked ? "完成前序节点后开始训练" : "开始本环节训练"}
-            </button>
+            <button class="primary-action" data-route-action="expand-card" type="button">展开方案与评价</button>
           </div>
-          ${
-            isLocked
-              ? `<p class="route-locked-hint">该节点仍可预览说明，但需要先完成前序关卡，才能进入 A-F 方案选择、智能生成和评分诊断。</p>`
-              : ""
-          }
         </section>
       </article>
     `;
     $("[data-route-action='close-card']", container)?.addEventListener("click", closeRouteNodeCard);
-    $("[data-route-action='start-training']", container)?.addEventListener("click", startRouteNodeTraining);
+    $("[data-route-action='expand-card']", container)?.addEventListener("click", expandRouteNodeCard);
     return;
   }
 
@@ -4108,21 +4034,6 @@ function renderNodeDetailPanel() {
         ${renderTrainingOptionCards(step, choice)}
       </section>
 
-      <section class="route-workbench-block route-generated-workbench" aria-labelledby="route-generated-title-${stepId}">
-        <div class="route-block-head">
-          <div>
-            <p class="eyebrow">AI draft</p>
-            <h4 id="route-generated-title-${stepId}">智能生成草稿</h4>
-          </div>
-          <span>${selectedOptionId ? "已生成" : "待选择主方案"}</span>
-        </div>
-        ${
-          selectedOptionId
-            ? `<pre class="route-generated-draft">${escapeHtml(preview.fragment || "当前方案暂未生成草稿。")}</pre>`
-            : `<p class="route-generated-placeholder">选择一个主方案后，系统会生成本环节可复制、可审校的训练草稿。</p>`
-        }
-      </section>
-
       <section class="route-workbench-block route-insight-workbench" aria-label="即时测评区">
         ${renderSelectionInsightPanel(score, analysis, "training")}
       </section>
@@ -4139,14 +4050,18 @@ function renderNodeDetailPanel() {
           <div><span>产出物</span><p>${escapeHtml(node.output)}</p></div>
         </div>
         <div class="route-detail-actions">
-          <button class="primary-action" data-route-action="confirm" type="button" ${selectedOptionId ? "" : "disabled aria-disabled=\"true\""}>确认本环节</button>
-          <button class="secondary-action" data-route-action="collapse-card" type="button">返回环节说明</button>
+          <button class="primary-action" data-route-action="enter" type="button">进入训练</button>
+          <button class="secondary-action" data-route-action="confirm" type="button">确认本节点</button>
+          <button class="secondary-action" data-route-action="collapse-card" type="button">收起为摘要</button>
         </div>
       </section>
     </article>
   `;
   $("[data-route-action='close-card']", container)?.addEventListener("click", closeRouteNodeCard);
   $("[data-route-action='collapse-card']", container)?.addEventListener("click", collapseRouteNodeCard);
+  $("[data-route-action='enter']", container)?.addEventListener("click", () => {
+    openTrainingRouteModal(node);
+  });
   $("[data-route-action='confirm']", container)?.addEventListener("click", confirmRouteStep);
   $$("[data-primary-option]", container).forEach((button) =>
     button.addEventListener("click", () => selectRoutePrimaryOption(button.dataset.primaryOption)),
@@ -4164,27 +4079,20 @@ function renderNodeDetailPanel() {
 
 function closeRouteNodeCard() {
   routeNodeCardOpen = false;
-  routeNodeCardMode = "explain";
-  routeNodeRecommendationMessage = "";
+  routeNodeCardExpanded = false;
   renderNodeDetailPanel();
 }
 
-function startRouteNodeTraining() {
-  const status = getRouteNodeStatus(selectedRouteNodeId);
-  if (status === "locked") {
-    showToast("请先完成前序关卡，再开始本环节训练");
-    return;
-  }
+function expandRouteNodeCard() {
   routeNodeCardOpen = true;
-  routeNodeCardMode = "training";
-  routeNodeRecommendationMessage = "";
+  routeNodeCardExpanded = true;
   renderNodeDetailPanel();
   requestAnimationFrame(() => $("#teachingNodeDetail")?.focus?.({ preventScroll: true }));
 }
 
 function collapseRouteNodeCard() {
   routeNodeCardOpen = true;
-  routeNodeCardMode = "explain";
+  routeNodeCardExpanded = false;
   renderNodeDetailPanel();
   requestAnimationFrame(() => $("#teachingNodeDetail")?.focus?.({ preventScroll: true }));
 }
@@ -4194,11 +4102,11 @@ function selectRoutePrimaryOption(optionId) {
   const step = getTrainingStep(stepId);
   const choice = getChoice(stepId);
   routeNodeCardOpen = true;
-  routeNodeCardMode = "training";
-  routeNodeRecommendationMessage = "";
+  routeNodeCardExpanded = true;
   choice.primary = optionId;
   choice.secondary = choice.secondary.filter((id) => id !== optionId);
   trainingState.currentSelections[String(stepId)] = optionId;
+  trainingState.currentStepId = stepId;
   trainingState.currentPreview = createStepPreview(stepId, optionId, "training");
   buildTrainingStepArtifacts(step);
   saveTrainingState();
@@ -4214,8 +4122,7 @@ function toggleRouteSecondaryOption(optionId) {
   const step = getTrainingStep(stepId);
   const choice = getChoice(stepId);
   routeNodeCardOpen = true;
-  routeNodeCardMode = "training";
-  routeNodeRecommendationMessage = "";
+  routeNodeCardExpanded = true;
 
   if (choice.primary === optionId) {
     showToast("主方案不能同时作为辅助方案");
@@ -4264,14 +4171,9 @@ function confirmRouteStep() {
   }
 
   const nextStep = Math.min(stepId + 1, trainingSteps.length);
-  const nextNode = getRouteNode(nextStep);
   selectedRouteNodeId = nextStep;
   routeNodeCardOpen = true;
-  routeNodeCardMode = "explain";
-  routeNodeRecommendationMessage =
-    nextStep > stepId
-      ? `已确认节点 ${String(stepId).padStart(2, "0")}，推荐下一步进入节点 ${String(nextStep).padStart(2, "0")}：${nextNode.title}。`
-      : "已确认全部节点，可进入下方复盘区查看整体完成情况。";
+  routeNodeCardExpanded = false;
   trainingState.currentStepId = nextStep;
   trainingState.isTrainingCompleted = trainingState.completedStepIds.length >= trainingSteps.length;
 
