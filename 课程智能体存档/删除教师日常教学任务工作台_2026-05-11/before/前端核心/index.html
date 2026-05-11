@@ -134,6 +134,79 @@
         </aside>
       </section>
 
+      <section class="section-block home-task-workbench" aria-labelledby="home-task-title">
+        <div class="section-head">
+          <p class="eyebrow">Daily teaching tasks</p>
+          <h2 id="home-task-title">教师日常教学任务工作台</h2>
+          <p class="section-copy">把“我需要一份材料”拆成可检查的执行过程：先读课程资料，再生成结构化草稿，最后由教师确认并沉淀到教学资产。</p>
+        </div>
+
+        <div class="home-task-layout">
+          <div class="home-task-tabs" aria-label="教学任务类型">
+            <button class="home-task-tab is-active" type="button" data-home-task="navigation">
+              <span>01</span>
+              <strong>生成教学导航</strong>
+              <small>把课程目标拆成三阶段与 20 环节检查点。</small>
+            </button>
+            <button class="home-task-tab" type="button" data-home-task="resources">
+              <span>02</span>
+              <strong>整理课程资源</strong>
+              <small>归并课程大纲、案例包和泛雅模拟数据。</small>
+            </button>
+            <button class="home-task-tab" type="button" data-home-task="rubric">
+              <span>03</span>
+              <strong>配置评价量规</strong>
+              <small>生成维度、等级描述和学习证据要求。</small>
+            </button>
+            <button class="home-task-tab" type="button" data-home-task="review">
+              <span>04</span>
+              <strong>生成复盘报告</strong>
+              <small>把课堂表现转成教师可用的改进建议。</small>
+            </button>
+            <button class="home-task-tab" type="button" data-home-task="assets">
+              <span>05</span>
+              <strong>沉淀教学资产</strong>
+              <small>保存教案、评价量规、反馈模板和复盘记录。</small>
+            </button>
+          </div>
+
+          <article class="home-task-panel" aria-live="polite">
+            <div class="task-panel-head">
+              <div>
+                <p class="task-panel-kicker" id="homeTaskKicker">Teaching navigation</p>
+                <h3 id="homeTaskTitle">生成教学导航</h3>
+                <p id="homeTaskSummary">把 SWOT 分析课拆成课前、课中、课后三阶段，并保留 20 个后台诊断检查点。</p>
+              </div>
+              <span id="homeTaskStatus">待教师审校</span>
+            </div>
+
+            <div class="task-panel-flow" id="homeTaskFlow" aria-label="任务执行过程">
+              <span>读取课程目标</span>
+              <span>诊断学习起点</span>
+              <span>生成三阶段路径</span>
+              <span>绑定 20 环节检查点</span>
+            </div>
+
+            <div class="task-panel-document">
+              <div class="document-toolbar">
+                <strong id="homeTaskOutputTitle">教学导航草稿</strong>
+                <span>Draft</span>
+              </div>
+              <p id="homeTaskOutputText">输出包含目标、活动、学习证据、评价量规入口和教师审校提示，可继续进入教学实践页加工。</p>
+              <div class="document-bars" aria-hidden="true">
+                <i></i>
+                <i></i>
+                <i></i>
+              </div>
+            </div>
+
+            <div class="task-panel-actions">
+              <a class="card-action" id="homeTaskPrimaryAction" href="./teaching-navigation.html">进入教学导航</a>
+              <a class="card-action secondary" href="./practice.html#fanyaAuthForm">登录/注册</a>
+            </div>
+          </article>
+        </div>
+      </section>
     </main>
   </body>
 </html>
