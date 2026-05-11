@@ -2602,7 +2602,7 @@ function renderGameMapNode(step) {
     <button class="${classes}" type="button" data-map-step="${step.id}" data-map-status="${escapeHtml(status)}" title="${String(step.id).padStart(2, "0")} ${escapeHtml(step.title)}" aria-label="${String(step.id).padStart(2, "0")} ${escapeHtml(step.title)}：${escapeHtml(statusLabel)}">
       <span class="map-node-orb">${String(step.id).padStart(2, "0")}</span>
       <span class="map-node-text">
-        <strong>${escapeHtml(step.title)}</strong>
+        ${isCurrent ? `<strong>${escapeHtml(step.title)}</strong>` : ""}
         <em>${escapeHtml(statusLabel)}</em>
       </span>
       <span class="map-node-score">${escapeHtml(scoreMeta.label)}</span>
