@@ -60,21 +60,29 @@
                 id="homeTaskInput"
                 name="homeTask"
                 autocomplete="off"
-                placeholder="例如：下周我要讲 SWOT 分析，帮我生成一份可审校的教学实践方案"
+                placeholder="例如：下周我要讲 SWOT 分析，帮我生成一份可审校的教学导航"
               />
               <button type="submit">开始生成</button>
             </div>
             <div class="home-task-entry-foot">
-              <span>系统会按任务进入教学实践或教学资产。</span>
+              <span>系统会按任务进入教学导航、教学实践或教学资产。</span>
               <div class="home-task-presets" aria-label="快捷教学任务">
                 <button
                   class="is-active"
                   type="button"
                   data-home-task-preset
+                  data-home-task-target="navigation"
+                  data-home-task-text="帮我为药学管理本科《管理学原理》SWOT 分析课生成三阶段、20 环节教学导航。"
+                >
+                  生成教学导航
+                </button>
+                <button
+                  type="button"
+                  data-home-task-preset
                   data-home-task-target="practice"
                   data-home-task-text="帮我基于泛雅模拟学情，为 SWOT 分析课设计课堂活动、随堂测验和评价量规。"
                 >
-                  生成教学实践
+                  设计课堂活动
                 </button>
                 <button
                   type="button"

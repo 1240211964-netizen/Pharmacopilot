@@ -2149,6 +2149,11 @@ const HOME_FEATURE_DEMOS = {
 
 const HOME_FEATURE_KEYS = ["navigation", "practice", "assets"];
 const HOME_TASK_TARGETS = {
+  navigation: {
+    label: "教学导航",
+    page: "teaching-navigation",
+    href: "./teaching-navigation.html",
+  },
   practice: {
     label: "教学实践",
     page: "practice",
@@ -2168,18 +2173,19 @@ function getHomeFeatureDemo(featureKey) {
 function inferHomeTaskTarget(text = "") {
   const content = String(text).trim();
   if (/资产|沉淀|复用|归档|资源库|模板库|案例库|历史|整理/.test(content)) return "assets";
-  return "practice";
+  if (/课堂|活动|教案|实践|泛雅|学情|测验|作业|反馈|评价|量规|复盘|随堂/.test(content)) return "practice";
+  return "navigation";
 }
 
 function getHomeTaskTarget(target) {
-  return HOME_TASK_TARGETS[target] || HOME_TASK_TARGETS.practice;
+  return HOME_TASK_TARGETS[target] || HOME_TASK_TARGETS.navigation;
 }
 
 function saveHomeTaskEntry(prompt, target) {
   const targetConfig = getHomeTaskTarget(target);
   const entry = {
     prompt,
-    target: Object.keys(HOME_TASK_TARGETS).includes(target) ? target : "practice",
+    target: Object.keys(HOME_TASK_TARGETS).includes(target) ? target : "navigation",
     targetLabel: targetConfig.label,
     createdAt: new Date().toISOString(),
   };
@@ -2197,7 +2203,7 @@ function initHomeTaskEntry() {
   const form = $("#homeTaskEntryForm");
   const input = $("#homeTaskInput");
   if (!form || !input) return;
-  form.dataset.homeTaskTarget = "practice";
+  form.dataset.homeTaskTarget = "navigation";
 
   const presetButtons = $$("[data-home-task-preset]", form);
   function activatePreset(button) {
@@ -2237,7 +2243,7 @@ function initHomeTaskEntry() {
 }
 
 function surfaceHomeTaskEntry(page) {
-  if (!["practice", "assets"].includes(page)) return;
+  if (!["teaching-navigation", "practice", "assets"].includes(page)) return;
   const params = new URLSearchParams(window.location.search);
   if (params.get("from") !== "home-task") return;
   const entry = readHomeTaskEntry();
