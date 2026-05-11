@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pharmacopilot | 教学导航</title>
+    <meta
+      name="description"
+      content="面向药事管理本科生的管理学原理课程，以 SWOT 分析为例完成新教师教学导航训练。"
+    />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./styles.css?v=map-proportion-fix-20260509" />
+    <script defer src="./app.js?v=map-proportion-fix-20260509"></script>
+  </head>
+  <body data-page="teaching-navigation" class="teaching-navigation-page">
+    <header class="site-header">
+      <div class="topbar">
+        <a class="brand" href="./index.html" aria-label="Pharmacopilot 首页">
+          <span class="brand-mark" aria-hidden="true"><span class="brand-monogram">P</span></span>
+          <span class="brand-lockup">
+            <span class="brand-wordmark">Pharmacopilot</span>
+            <span class="brand-submark">药学教学智能体</span>
+          </span>
+        </a>
+        <button
+          class="nav-menu-toggle"
+          id="navMenuToggle"
+          type="button"
+          aria-label="打开导航菜单"
+          aria-controls="primaryNav"
+          aria-expanded="false"
+        >
+          <span aria-hidden="true"></span>
+        </button>
+        <nav class="topnav" id="primaryNav" aria-label="页面导航">
+          <a class="nav-link" data-nav="home" href="./index.html">首页</a>
+          <a class="nav-link active" data-nav="teaching-navigation" href="./teaching-navigation.html">教学导航</a>
+          <a class="nav-link" data-nav="practice" href="./practice.html">教学实践</a>
+          <a class="nav-link" data-nav="assets" href="./assets.html">教学资产</a>
+        </nav>
+        <div class="top-actions">
+          <a class="nav-primary-action" href="./practice.html">完成训练后进入实践</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="teaching-route-shell">
+      <section class="teaching-route-hero" aria-labelledby="teaching-navigation-title">
+        <div class="teaching-route-hero-copy">
+          <p class="eyebrow">Course-to-class route</p>
+          <h1 id="teaching-navigation-title">把教学导航变成可执行的 20 环节训练路线</h1>
+          <p class="lede">
+            围绕《管理学原理》SWOT 分析单元，把课前教学设计、课中教学实施、课后评价反馈拆成可点击、可审校、可复用的训练任务。
+          </p>
+        </div>
+        <aside class="teaching-route-status-card" aria-label="当前训练状态">
+          <span>当前进度</span>
+          <strong id="teachingRouteProgress">6 / 20</strong>
+          <dl>
+            <div><dt>当前阶段</dt><dd id="teachingRouteStage">教学流程设计</dd></div>
+            <div><dt>下一步任务</dt><dd id="teachingRouteNextTask">写出 3 分钟导入问题和教师引导语</dd></div>
+            <div><dt>预计完成时间</dt><dd>约 90 分钟</dd></div>
+          </dl>
+        </aside>
+      </section>
+
+      <section class="teaching-route-stage-band" aria-label="三阶段教学训练概览">
+        <div class="teaching-route-stage-tabs" id="teachingStageOverview"></div>
+      </section>
+
+      <section class="teaching-route-section route-map-section" aria-labelledby="route-map-title">
+        <div class="section-head">
+          <p class="eyebrow">Cowork route stage</p>
+          <h2 id="route-map-title">20 环节教学训练地图</h2>
+          <p class="section-copy">
+            这张地图把一节 SWOT 分析课拆成课程理解、目标设定、案例任务、课堂组织、评价证据和复盘改进。点击任意节点可在当前界面查看任务、产出物和评价依据。
+          </p>
+        </div>
+        <div class="route-map-layout">
+          <section class="route-map-card" aria-label="20 环节路线地图">
+            <div class="route-map-badge" aria-hidden="true">
+              <span>课程设计地图</span>
+              <strong>管理学原理 · SWOT 分析</strong>
+            </div>
+            <div class="route-map-stage-zone stage-zone-pre" aria-hidden="true">
+              <span>阶段一 · 节点 01-08</span>
+              <strong>课前教学设计与准备</strong>
+            </div>
+            <div class="route-map-stage-zone stage-zone-class" aria-hidden="true">
+              <span>阶段二 · 节点 09-16</span>
+              <strong>课中教学实施与调控</strong>
+            </div>
+            <div class="route-map-stage-zone stage-zone-review" aria-hidden="true">
+              <span>阶段三 · 节点 17-20</span>
+              <strong>课后评价反馈与持续改进</strong>
+            </div>
+            <svg id="teachingRouteMapSvg" class="route-map-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg>
+            <div id="teachingRouteMapNodes" class="route-map-nodes"></div>
+            <div id="teachingRouteMapStats" class="route-map-stats" aria-label="节点状态统计"></div>
+            <aside class="route-detail-card route-node-popover" aria-label="节点详情" aria-hidden="true">
+              <div id="teachingNodeDetail" class="route-detail-content"></div>
+            </aside>
+          </section>
+        </div>
+      </section>
+
+      <section class="teaching-route-section" aria-labelledby="progress-summary-title">
+        <div class="section-head">
+          <p class="eyebrow">Review loop</p>
+          <h2 id="progress-summary-title">复盘区</h2>
+        </div>
+        <div id="teachingProgressSummary" class="route-progress-grid"></div>
+      </section>
+    </main>
+
+    <div id="trainingModal" class="training-route-modal" aria-hidden="true">
+      <div class="training-route-modal-backdrop" data-close-training-modal></div>
+      <section
+        class="training-route-modal-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="trainingModalTitle"
+        tabindex="-1"
+      >
+        <button class="training-route-modal-close" type="button" data-close-training-modal aria-label="关闭训练任务">×</button>
+        <p class="eyebrow">Training task</p>
+        <h2 id="trainingModalTitle">训练任务</h2>
+        <div id="trainingModalBody"></div>
+      </section>
+    </div>
+  </body>
+</html>
