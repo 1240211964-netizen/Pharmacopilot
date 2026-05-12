@@ -2191,7 +2191,7 @@ h3 {
 }
 
 .asset-graph-section {
-  margin: 0 auto 32px;
+  margin: 0 0 32px;
   border-color: rgba(77, 63, 49, 0.1);
   background:
     linear-gradient(135deg, rgba(255, 252, 246, 0.92), rgba(242, 236, 224, 0.62)),

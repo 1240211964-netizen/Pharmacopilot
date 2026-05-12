@@ -8209,7 +8209,8 @@ function restoreAssetGraphPositions(nodes, previousNodes = []) {
 function layoutAssetGraphNodes(state) {
   const width = state.width || 760;
   const height = state.height || 420;
-  const centerX = width * 0.5;
+  const compact = width < 520;
+  const centerX = width * (compact ? 0.5 : 0.48);
   const centerY = height * 0.46;
   const groupCenters = {
     core: { x: centerX, y: centerY, spreadX: 0, spreadY: 0 },
