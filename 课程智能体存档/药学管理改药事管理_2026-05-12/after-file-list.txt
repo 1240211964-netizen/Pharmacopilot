@@ -1,0 +1,8 @@
+课程智能体存档/药学管理改药事管理_2026-05-12/after/API版的后端/lib/generation.ts
+课程智能体存档/药学管理改药事管理_2026-05-12/after/package.json
+课程智能体存档/药学管理改药事管理_2026-05-12/after/scripts/build_competition_materials.py
+课程智能体存档/药学管理改药事管理_2026-05-12/after/scripts/build_demo_video.py
+课程智能体存档/药学管理改药事管理_2026-05-12/after/前端核心/app.js
+课程智能体存档/药学管理改药事管理_2026-05-12/after/前端核心/assets.html
+课程智能体存档/药学管理改药事管理_2026-05-12/after/前端核心/index.html
+课程智能体存档/药学管理改药事管理_2026-05-12/after/后端核心/src/generation.ts

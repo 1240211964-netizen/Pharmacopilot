@@ -28,11 +28,11 @@ function courseContext(course: JsonRecord) {
 export async function buildLessonPlan(input: JsonRecord, course: JsonRecord, sources: CourseSource[]) {
   const mock = {
     title: `${input.topic} 教案`,
-    lessonOverview: "围绕药事管理场景组织一次可执行课堂，兼顾概念理解、案例讨论与形成性评价。",
+    lessonOverview: "围绕药学管理场景组织一次可执行课堂，兼顾概念理解、案例讨论与形成性评价。",
     durationMinutes: Number(input.durationMinutes || 90),
     contextAlignment: {
       courseObjectives: input.learningObjectives || [],
-      chapterObjectives: ["解释核心概念", "将概念迁移到药事管理情境"],
+      chapterObjectives: ["解释核心概念", "将概念迁移到药学管理情境"],
       teachingFocus: ["药学场景转化", "课堂互动", "证据化评价"],
       learnerAssumptions: [String(input.learnerProfile || "学生具备基础药学专业认知，但管理学迁移经验有限。")],
     },
@@ -40,7 +40,7 @@ export async function buildLessonPlan(input: JsonRecord, course: JsonRecord, sou
       {
         phase: "导入",
         minutes: 10,
-        teacherActions: ["展示药事管理真实情境", "提出驱动问题"],
+        teacherActions: ["展示药学管理真实情境", "提出驱动问题"],
         studentActions: ["快速判断情境中的管理问题"],
         materials: ["案例卡"],
         checksForUnderstanding: ["请学生说出一个关键利益相关者"],
@@ -73,7 +73,7 @@ export async function buildLessonPlan(input: JsonRecord, course: JsonRecord, sou
     ],
     assessment: {
       formativeChecks: ["出口条", "小组汇报", "随堂判断题"],
-      homework: "选择一个药事管理情境，写出问题、利益相关者和改进方案。",
+      homework: "选择一个药学管理情境，写出问题、利益相关者和改进方案。",
       evidenceOfLearning: ["能准确解释概念", "能用证据支持管理判断"],
     },
     teachingNotes: ["保留可压缩环节以控制课堂节奏。", "对新教师提供追问脚本。"],
@@ -147,9 +147,9 @@ export async function buildAssetSummary(input: JsonRecord, course: JsonRecord, s
   const mock = {
     title: String(input.title),
     assetType: String(input.assetType || "teaching_asset"),
-    shortSummary: "该教学资产可用于支持药事管理课堂的案例导入、概念讲解和讨论评价。",
+    shortSummary: "该教学资产可用于支持药学管理课堂的案例导入、概念讲解和讨论评价。",
     teachingUseCases: ["课前预习材料", "课堂案例讨论", "课后复盘资源"],
-    keyConcepts: ["药事管理", "决策分析", "教学评价"],
+    keyConcepts: ["药学管理", "决策分析", "教学评价"],
     recommendedLessonMoments: ["导入环节", "互动讨论环节", "总结迁移环节"],
     cautions: ["若材料尚未完成文本解析，需要教师核对原文。"],
     sourceBoundary: "仅依据用户提交内容和已授权课程材料生成摘要。",
