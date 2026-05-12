@@ -3886,17 +3886,6 @@ function renderRouteMapPaths() {
       </filter>
     </defs>
     ${pairs
-      .map(
-        ([startNode, endNode]) => `
-          <path
-            class="route-path route-path-base"
-            d="${getRouteSegmentPath(startNode, endNode)}"
-            pathLength="100"
-          ></path>
-        `,
-      )
-      .join("")}
-    ${pairs
       .map(([startNode, endNode]) => {
         const startStatus = getRouteNodeStatus(startNode.id);
         const endStatus = getRouteNodeStatus(endNode.id);
@@ -3922,12 +3911,7 @@ function renderStageOverview() {
       const completed = nodes.filter((node) => getRouteNodeStatus(node.id) === "completed").length;
       const status = getRouteStageStatus(nodes);
       return `
-        <button
-          class="teaching-stage-card route-stage-pill stage-status-${status === "已完成" ? "complete" : status === "进行中" ? "current" : status === "可进入" ? "available" : "locked"}"
-          type="button"
-          data-route-stage-pill="${stage.id}"
-          aria-label="查看${escapeHtml(stage.title)}"
-        >
+        <article class="teaching-stage-card stage-status-${status === "已完成" ? "complete" : status === "进行中" ? "current" : status === "可进入" ? "available" : "locked"}">
           <span class="teaching-stage-index">阶段 ${stage.id}</span>
           <h3>${escapeHtml(stage.title)}</h3>
           <p>${escapeHtml(stage.copy)}</p>
@@ -3935,28 +3919,10 @@ function renderStageOverview() {
             <span>${completed} / ${nodes.length} 节点</span>
             <strong>${status}</strong>
           </div>
-        </button>
+        </article>
       `;
     })
     .join("");
-  $$("[data-route-stage-pill]", container).forEach((button) => {
-    button.addEventListener("click", () => selectRouteStagePill(button.dataset.routeStagePill));
-  });
-}
-
-function selectRouteStagePill(stageId) {
-  const firstNode = routeTrainingNodes.find((node) => Number(node.stage) === Number(stageId));
-  if (!firstNode) return;
-  selectedRouteNodeId = firstNode.id;
-  routeRubricExpanded = false;
-  routeNodeCardOpen = true;
-  routeNodeCardMode = "explain";
-  routeNodeRecommendationMessage = "";
-  renderTeachingNavigationPage();
-  requestAnimationFrame(() => {
-    $("#teachingRouteMapNodes")?.scrollIntoView?.({ block: "center", behavior: "smooth" });
-    $("#teachingNodeDetail")?.focus?.({ preventScroll: true });
-  });
 }
 
 function renderNewTeacherMap() {
@@ -4116,7 +4082,7 @@ function renderNodeDetailPanel() {
           </div>
           ${
             isLocked
-              ? `<p class="route-locked-hint">该节点仍可预览说明，但需要先完成前序关卡，才能进入本环节训练流程。</p>`
+              ? `<p class="route-locked-hint">该节点仍可预览说明，但需要先完成前序关卡，才能进入 A-F 方案选择、智能生成和评分诊断。</p>`
               : ""
           }
         </section>
