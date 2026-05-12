@@ -76,7 +76,7 @@ export async function buildLessonPlan(input: JsonRecord, course: JsonRecord, sou
       homework: "选择一个药学管理情境，写出问题、利益相关者和改进方案。",
       evidenceOfLearning: ["能准确解释概念", "能用证据支持管理判断"],
     },
-    teachingNotes: ["保留可压缩环节以控制课堂节奏。", "对新教师提供追问脚本。"],
+    teachingNotes: ["保留可压缩环节以控制课堂节奏。", "对新手教师提供追问脚本。"],
     sourceUse: {
       usedSources: sources.map((source) => source.id),
       limitations: sources.length ? [] : ["未提供课程材料，结果仅基于用户输入与通用教学设计原则。"],

@@ -1,0 +1,4 @@
+课程智能体存档/新手教师改新教师_2026-05-12/before/API版的后端/lib/generation.ts
+课程智能体存档/新手教师改新教师_2026-05-12/before/package.json
+课程智能体存档/新手教师改新教师_2026-05-12/before/前端核心/app.js
+课程智能体存档/新手教师改新教师_2026-05-12/before/前端核心/index.html

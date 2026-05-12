@@ -2103,9 +2103,9 @@ function setActiveNav() {
 const HOME_FEATURE_DEMOS = {
   navigation: {
     label: "教学导航",
-    short: "新教师训练营",
+    short: "新手教师训练营",
     kicker: "从目标到训练路径",
-    summary: "左侧输入课程目标与教师条件，右侧生成三阶段、20 环节的新教师训练路线。",
+    summary: "左侧输入课程目标与教师条件，右侧生成三阶段、20 环节的新手教师训练路线。",
     prompt:
       "我是一名新入职教师，需要准备《管理学原理》中的 SWOT 分析教学单元。请根据课程目标，生成一条可执行的 20 环节教学训练路线。",
     attachments: [
@@ -2116,10 +2116,10 @@ const HOME_FEATURE_DEMOS = {
     activity: [
       "解析课程目标与教学边界",
       "拆解知识点、能力点与易错点",
-      "匹配新教师 20 环节训练路径",
+      "匹配新手教师 20 环节训练路径",
       "生成课前、课中、课后导航路线",
     ],
-    outputTitle: "新教师 20 环节训练路线",
+    outputTitle: "新手教师 20 环节训练路线",
     outputSubtitle: "将备课、活动、评价与复盘拆解为可执行路径",
   },
   practice: {
