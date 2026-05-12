@@ -1472,17 +1472,6 @@ let practiceWorkflowState = null;
 let currentAssetStore = null;
 let pendingUploadFiles = [];
 let assetGraphState = null;
-let selectedAssetId = "";
-const assetFilterState = {
-  source: "全部",
-  type: "全部",
-  status: "全部",
-  query: "",
-};
-
-const ASSET_SOURCE_FILTERS = ["全部", "教学导航", "教学实践", "教师上传", "泛雅同步"];
-const ASSET_TYPE_FILTERS = ["全部", "课程画像", "教学设计方案", "课堂活动脚本", "案例材料", "评价量规", "学习证据", "教学复盘", "来源边界", "其他"];
-const ASSET_STATUS_FILTERS = ["全部", "待核验", "可复用", "已用于实践", "需更新"];
 
 attachTrainingOptionScoring();
 
@@ -7776,8 +7765,8 @@ function initAssetsPage() {
   importTrainingAndPracticeAssets();
   renderAssetOverview();
   renderAssetUpload();
-  bindAssetReuseActions();
-  refreshAssetWorkbench();
+  renderAssetList();
+  renderAssetKnowledgeGraph();
 }
 
 function renderAssetOverview() {
@@ -7788,102 +7777,20 @@ function renderAssetOverview() {
   $("#fanyaSyncCount") && ($("#fanyaSyncCount").textContent = String((store.fanyaSyncRecords || []).length));
 }
 
-function refreshAssetWorkbench() {
-  renderAssetFilters();
-  renderAssetList();
-  renderAssetKnowledgeGraph();
-  const active = getActiveWorkbenchAsset(getFilteredAssetWorkbenchItems());
-  if (active) {
-    viewAssetDetail(active.id, { skipGraphSync: true, skipListSync: true });
-  } else {
-    renderEmptyAssetDetail();
-  }
-}
-
-function renderAssetFilters() {
-  renderAssetFilterGroup("assetSourceFilters", "来源", "source", ASSET_SOURCE_FILTERS);
-  renderAssetFilterGroup("assetTypeFilters", "类型", "type", ASSET_TYPE_FILTERS);
-  renderAssetFilterGroup("assetStatusFilters", "状态", "status", ASSET_STATUS_FILTERS);
-  const search = $("#assetSearchInput");
-  if (search) {
-    if (search.value !== assetFilterState.query) search.value = assetFilterState.query;
-    if (search.dataset.assetSearchReady !== "true") {
-      search.dataset.assetSearchReady = "true";
-      search.addEventListener("input", () => {
-        assetFilterState.query = search.value || "";
-        refreshAssetWorkbench();
-      });
-    }
-  }
-}
-
-function renderAssetFilterGroup(targetId, label, key, items) {
-  const target = $(`#${targetId}`);
-  if (!target) return;
-  target.innerHTML = `
-    <div class="asset-filter-title">${escapeHtml(label)}</div>
-    <div class="asset-filter-chips">
-      ${items
-        .map(
-          (item) => `
-            <button
-              type="button"
-              data-asset-filter-key="${escapeHtml(key)}"
-              data-asset-filter-value="${escapeHtml(item)}"
-              class="${assetFilterState[key] === item ? "is-active" : ""}"
-              aria-pressed="${assetFilterState[key] === item ? "true" : "false"}"
-            >
-              ${escapeHtml(item)}
-            </button>
-          `,
-        )
-        .join("")}
-    </div>
-  `;
-  $$("[data-asset-filter-key]", target).forEach((button) => {
-    button.addEventListener("click", () => {
-      const filterKey = button.dataset.assetFilterKey;
-      if (!filterKey || !Object.prototype.hasOwnProperty.call(assetFilterState, filterKey)) return;
-      assetFilterState[filterKey] = button.dataset.assetFilterValue || "全部";
-      refreshAssetWorkbench();
-    });
-  });
-}
-
 function renderAssetUpload() {
   renderSelectedFiles();
-  const toggle = $("[data-asset-import-toggle]");
-  const panel = $("#assetImportPanel");
-  if (toggle && panel && toggle.dataset.assetImportReady !== "true") {
-    toggle.dataset.assetImportReady = "true";
-    toggle.addEventListener("click", () => {
-      const nextOpen = panel.hidden;
-      panel.hidden = !nextOpen;
-      toggle.setAttribute("aria-expanded", String(nextOpen));
-      toggle.classList.toggle("is-active", nextOpen);
-      if (nextOpen) $("#assetDescription")?.focus();
-    });
-  }
-  const fileInput = $("#assetFileInput");
-  if (fileInput && fileInput.dataset.assetUploadReady !== "true") {
-    fileInput.dataset.assetUploadReady = "true";
-    fileInput.addEventListener("change", (event) => {
-      pendingUploadFiles = Array.from(event.target.files || []).map((file) => ({
-        id: `file-${Date.now()}-${Math.random().toString(16).slice(2)}`,
-        name: file.name,
-        size: file.size,
-        type: file.type || "未知类型",
-        lastModified: file.lastModified,
-        uploadedAt: new Date().toISOString(),
-      }));
-      renderSelectedFiles();
-    });
-  }
-  const form = $("#assetUploadForm");
-  if (form && form.dataset.assetSubmitReady !== "true") {
-    form.dataset.assetSubmitReady = "true";
-    form.addEventListener("submit", handleAssetUpload);
-  }
+  $("#assetFileInput")?.addEventListener("change", (event) => {
+    pendingUploadFiles = Array.from(event.target.files || []).map((file) => ({
+      id: `file-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+      name: file.name,
+      size: file.size,
+      type: file.type || "未知类型",
+      lastModified: file.lastModified,
+      uploadedAt: new Date().toISOString(),
+    }));
+    renderSelectedFiles();
+  });
+  $("#assetUploadForm")?.addEventListener("submit", handleAssetUpload);
 }
 
 function handleAssetUpload(event) {
@@ -7939,8 +7846,8 @@ function handleAssetUpload(event) {
   if ($("#assetCourse")) $("#assetCourse").value = defaultTrainingCourse.courseName;
   renderSelectedFiles();
   renderAssetOverview();
-  selectedAssetId = upload.id;
-  refreshAssetWorkbench();
+  renderAssetList();
+  renderAssetKnowledgeGraph();
   showToast("知识库元数据已保存");
 }
 
@@ -8091,130 +7998,6 @@ function collectAssetItems() {
     ...getDerivedAssets(),
   ];
   return items.length ? items : getExampleAssets();
-}
-
-function normalizeAssetSource(source = "") {
-  const value = String(source || "").trim();
-  if (/泛雅|学习通|同步/.test(value)) return "泛雅同步";
-  if (/教学实践|实践|课堂|作业/.test(value)) return "教学实践";
-  if (/上传|知识库|教师/.test(value)) return "教师上传";
-  if (/教学导航|导航|训练|示例/.test(value)) return "教学导航";
-  return "教师上传";
-}
-
-function normalizeAssetType(type = "", title = "", summary = "") {
-  const text = `${type} ${title} ${summary}`;
-  if (/课程画像|学情|学习起点|新教师训练报告/.test(text)) return "课程画像";
-  if (/教学设计|教案|方案|模板|20 环节|20环节/.test(text)) return "教学设计方案";
-  if (/课堂活动|活动脚本|研讨|讨论/.test(text)) return "课堂活动脚本";
-  if (/案例|情境|素材/.test(text)) return "案例材料";
-  if (/评价量规|量规|Rubric|评分|评价标准/.test(text)) return "评价量规";
-  if (/学习证据|作业|学生|反馈|提交/.test(text)) return "学习证据";
-  if (/复盘|反思|改进/.test(text)) return "教学复盘";
-  if (/来源边界|上传材料元数据|边界|数据库/.test(text)) return "来源边界";
-  return "其他";
-}
-
-function getAssetBoundary(asset) {
-  return String(asset.boundary || asset.sourceBoundary || asset.databaseBoundary || "").trim();
-}
-
-function getAssetWorkbenchStatus(asset, source) {
-  const boundary = getAssetBoundary(asset);
-  if (!boundary || /待补充|未标注|未填写|待核验/.test(boundary)) return "待核验";
-  if (source === "泛雅同步") return "需更新";
-  if (source === "教学实践") return "已用于实践";
-  return "可复用";
-}
-
-function getAssetWorkbenchStage(asset, source, type) {
-  if (asset.stage || asset.step || asset.workflowStep) return asset.stage || asset.step || asset.workflowStep;
-  if (source === "教学导航") return type === "评价量规" ? "第 15 环节：课堂表现评价" : "课前教学设计与准备";
-  if (source === "教学实践") return "课中教学实施与调控";
-  if (source === "泛雅同步") return "课后评价反馈与持续改进";
-  return "课程知识库沉淀";
-}
-
-function getAssetEvidence(asset) {
-  const evidence = [];
-  if (Array.isArray(asset.evidence)) evidence.push(...asset.evidence.filter(Boolean));
-  if (Array.isArray(asset.relatedFiles)) evidence.push(...asset.relatedFiles.map((file) => file.name || file.title).filter(Boolean));
-  if (Array.isArray(asset.files)) evidence.push(...asset.files.map((file) => file.name || file.title).filter(Boolean));
-  if (Array.isArray(asset.tags)) evidence.push(...asset.tags.slice(0, 4));
-  if (asset.boundary) evidence.push("来源边界记录");
-  return Array.from(new Set(evidence.filter(Boolean))).slice(0, 6);
-}
-
-function toAssetWorkbenchItem(asset) {
-  const source = normalizeAssetSource(asset.source);
-  const type = normalizeAssetType(asset.type, asset.title, asset.summary);
-  const boundary = getAssetBoundary(asset);
-  const evidence = getAssetEvidence(asset);
-  return {
-    ...asset,
-    rawSource: asset.source || "未标注",
-    source,
-    type,
-    status: getAssetWorkbenchStatus(asset, source),
-    stage: getAssetWorkbenchStage(asset, source, type),
-    boundary: boundary || "待补充",
-    usage: asset.usage || "可用于后续教学设计、课堂任务生成、评价量规校准和教学复盘。",
-    reuse: asset.reuse || "可复制后作为下一次生成的资产上下文。",
-    risk: asset.risk || "正式使用前需教师二次确认来源、授权和评分规范。",
-    evidence: evidence.length ? evidence : ["本机浏览器资产记录"],
-    raw: asset,
-  };
-}
-
-function getAssetWorkbenchItems() {
-  return collectAssetItems().map(toAssetWorkbenchItem);
-}
-
-function getAssetSearchText(asset) {
-  return [
-    asset.title,
-    asset.summary,
-    asset.course,
-    asset.stage,
-    asset.source,
-    asset.rawSource,
-    asset.type,
-    asset.status,
-    asset.boundary,
-    asset.usage,
-    asset.reuse,
-    asset.risk,
-    ...(asset.evidence || []),
-    ...(asset.tags || []),
-  ]
-    .filter(Boolean)
-    .join(" ")
-    .toLowerCase();
-}
-
-function getFilteredAssetWorkbenchItems() {
-  const query = assetFilterState.query.trim().toLowerCase();
-  return getAssetWorkbenchItems().filter((asset) => {
-    const matchesSource = assetFilterState.source === "全部" || asset.source === assetFilterState.source;
-    const matchesType = assetFilterState.type === "全部" || asset.type === assetFilterState.type;
-    const matchesStatus = assetFilterState.status === "全部" || asset.status === assetFilterState.status;
-    const matchesQuery = !query || getAssetSearchText(asset).includes(query);
-    return matchesSource && matchesType && matchesStatus && matchesQuery;
-  });
-}
-
-function findAssetWorkbenchItem(id) {
-  return getAssetWorkbenchItems().find((item) => item.id === id);
-}
-
-function getActiveWorkbenchAsset(items = getFilteredAssetWorkbenchItems()) {
-  if (!items.length) {
-    selectedAssetId = "";
-    return null;
-  }
-  const active = items.find((item) => item.id === selectedAssetId) || items[0];
-  selectedAssetId = active.id;
-  return active;
 }
 
 const ASSET_GRAPH_TYPE_META = {
@@ -8770,9 +8553,12 @@ function selectAssetGraphNode(nodeId, options = {}) {
 }
 
 function highlightAssetGraphNodeByAsset(assetId) {
-  if (!assetId) return;
-  selectedAssetId = assetId;
-  renderAssetKnowledgeGraph();
+  if (!assetGraphState || !assetId) return;
+  const node = assetGraphState.nodes.find((item) => item.assetId === assetId);
+  if (!node) return;
+  assetGraphState.selectedNodeId = node.id;
+  renderAssetGraphDetail(node);
+  drawAssetGraphFrame();
 }
 
 function bindAssetGraphCanvas(canvas) {
@@ -8856,206 +8642,81 @@ function renderAssetGraphControls() {
 }
 
 function renderAssetKnowledgeGraph() {
+  const canvas = $("#assetKnowledgeCanvas");
+  if (!canvas) return;
+  const context = canvas.getContext("2d");
+  if (!context) return;
+  const previousNodes = assetGraphState?.nodes || [];
+  const graph = buildAssetKnowledgeGraph();
+  restoreAssetGraphPositions(graph.nodes, previousNodes);
   if (assetGraphState?.animationFrame) cancelAnimationFrame(assetGraphState.animationFrame);
-  assetGraphState = null;
-  const target = $("#assetKnowledgeCanvas");
-  if (!target) return;
-  const allItems = getAssetWorkbenchItems();
-  const filteredItems = getFilteredAssetWorkbenchItems();
-  const active = getActiveWorkbenchAsset(filteredItems);
-  const empty = $("#assetGraphEmpty");
-  if (empty) empty.hidden = Boolean(active);
-  if (!active) {
-    target.innerHTML = "";
-    renderAssetRelationInspector(null, allItems, filteredItems);
-    return;
-  }
-
-  const relationNodes = [
-    {
-      key: "source",
-      label: active.source,
-      title: "来源",
-      desc: active.rawSource && active.rawSource !== active.source ? active.rawSource : "来自当前资产库记录",
-    },
-    {
-      key: "stage",
-      label: active.stage,
-      title: "教学场景",
-      desc: `${active.course || defaultTrainingCourse.courseName} · ${active.type}`,
-    },
-    {
-      key: "boundary",
-      label: "来源边界",
-      title: active.boundary,
-      desc: active.status === "待核验" ? "需要教师补充或核验" : "已进入资产说明书",
-    },
-    {
-      key: "reuse",
-      label: "复用任务",
-      title: getAssetPrimaryReuse(active),
-      desc: "用于下一次生成前仍需教师确认",
-    },
-  ];
-
-  target.innerHTML = `
-    <div class="asset-relation-map-inner">
-      <svg class="asset-relation-lines" viewBox="0 0 920 360" fill="none" aria-hidden="true">
-        <path d="M212 90 C318 104 362 154 424 174" />
-        <path d="M708 88 C604 106 556 150 496 174" />
-        <path d="M222 276 C322 252 368 210 424 186" />
-        <path d="M698 278 C602 252 554 210 496 186" />
-      </svg>
-      <div class="asset-relation-center">
-        <span>当前资产</span>
-        <strong>${escapeHtml(active.title)}</strong>
-        <small>${escapeHtml(active.type)} · ${escapeHtml(active.status)}</small>
-      </div>
-      ${relationNodes.map(renderAssetRelationNode).join("")}
-    </div>
-  `;
-  renderAssetRelationInspector(active, allItems, filteredItems);
-}
-
-function renderAssetRelationNode(node) {
-  return `
-    <article class="asset-relation-node relation-${escapeHtml(node.key)}">
-      <span>${escapeHtml(node.label)}</span>
-      <strong>${escapeHtml(node.title)}</strong>
-      <p>${escapeHtml(node.desc)}</p>
-    </article>
-  `;
-}
-
-function getAssetPrimaryReuse(asset) {
-  if (asset.type === "评价量规") return "生成评价量规或作业评分标准";
-  if (asset.type === "课堂活动脚本") return "生成课堂活动说明";
-  if (asset.type === "案例材料") return "生成学生任务单";
-  if (asset.type === "教学复盘" || asset.type === "学习证据") return "生成教学复盘报告";
-  return "生成下一次课教学设计";
-}
-
-function renderAssetRelationInspector(active, allItems, filteredItems) {
-  const kpisTarget = $("#assetGraphKpis");
-  const filtersTarget = $("#assetGraphFilters");
-  const legendTarget = $("#assetGraphLegend");
-  const detailTarget = $("#assetGraphDetail");
-  const sourceCounts = ASSET_SOURCE_FILTERS.slice(1).map((source) => ({
-    source,
-    count: allItems.filter((asset) => asset.source === source).length,
-  }));
-  if (kpisTarget) {
-    kpisTarget.innerHTML = `
-      <div><strong>${allItems.length}</strong><span>资产</span></div>
-      <div><strong>${filteredItems.length}</strong><span>当前结果</span></div>
-      <div><strong>${allItems.filter((asset) => asset.status === "待核验").length}</strong><span>待核验</span></div>
-    `;
-  }
-  if (filtersTarget) {
-    filtersTarget.innerHTML = sourceCounts
-      .map(
-        (item) => `
-          <button type="button" data-asset-graph-source="${escapeHtml(item.source)}" class="${assetFilterState.source === item.source ? "is-active" : ""}">
-            ${escapeHtml(item.source)}<span>${item.count}</span>
-          </button>
-        `,
-      )
-      .join("");
-    $$("[data-asset-graph-source]", filtersTarget).forEach((button) => {
-      button.addEventListener("click", () => {
-        assetFilterState.source = assetFilterState.source === button.dataset.assetGraphSource ? "全部" : button.dataset.assetGraphSource || "全部";
-        refreshAssetWorkbench();
-      });
-    });
-  }
-  if (legendTarget) {
-    legendTarget.innerHTML = `
-      <span><i style="--legend-color:#547293"></i>来源</span>
-      <span><i style="--legend-color:#7f8f68"></i>教学场景</span>
-      <span><i style="--legend-color:#b96e46"></i>边界</span>
-      <span><i style="--legend-color:#2f7d68"></i>复用</span>
-    `;
-  }
-  if (detailTarget) {
-    detailTarget.innerHTML = active
-      ? `
-        <span>证据链边界</span>
-        <strong>${escapeHtml(active.title)}</strong>
-        <p>${escapeHtml(active.summary || "该资产由当前资产库记录自动整理。")}</p>
-        <dl>
-          <div><dt>来源</dt><dd>${escapeHtml(active.source)} / ${escapeHtml(active.rawSource || active.source)}</dd></div>
-          <div><dt>边界</dt><dd>${escapeHtml(active.boundary)}</dd></div>
-          <div><dt>复用</dt><dd>${escapeHtml(getAssetPrimaryReuse(active))}</dd></div>
-        </dl>
-      `
-      : `
-        <span>当前资产</span>
-        <strong>暂无可解释资产</strong>
-        <p>保存训练报告、实践材料或知识库元数据后，这里会展示来源、边界和复用任务。</p>
-      `;
+  assetGraphState = {
+    canvas,
+    context,
+    nodes: graph.nodes,
+    links: graph.links,
+    nodeMap: new Map(graph.nodes.map((node) => [node.id, node])),
+    activeFilter: assetGraphState?.activeFilter || "all",
+    selectedNodeId: graph.nodes.some((node) => node.id === assetGraphState?.selectedNodeId) ? assetGraphState.selectedNodeId : "agent-core",
+    hoveredNodeId: "",
+    pointer: null,
+    reducedMotion: window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches || false,
+  };
+  $("#assetGraphEmpty") && ($("#assetGraphEmpty").hidden = graph.nodes.length > 1);
+  bindAssetGraphCanvas(canvas);
+  renderAssetGraphControls();
+  resizeAssetGraphCanvas();
+  selectAssetGraphNode(assetGraphState.selectedNodeId);
+  if (!assetGraphState.reducedMotion) {
+    assetGraphState.animationFrame = requestAnimationFrame(animateAssetGraph);
   }
 }
 
 function renderAssetList() {
   const list = $("#assetList");
   if (!list) return;
-  const items = getFilteredAssetWorkbenchItems();
-  const active = getActiveWorkbenchAsset(items);
-  $("#assetResultCount") && ($("#assetResultCount").textContent = `${items.length} 项结果`);
-  if (!items.length) {
-    list.innerHTML = `
-      <div class="asset-empty-state">
-        <strong>未找到匹配资产</strong>
-        <p>请放宽来源、类型、状态筛选，或清空搜索关键词。</p>
-      </div>
-    `;
-    return;
-  }
+  const items = collectAssetItems();
   list.innerHTML = items.map(renderAssetRow).join("");
-  if (active) syncAssetCardSelection(active.id);
-  $$("[data-asset-card]", list).forEach((card) => {
-    card.addEventListener("click", (event) => {
-      if (event.target.closest("button")) return;
-      viewAssetDetail(card.dataset.assetCard);
-    });
-    card.addEventListener("keydown", (event) => {
-      if (event.key !== "Enter" && event.key !== " ") return;
-      event.preventDefault();
-      viewAssetDetail(card.dataset.assetCard);
-    });
-  });
-  bindAssetActions(list);
+  $$("[data-view-asset]", list).forEach((button) => button.addEventListener("click", () => viewAssetDetail(button.dataset.viewAsset)));
+  $$("[data-copy-asset]", list).forEach((button) =>
+    button.addEventListener("click", () => {
+      const asset = findAsset(button.dataset.copyAsset);
+      if (asset) copyText(asset.content || asset.summary || asset.title);
+    }),
+  );
+  $$("[data-use-asset]", list).forEach((button) =>
+    button.addEventListener("click", () => {
+      const asset = findAsset(button.dataset.useAsset);
+      if (!asset) return;
+      copyText(`请基于以下教学资产继续生成：\n${asset.title}\n${asset.summary}\n来源边界：${asset.boundary}`);
+      showToast("已复制“用于下一次生成”的提示词");
+    }),
+  );
+  $$("[data-delete-asset]", list).forEach((button) => button.addEventListener("click", () => deleteAsset(button.dataset.deleteAsset)));
 }
 
 function renderAssetRow(asset) {
   const tags = asset.tags || [];
-  const assetId = escapeHtml(asset.id);
-  const statusTone = asset.status === "可复用" ? "is-ready" : asset.status === "待核验" ? "is-review" : asset.status === "需更新" ? "is-stale" : "is-used";
   return `
-    <article class="asset-row asset-card ${selectedAssetId === asset.id ? "is-selected" : ""}" data-asset-card="${assetId}" tabindex="0" aria-selected="${selectedAssetId === asset.id ? "true" : "false"}">
+    <article class="asset-row">
       <div>
         <div class="asset-topline">
           <h3>${escapeHtml(asset.title)}</h3>
-          <div class="asset-badge-row">
-            <span class="asset-tag">${escapeHtml(asset.type)}</span>
-            <span class="asset-source-chip">${escapeHtml(asset.source)}</span>
-            <span class="asset-status-chip ${statusTone}">${escapeHtml(asset.status)}</span>
-          </div>
+          <span class="asset-tag">${escapeHtml(asset.type)}</span>
         </div>
         <p class="muted">${escapeHtml(asset.summary || "")}</p>
         <div class="asset-meta">
-          <span>课程：${escapeHtml(asset.course || defaultTrainingCourse.courseName)}</span>
-          <span>场景：${escapeHtml(asset.stage)}</span>
-          <span>边界：${escapeHtml(asset.boundary)}</span>
+          <span>来源：${escapeHtml(asset.source || "未标注")}</span>
+          <span>关联课程：${escapeHtml(asset.course || defaultTrainingCourse.courseName)}</span>
           <span>更新时间：${formatDate(asset.updatedAt)}</span>
         </div>
-        <div class="tag-row">${(asset.evidence || tags).slice(0, 4).map((tag) => `<span>${escapeHtml(tag)}</span>`).join("")}</div>
+        <div class="tag-row">${tags.map((tag) => `<span>${escapeHtml(tag)}</span>`).join("")}</div>
       </div>
       <div class="asset-actions">
-        <button type="button" data-view-asset="${assetId}">查看</button>
-        <button type="button" data-copy-asset="${assetId}">复制</button>
-        <button type="button" data-use-asset="${assetId}">用于下一次生成</button>
-        <button type="button" data-delete-asset="${assetId}" ${asset.derived ? "disabled" : ""}>删除</button>
+        <button type="button" data-view-asset="${asset.id}">查看</button>
+        <button type="button" data-copy-asset="${asset.id}">复制</button>
+        <button type="button" data-use-asset="${asset.id}">用于下一次生成</button>
+        <button type="button" data-delete-asset="${asset.id}" ${asset.derived ? "disabled" : ""}>删除</button>
       </div>
     </article>
   `;
@@ -9065,115 +8726,26 @@ function findAsset(id) {
   return collectAssetItems().find((item) => item.id === id);
 }
 
-function bindAssetActions(root = document) {
-  $$("[data-view-asset]", root).forEach((button) => button.addEventListener("click", () => viewAssetDetail(button.dataset.viewAsset)));
-  $$("[data-copy-asset]", root).forEach((button) =>
-    button.addEventListener("click", () => {
-      const asset = findAssetWorkbenchItem(button.dataset.copyAsset);
-      if (asset) copyText(asset.content || asset.summary || asset.title);
-    }),
-  );
-  $$("[data-use-asset]", root).forEach((button) =>
-    button.addEventListener("click", () => {
-      const asset = findAssetWorkbenchItem(button.dataset.useAsset);
-      if (!asset) return;
-      copyText(buildAssetReusePrompt(asset, getAssetPrimaryReuse(asset)));
-      showToast("已复制“用于下一次生成”的提示词");
-    }),
-  );
-  $$("[data-delete-asset]", root).forEach((button) => button.addEventListener("click", () => deleteAsset(button.dataset.deleteAsset)));
-}
-
-function buildAssetReusePrompt(asset, actionLabel) {
-  return [
-    `请基于以下教学资产继续生成：${actionLabel}`,
-    `资产标题：${asset.title}`,
-    `课程语境：${asset.course || defaultTrainingCourse.courseName}`,
-    `教学场景：${asset.stage}`,
-    `内容摘要：${asset.summary || "暂无摘要"}`,
-    `来源边界：${asset.boundary}`,
-    `风险提醒：${asset.risk}`,
-  ].join("\n");
-}
-
-function bindAssetReuseActions() {
-  $$("[data-reuse-action]").forEach((button) => {
-    if (button.dataset.assetReuseReady === "true") return;
-    button.dataset.assetReuseReady = "true";
-    button.addEventListener("click", () => {
-      const active = findAssetWorkbenchItem(selectedAssetId) || getActiveWorkbenchAsset(getFilteredAssetWorkbenchItems());
-      if (!active) {
-        showToast("请先选择一个可复用资产");
-        return;
-      }
-      const actionLabels = {
-        lesson: "下一次课教学设计",
-        activity: "课堂活动说明",
-        task: "学生任务单",
-        rubric: "评价量规",
-        review: "教学复盘报告",
-      };
-      const label = actionLabels[button.dataset.reuseAction] || getAssetPrimaryReuse(active);
-      copyText(buildAssetReusePrompt(active, label));
-      showToast(`已复制“${label}”生成提示词`);
-    });
-  });
-}
-
-function syncAssetCardSelection(activeId = selectedAssetId) {
-  $$("[data-asset-card]").forEach((card) => {
-    const isActive = card.dataset.assetCard === activeId;
-    card.classList.toggle("is-selected", isActive);
-    card.setAttribute("aria-selected", String(isActive));
-  });
-}
-
 function viewAssetDetail(id, options = {}) {
   const detail = $("#assetDetail");
-  const asset = findAssetWorkbenchItem(id);
+  const asset = findAsset(id);
   if (!detail || !asset) return;
-  selectedAssetId = asset.id;
-  const assetId = escapeHtml(asset.id);
   detail.innerHTML = `
-    <article class="detail-card asset-manual-card">
-      <div class="asset-manual-head">
-        <div>
-          <span class="asset-manual-label">当前资产</span>
-          <h3>${escapeHtml(asset.title)}</h3>
-        </div>
-        <span class="asset-status-chip ${asset.status === "可复用" ? "is-ready" : asset.status === "待核验" ? "is-review" : asset.status === "需更新" ? "is-stale" : "is-used"}">${escapeHtml(asset.status)}</span>
-      </div>
-      <div class="asset-badge-row">
-        <span class="asset-tag">${escapeHtml(asset.type)}</span>
-        <span class="asset-source-chip">${escapeHtml(asset.source)}</span>
-        <span class="asset-source-chip">来源边界：${escapeHtml(asset.boundary)}</span>
-      </div>
+    <article class="detail-card">
+      <h3>${escapeHtml(asset.title)}</h3>
       <dl>
         <div><dt>类型</dt><dd>${escapeHtml(asset.type || "未标注")}</dd></div>
         <div><dt>来源</dt><dd>${escapeHtml(asset.source || "未标注")}</dd></div>
-        <div><dt>教学场景</dt><dd>${escapeHtml(asset.stage || "未标注")}</dd></div>
-        <div><dt>来源边界</dt><dd>${escapeHtml(asset.boundary || "待补充")}</dd></div>
+        <div><dt>来源边界</dt><dd>${escapeHtml(asset.boundary || "未标注")}</dd></div>
         <div><dt>内容摘要</dt><dd>${escapeHtml(asset.summary || "暂无摘要")}</dd></div>
         <div><dt>教学用途</dt><dd>${escapeHtml(asset.usage || "可用于教学设计")}</dd></div>
         <div><dt>可复用方式</dt><dd>${escapeHtml(asset.reuse || "可复制后用于下一次生成")}</dd></div>
         <div><dt>风险提醒</dt><dd>${escapeHtml(asset.risk || "使用前请教师二次确认")}</dd></div>
-        <div><dt>关联材料</dt><dd>${asset.evidence?.length ? asset.evidence.map((item) => escapeHtml(item)).join("；") : "暂无关联文件元数据"}</dd></div>
+        <div><dt>关联材料</dt><dd>${asset.relatedFiles?.length ? asset.relatedFiles.map((file) => `${escapeHtml(file.name)}（${formatFileSize(file.size)}）`).join("；") : "暂无关联文件元数据"}</dd></div>
       </dl>
-      <div class="asset-manual-actions">
-        <button type="button" data-copy-asset="${assetId}">复制资产内容</button>
-        <button type="button" data-use-asset="${assetId}">基于该资产生成下一步</button>
-      </div>
     </article>
   `;
-  bindAssetActions(detail);
-  if (!options.skipListSync) syncAssetCardSelection(asset.id);
   if (!options.skipGraphSync) highlightAssetGraphNodeByAsset(id);
-}
-
-function renderEmptyAssetDetail() {
-  const detail = $("#assetDetail");
-  if (!detail) return;
-  detail.innerHTML = `<p class="muted">当前筛选条件下没有资产。请放宽筛选，或导入新的课程材料。</p>`;
 }
 
 function deleteAsset(id) {
@@ -9183,9 +8755,11 @@ function deleteAsset(id) {
     store[key] = (store[key] || []).filter((item) => item.id !== id);
   });
   saveAssets(store);
-  if (selectedAssetId === id) selectedAssetId = "";
   renderAssetOverview();
-  refreshAssetWorkbench();
+  renderAssetList();
+  renderAssetKnowledgeGraph();
+  const detail = $("#assetDetail");
+  if (detail) detail.innerHTML = `<p class="muted">资产已删除。点击其他资产可查看详情。</p>`;
   showToast("资产已删除");
 }
 
