@@ -17617,8 +17617,7 @@ body[data-page="teaching-navigation"] .route-map-layout {
 }
 
 body[data-page="teaching-navigation"] .route-map-layout:has(.route-node-popover.is-open) {
-  grid-template-columns: minmax(0, 1fr) minmax(280px, 320px);
-  gap: 16px;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 390px);
 }
 
 body[data-page="teaching-navigation"] .route-map-card {
@@ -17700,7 +17699,7 @@ body[data-page="teaching-navigation"] .route-map-legend .legend-locked {
 
 body[data-page="teaching-navigation"] .route-map-canvas {
   position: relative;
-  height: clamp(580px, 50vw, 680px);
+  height: clamp(500px, 44vw, 560px);
   overflow: hidden;
   border: 1px solid var(--journey-line);
   border-radius: 24px;
@@ -17810,18 +17809,18 @@ body[data-page="teaching-navigation"] .route-map-stage-zone strong {
 }
 
 body[data-page="teaching-navigation"] .route-map-stage-zone.stage-zone-pre {
-  top: 14%;
-  left: 34%;
+  top: 8%;
+  left: 32%;
 }
 
 body[data-page="teaching-navigation"] .route-map-stage-zone.stage-zone-class {
-  top: 46%;
+  top: 33%;
   left: 70%;
 }
 
 body[data-page="teaching-navigation"] .route-map-stage-zone.stage-zone-review {
-  top: 70%;
-  left: 58%;
+  top: 61%;
+  left: 64%;
 }
 
 body[data-page="teaching-navigation"] .route-map-svg {
@@ -18001,7 +18000,6 @@ body[data-page="teaching-navigation"] .route-node-popover {
   right: auto;
   bottom: auto;
   left: auto;
-  order: 2;
   z-index: 1;
   display: none;
   width: auto !important;
@@ -18009,7 +18007,7 @@ body[data-page="teaching-navigation"] .route-node-popover {
   max-height: calc(100vh - var(--header-topbar) - 36px);
   overflow: auto;
   overscroll-behavior: contain;
-  padding: 14px;
+  padding: 18px;
   border: 1px solid var(--journey-line);
   border-radius: 28px;
   background: rgba(255, 250, 242, 0.92);
@@ -18021,42 +18019,6 @@ body[data-page="teaching-navigation"] .route-node-popover.is-open,
 body[data-page="teaching-navigation"] .route-node-popover.is-expanded {
   display: block;
   max-height: calc(100vh - var(--header-topbar) - 36px);
-}
-
-body[data-page="teaching-navigation"] .route-node-popover .route-node-detail-card {
-  gap: 12px;
-}
-
-body[data-page="teaching-navigation"] .route-node-popover .route-workbench-head {
-  gap: 9px;
-}
-
-body[data-page="teaching-navigation"] .route-node-popover .route-workbench-head h3 {
-  font-size: 1.2rem;
-  line-height: 1.22;
-}
-
-body[data-page="teaching-navigation"] .route-node-popover .route-workbench-head > p,
-body[data-page="teaching-navigation"] .route-node-popover .route-core-question strong,
-body[data-page="teaching-navigation"] .route-node-popover .route-explain-grid p,
-body[data-page="teaching-navigation"] .route-node-popover .route-node-input-list {
-  font-size: 0.84rem;
-  line-height: 1.6;
-}
-
-body[data-page="teaching-navigation"] .route-node-popover .route-core-question,
-body[data-page="teaching-navigation"] .route-node-popover .route-workbench-block {
-  padding: 11px;
-  border-radius: 16px;
-}
-
-body[data-page="teaching-navigation"] .route-node-popover .route-explain-grid {
-  gap: 8px;
-}
-
-body[data-page="teaching-navigation"] .route-node-popover .route-explain-grid article {
-  padding: 10px 11px;
-  border-radius: 15px;
 }
 
 body[data-page="teaching-navigation"] .route-node-popover::before {
@@ -18172,27 +18134,7 @@ body[data-page="teaching-navigation"] .route-node-title {
   position: absolute;
   top: 50%;
   left: calc(50% + 32px);
-  width: max-content;
-  max-width: 148px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
   transform: translateY(-50%);
-}
-
-body[data-page="teaching-navigation"] .route-node-label-left .route-node-title {
-  right: calc(50% + 32px);
-  left: auto;
-  text-align: right;
-}
-
-body[data-page="teaching-navigation"] .route-node-label-above .route-node-title {
-  top: auto;
-  right: auto;
-  bottom: calc(50% + 30px);
-  left: 50%;
-  transform: translateX(-50%);
-  text-align: center;
 }
 
 @media (max-width: 760px) {
@@ -18203,15 +18145,5 @@ body[data-page="teaching-navigation"] .route-node-label-above .route-node-title 
 
   body[data-page="teaching-navigation"] .route-node-title {
     left: calc(50% + 28px);
-  }
-
-  body[data-page="teaching-navigation"] .route-node-label-left .route-node-title {
-    right: calc(50% + 28px);
-    left: auto;
-  }
-
-  body[data-page="teaching-navigation"] .route-node-label-above .route-node-title {
-    bottom: calc(50% + 26px);
-    left: 50%;
   }
 }
