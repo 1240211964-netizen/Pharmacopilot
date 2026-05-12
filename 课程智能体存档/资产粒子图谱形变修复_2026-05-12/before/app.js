@@ -8468,24 +8468,9 @@ function restoreAssetGraphPositions(nodes, previousNodes = []) {
   });
 }
 
-function resetAssetGraphNodePosition(node, angle = 0, distance = 0) {
-  node.x = node.anchorX + Math.cos(angle) * distance;
-  node.y = node.anchorY + Math.sin(angle) * distance;
-  node.vx = 0;
-  node.vy = 0;
-}
-
 function layoutAssetGraphNodes(state) {
   const width = state.width || 760;
   const height = state.height || 420;
-  const previousWidth = state.layoutWidth || 0;
-  const previousHeight = state.layoutHeight || 0;
-  const shouldRelayout =
-    state.forceRelayout ||
-    !previousWidth ||
-    !previousHeight ||
-    Math.abs(previousWidth - width) > 24 ||
-    Math.abs(previousHeight - height) > 24;
   const centerX = width * 0.5;
   const centerY = height * 0.46;
   const groupCenters = {
@@ -8511,7 +8496,10 @@ function layoutAssetGraphNodes(state) {
         node.anchorX = centerX;
         node.anchorY = centerY;
         node.orbit = 0;
-        if (!Number.isFinite(node.x) || !Number.isFinite(node.y) || shouldRelayout) resetAssetGraphNodePosition(node);
+        if (!Number.isFinite(node.x) || !Number.isFinite(node.y)) {
+          node.x = node.anchorX;
+          node.y = node.anchorY;
+        }
         return;
       }
       const density = Math.max(nodes.length, 1);
@@ -8530,11 +8518,12 @@ function layoutAssetGraphNodes(state) {
       node.orbit = type === "tag" || type === "boundary" ? 1.8 : type === "course" ? 1.2 : 2.6;
       node.orbitSpeed = 0.006 + ((index % 5) * 0.0015);
       node.pulse = node.pulse || adjustedAngle;
-      if (!Number.isFinite(node.x) || !Number.isFinite(node.y) || shouldRelayout) resetAssetGraphNodePosition(node, adjustedAngle, Math.min(10, 38 / density));
+      if (!Number.isFinite(node.x) || !Number.isFinite(node.y) || state.forceRelayout) {
+        node.x = node.anchorX + Math.cos(adjustedAngle) * Math.min(16, 56 / density);
+        node.y = node.anchorY + Math.sin(adjustedAngle) * Math.min(10, 38 / density);
+      }
     });
   });
-  state.layoutWidth = width;
-  state.layoutHeight = height;
   state.forceRelayout = false;
 }
 
@@ -8579,24 +8568,57 @@ function updateAssetGraphPhysics() {
   const height = state.height;
   const nodes = state.nodes;
 
+  for (let i = 0; i < nodes.length; i += 1) {
+    const a = nodes[i];
+    for (let j = i + 1; j < nodes.length; j += 1) {
+      const b = nodes[j];
+      const dx = b.x - a.x || 0.01;
+      const dy = b.y - a.y || 0.01;
+      const distSq = dx * dx + dy * dy;
+      const minDistance = a.radius + b.radius + 16;
+      const force = Math.min(0.3, (minDistance * minDistance) / Math.max(distSq, 120)) * 0.008;
+      a.vx -= dx * force;
+      a.vy -= dy * force;
+      b.vx += dx * force;
+      b.vy += dy * force;
+    }
+  }
+
+  state.links.forEach((link) => {
+    const from = state.nodeMap.get(link.from);
+    const to = state.nodeMap.get(link.to);
+    if (!from || !to) return;
+    const dx = to.x - from.x;
+    const dy = to.y - from.y;
+    const distance = Math.max(Math.sqrt(dx * dx + dy * dy), 1);
+    const target = 120 + (1.2 - link.weight) * 36;
+    const pull = (distance - target) * 0.00018 * link.weight;
+    const fx = dx * pull;
+    const fy = dy * pull;
+    from.vx += fx;
+    from.vy += fy;
+    to.vx -= fx;
+    to.vy -= fy;
+  });
+
   nodes.forEach((node) => {
     const focus = isAssetGraphNodeFocused(node) ? 1 : 0.34;
     const orbitX = node.anchorX + Math.cos(node.pulse * 0.7) * (node.orbit || 0);
     const orbitY = node.anchorY + Math.sin(node.pulse * 0.9) * (node.orbit || 0);
-    const maxDrift = node.type === "core" ? 2 : node.radius + 16;
-    const dx = node.x - node.anchorX;
-    const dy = node.y - node.anchorY;
-    const drift = Math.sqrt(dx * dx + dy * dy);
-    if (drift > maxDrift) {
-      node.x = node.anchorX + (dx / drift) * maxDrift;
-      node.y = node.anchorY + (dy / drift) * maxDrift;
-      node.vx = 0;
-      node.vy = 0;
+    node.vx += (orbitX - node.x) * 0.018 * focus;
+    node.vy += (orbitY - node.y) * 0.018 * focus;
+    if (state.pointer?.active) {
+      const dx = node.x - state.pointer.x;
+      const dy = node.y - state.pointer.y;
+      const distance = Math.max(Math.sqrt(dx * dx + dy * dy), 1);
+      if (distance < 86) {
+        const push = ((86 - distance) / 86) * 0.14;
+        node.vx += (dx / distance) * push;
+        node.vy += (dy / distance) * push;
+      }
     }
-    node.vx += (orbitX - node.x) * 0.06 * focus;
-    node.vy += (orbitY - node.y) * 0.06 * focus;
-    node.vx *= 0.62;
-    node.vy *= 0.62;
+    node.vx *= 0.76;
+    node.vy *= 0.76;
     node.x = Math.min(width - node.radius - 8, Math.max(node.radius + 8, node.x + node.vx));
     node.y = Math.min(height - node.radius - 8, Math.max(node.radius + 8, node.y + node.vy));
     node.pulse += node.orbitSpeed || 0.006;
@@ -8657,9 +8679,9 @@ function drawAssetGraphFrame() {
     context.beginPath();
     context.arc(node.x - radius * 0.28, node.y - radius * 0.32, Math.max(1.4, radius * 0.18), 0, Math.PI * 2);
     context.fill();
-    if (node.type === "core" || hovered) {
-      context.fillStyle = hovered ? "#2f2923" : "rgba(47, 41, 35, 0.82)";
-      context.font = `${hovered ? 700 : 620} ${node.type === "core" ? 13 : 11}px sans-serif`;
+    if (node.type === "core" || selected || hovered) {
+      context.fillStyle = selected || hovered ? "#2f2923" : "rgba(47, 41, 35, 0.82)";
+      context.font = `${selected || hovered ? 700 : 620} ${node.type === "core" ? 13 : 11}px sans-serif`;
       context.textAlign = "center";
       context.textBaseline = "top";
       context.fillText(node.label, node.x, node.y + radius + 7);
@@ -8850,13 +8872,12 @@ function bindAssetGraphCanvas(canvas) {
     canvas.addEventListener("pointermove", (event) => {
       if (!assetGraphState) return;
       const point = getAssetGraphPointer(event);
-      assetGraphState.pointer = { ...point, active: false };
+      assetGraphState.pointer = { ...point, active: true };
       const node = getAssetGraphNodeAtPoint(point);
       assetGraphState.hoveredNodeId = node?.id || "";
       canvas.style.cursor = node ? "pointer" : "default";
       if (node) showAssetGraphTooltip(node, point);
       else hideAssetGraphTooltip();
-      drawAssetGraphFrame();
     });
     canvas.addEventListener("pointerleave", () => {
       if (!assetGraphState) return;

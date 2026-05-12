@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pharmacopilot | 教学资产</title>
+    <meta
+      name="description"
+      content="教学资产页沉淀教学实践生成材料、教师上传材料元数据、泛雅同步记录和新手教程示例记录。"
+    />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./styles.css" />
+    <script defer src="./app.js"></script>
+  </head>
+  <body data-page="assets">
+    <header class="site-header">
+      <div class="topbar">
+        <a class="brand" href="./index.html" aria-label="Pharmacopilot 首页">
+          <span class="brand-mark" aria-hidden="true"><span class="brand-monogram">P</span></span>
+          <span class="brand-lockup">
+            <span class="brand-wordmark">Pharmacopilot</span>
+            <span class="brand-submark">药学教学智能体</span>
+          </span>
+        </a>
+        <button
+          class="nav-menu-toggle"
+          id="navMenuToggle"
+          type="button"
+          aria-label="打开导航菜单"
+          aria-controls="primaryNav"
+          aria-expanded="false"
+        >
+          <span aria-hidden="true"></span>
+        </button>
+        <nav class="topnav" id="primaryNav" aria-label="页面导航">
+          <a class="nav-link" data-nav="home" href="./index.html">首页</a>
+          <a class="nav-link" data-nav="teaching-navigation" href="./teaching-navigation.html">教学导航</a>
+          <a class="nav-link" data-nav="practice" href="./practice.html">教学实践</a>
+          <a class="nav-link active" data-nav="assets" href="./assets.html">教学资产</a>
+        </nav>
+        <div class="top-actions">
+          <a class="nav-primary-action" href="./practice.html">返回教学实践</a>
+        </div>
+      </div>
+    </header>
+
+    <main class="assets-workbench-main">
+      <section class="asset-workbench-hero page-hero" aria-labelledby="assets-title">
+        <div class="asset-hero-copy">
+          <p class="eyebrow">Teaching assets workbench</p>
+          <h1 id="assets-title">教学资产中枢：把一次备课沉淀成下次可复用的教学证据。</h1>
+          <p class="lede">
+            汇总教学实践生成材料、教师上传知识库、泛雅模拟记录和新手教程示例记录，形成可检索、可核验、可复用的药学管理课程资产。
+          </p>
+          <div class="asset-hero-actions">
+            <button class="primary-action" type="button" data-asset-import-toggle aria-controls="assetImportPanel" aria-expanded="false">
+              导入课程材料
+            </button>
+            <a class="secondary-action" href="#saved-assets-title">查看可复用资产</a>
+            <a class="secondary-action" href="#asset-graph-title">检查来源边界</a>
+          </div>
+        </div>
+
+        <section class="asset-stats asset-hero-stats" aria-label="资产构成总览">
+          <article class="stat-card"><span id="trainingReportCount">0</span><strong>新手教程记录</strong></article>
+          <article class="stat-card"><span id="practiceReportCount">0</span><strong>教学实践生成材料</strong></article>
+          <article class="stat-card"><span id="uploadedMetaCount">0</span><strong>教师上传材料</strong></article>
+          <article class="stat-card"><span id="fanyaSyncCount">0</span><strong>泛雅同步记录</strong></article>
+        </section>
+      </section>
+
+      <section class="asset-flow-strip" aria-label="教学资产沉淀流程">
+        <article><span>01</span><strong>采集</strong><p>教学实践、教师上传、泛雅同步、系统示例</p></article>
+        <article><span>02</span><strong>归档</strong><p>教案、案例、量规、任务、复盘自动分类</p></article>
+        <article><span>03</span><strong>核验</strong><p>来源边界、使用限制、风险提醒</p></article>
+        <article><span>04</span><strong>复用</strong><p>生成教学设计、课堂任务、评价量规与复盘建议</p></article>
+      </section>
+
+      <section class="asset-graph-section section-block" aria-labelledby="asset-graph-title">
+        <div class="section-head">
+          <p class="eyebrow">Asset knowledge graph</p>
+          <h2 id="asset-graph-title">用粒子图谱查看资产网络。</h2>
+          <p class="section-copy">
+            图谱连接教学实践、教师上传、泛雅同步、系统示例、课程、标签和来源边界。点击粒子节点可以查看它的来源、用途和限制，再进入右侧资产说明书复用。
+          </p>
+        </div>
+        <div class="asset-graph-shell">
+          <div class="asset-graph-stage" aria-label="教学资产知识图谱交互区">
+            <canvas id="assetKnowledgeCanvas" aria-label="教学资产粒子知识图谱"></canvas>
+            <div id="assetGraphEmpty" class="asset-graph-empty" hidden>
+              <strong>暂无可视化节点</strong>
+              <span>保存训练报告、实践材料或知识库元数据后，这里会形成可交互的资产网络。</span>
+            </div>
+            <div id="assetGraphTooltip" class="asset-graph-tooltip" hidden></div>
+          </div>
+          <aside class="asset-graph-inspector" aria-label="知识图谱筛选和节点说明">
+            <div class="asset-graph-kpis" id="assetGraphKpis"></div>
+            <div class="asset-graph-filters" id="assetGraphFilters" aria-label="图谱节点筛选"></div>
+            <div class="asset-graph-legend" id="assetGraphLegend"></div>
+            <div class="asset-graph-detail" id="assetGraphDetail">
+              <span>当前节点</span>
+              <strong>教学智能体数据中枢</strong>
+              <p>点击粒子节点，可查看它来自训练、实践、上传知识库、标签还是来源边界。</p>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="asset-import-panel" id="assetImportPanel" hidden>
+        <article class="upload-panel">
+          <div class="section-head mini">
+            <p class="eyebrow">Import materials</p>
+            <h2>导入课程材料</h2>
+            <p>上传区默认收起，避免首屏被表单占据。浏览器第一版只保存元数据，不读取本地文件正文。</p>
+          </div>
+          <form id="assetUploadForm" class="asset-form">
+            <label>
+              <span>材料说明</span>
+              <textarea id="assetDescription" rows="4" placeholder="例如：《管理学原理》第 3 周课件、SWOT 案例材料、评分标准参考材料"></textarea>
+            </label>
+            <div class="form-grid">
+              <label>
+                <span>关联课程</span>
+                <input id="assetCourse" type="text" value="药事管理" />
+              </label>
+              <label>
+                <span>标签</span>
+                <input id="assetTags" type="text" placeholder="SWOT, 管理学原理, 评价量规" />
+              </label>
+            </div>
+            <label>
+              <span>来源边界</span>
+              <textarea id="sourceBoundary" rows="3" placeholder="例如：仅引用本次上传课件、学校授权课程平台数据、指定政策网页"></textarea>
+            </label>
+            <label>
+              <span>指定网页</span>
+              <input id="assetUrl" type="url" placeholder="https://example.edu/policy-page" />
+            </label>
+            <label>
+              <span>数据库边界</span>
+              <input id="databaseBoundary" type="text" placeholder="例如：仅限学校课程知识库 / 药事管理课程资料库" />
+            </label>
+            <label>
+              <span>使用限制</span>
+              <textarea id="usageLimit" rows="3" placeholder="例如：不得引用未授权学生个人数据；政策材料需由教师二次核验"></textarea>
+            </label>
+            <label class="file-drop">
+              <span>上传文件列表</span>
+              <input
+                id="assetFileInput"
+                type="file"
+                multiple
+                accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.png,.jpg,.jpeg,.webp,.txt,.md,.zip,.rar"
+              />
+              <small>支持 PDF、Word、PPT、Excel、图片、文本、压缩包。</small>
+            </label>
+            <div id="selectedFileList" class="file-meta-list" aria-live="polite"></div>
+            <button class="primary-action" type="submit">保存知识库元数据</button>
+          </form>
+        </article>
+      </section>
+
+      <section class="asset-workbench-grid" aria-labelledby="saved-assets-title">
+        <aside class="asset-filter-panel" aria-label="资产筛选">
+          <div class="asset-filter-head">
+            <p class="eyebrow">Asset filters</p>
+            <h2>资产来源与筛选</h2>
+          </div>
+          <label class="asset-search-field">
+            <span>搜索</span>
+            <input id="assetSearchInput" type="search" placeholder="搜索资产、课程或摘要" autocomplete="off" />
+          </label>
+          <div class="asset-filter-group" id="assetSourceFilters" data-asset-filter-group="source"></div>
+          <div class="asset-filter-group" id="assetTypeFilters" data-asset-filter-group="type"></div>
+          <div class="asset-filter-group" id="assetStatusFilters" data-asset-filter-group="status"></div>
+        </aside>
+
+        <section class="asset-results-panel">
+          <div class="asset-results-head">
+            <div class="section-head mini">
+              <p class="eyebrow">Reusable teaching assets</p>
+              <h2 id="saved-assets-title">可复用资产</h2>
+              <p>以卡片呈现资产，教师可以先筛选、审校，再复制到泛雅模拟或用于下一次生成。</p>
+            </div>
+            <span class="asset-result-count" id="assetResultCount">0 项结果</span>
+          </div>
+          <div id="assetList" class="asset-list" aria-live="polite"></div>
+        </section>
+
+        <aside class="asset-detail-panel">
+          <div class="section-head mini">
+            <p class="eyebrow">Asset manual</p>
+            <h2>资产说明书</h2>
+          </div>
+          <div id="assetDetail">
+            <p class="muted">点击资产卡片后，这里会显示来源边界、内容摘要、教学用途、可复用方式、风险提醒和关联材料。</p>
+          </div>
+        </aside>
+      </section>
+
+      <section class="asset-reuse-band" aria-labelledby="asset-reuse-title">
+        <div>
+          <p class="eyebrow">Reuse workflow</p>
+          <h2 id="asset-reuse-title">从资产仓库转向教学行动。</h2>
+          <p>选择已核验资产后，可继续生成下一次课教学设计、课堂活动、学生任务单、评价量规或教学复盘报告。</p>
+        </div>
+        <div class="asset-reuse-grid">
+          <button type="button" data-reuse-action="lesson">下一次课教学设计</button>
+          <button type="button" data-reuse-action="activity">课堂活动说明</button>
+          <button type="button" data-reuse-action="task">学生任务单</button>
+          <button type="button" data-reuse-action="rubric">评价量规</button>
+          <button type="button" data-reuse-action="review">教学复盘报告</button>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
