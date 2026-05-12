@@ -1478,7 +1478,6 @@ let currentAssetStore = null;
 let pendingUploadFiles = [];
 let assetGraphState = null;
 let assetGraphRenderFrame = null;
-let assetGraphRenderTimer = null;
 let selectedAssetId = "";
 const assetFilterState = {
   source: "全部",
@@ -1487,7 +1486,7 @@ const assetFilterState = {
   query: "",
 };
 
-const ASSET_SOURCE_FILTERS = ["全部", "教学实践", "教师上传", "泛雅同步", "系统示例"];
+const ASSET_SOURCE_FILTERS = ["全部", "教学导航", "教学实践", "教师上传", "泛雅同步"];
 const ASSET_TYPE_FILTERS = ["全部", "课程画像", "教学设计方案", "课堂活动脚本", "案例材料", "评价量规", "学习证据", "教学复盘", "来源边界", "其他"];
 const ASSET_STATUS_FILTERS = ["全部", "待核验", "可复用", "已用于实践", "需更新"];
 
@@ -6251,11 +6250,11 @@ function saveTrainingReportToAssets() {
     id: `training-report-${Date.now()}`,
     title: "《新教师教学设计训练报告》",
     type: "新教师训练报告",
-    source: "系统示例",
+    source: "教学导航",
     course: context.courseName,
     updatedAt: new Date().toISOString(),
-    tags: ["新手教程", "20 环节训练", context.topic],
-    boundary: "来源于新手教程中的系统示例课 20 环节训练，不包含真实泛雅课程数据。",
+    tags: ["教学导航", "20 环节训练", context.topic],
+    boundary: "来源于教学导航页系统示例课的 20 环节训练，不包含真实泛雅课程数据。",
     summary: `面向新教师的${context.courseName}「${context.topic}」训练报告，包含模板、评分、诊断建议和进入实践建议。`,
     usage: "用于进入泛雅实践前校准教学设计思路。",
     reuse: "可作为下一次生成教案、评价量规、课堂活动和复盘建议的依据。",
@@ -7798,18 +7797,10 @@ function renderAssetOverview() {
 function scheduleAssetKnowledgeGraphRender() {
   if (!$("#assetKnowledgeCanvas")) return;
   if (assetGraphRenderFrame) cancelAnimationFrame(assetGraphRenderFrame);
-  if (assetGraphRenderTimer) window.clearTimeout(assetGraphRenderTimer);
-  const renderGraph = () => {
-    if (assetGraphRenderTimer) {
-      window.clearTimeout(assetGraphRenderTimer);
-      assetGraphRenderTimer = null;
-    }
-    if (assetGraphRenderFrame) cancelAnimationFrame(assetGraphRenderFrame);
+  assetGraphRenderFrame = requestAnimationFrame(() => {
     assetGraphRenderFrame = null;
     renderAssetKnowledgeGraph();
-  };
-  assetGraphRenderFrame = requestAnimationFrame(renderGraph);
-  assetGraphRenderTimer = window.setTimeout(renderGraph, 80);
+  });
 }
 
 function refreshAssetWorkbench() {
@@ -7994,12 +7985,12 @@ function importTrainingAndPracticeAssets() {
         id: `training-report-import-${Date.now()}`,
         title: "《新教师教学设计训练报告》",
         type: "新教师训练报告",
-        source: "系统示例",
+        source: "教学导航",
         course: defaultTrainingCourse.courseName,
         updatedAt: navigation.updatedAt || new Date().toISOString(),
-        tags: ["新手教程", "20 环节训练", "SWOT"],
-        boundary: "来源于新手教程中的系统示例课 20 环节训练，不包含真实泛雅课程数据。",
-        summary: "从新手教程状态自动导入的训练报告。",
+        tags: ["教学导航", "20 环节训练", "SWOT"],
+        boundary: "来源于教学导航页系统示例课的 20 环节训练，不包含真实泛雅课程数据。",
+        summary: "从教学导航状态自动导入的训练报告。",
         usage: "用于进入泛雅实践前校准教学设计思路。",
         reuse: "可复制后用于下一次生成。",
         risk: "示例训练不等同于真实班级数据。",
@@ -8020,14 +8011,14 @@ function getDerivedAssets() {
       id: "derived-training-record",
       title: "20 环节训练记录",
       type: "20 环节训练记录",
-      source: "系统示例",
+      source: "教学导航",
       course: defaultTrainingCourse.courseName,
       updatedAt: navigation.updatedAt,
-      tags: ["新手教程", "训练记录"],
-      boundary: "来自浏览器 localStorage 中的新手教程训练状态。",
+      tags: ["教学导航", "训练记录"],
+      boundary: "来自浏览器 localStorage 中的教学导航训练状态。",
       summary: `已确认 ${navigation.completedStepIds.length} / ${trainingSteps.length} 个训练环节。`,
       usage: "用于回看训练进度和定位需复查环节。",
-      reuse: "可回到新手教程继续训练。",
+      reuse: "可回到教学导航页继续训练。",
       risk: "仅为本机浏览器训练状态，不代表真实课程数据。",
       content: JSON.stringify(
         {
@@ -8047,11 +8038,11 @@ function getDerivedAssets() {
       id: "derived-template-collection",
       title: "优秀模板集合",
       type: "优秀模板集合",
-      source: "系统示例",
+      source: "教学导航",
       course: defaultTrainingCourse.courseName,
       updatedAt: navigation.updatedAt,
-      tags: ["模板", "新手教程"],
-      boundary: "来自新手教程训练环节生成的优秀模板。",
+      tags: ["模板", "教学导航"],
+      boundary: "来自教学导航训练环节生成的优秀模板。",
       summary: "包含已选择环节的模板定位、标准结构、优秀样例、检查清单和常见误区。",
       usage: "用于新教师后续备课参考。",
       reuse: "可复制模板文本并用于下一次生成。",
@@ -8064,11 +8055,11 @@ function getDerivedAssets() {
       id: "derived-score-records",
       title: "多维评分记录",
       type: "多维评分记录",
-      source: "系统示例",
+      source: "教学导航",
       course: defaultTrainingCourse.courseName,
       updatedAt: navigation.updatedAt,
       tags: ["评分", "诊断建议"],
-      boundary: "来自新手教程训练环节的模拟评分。",
+      boundary: "来自教学导航训练环节的模拟评分。",
       summary: "按一致性、真实性、学习者、参与度、评价效度和复盘改进 6 个学术维度记录评分。",
       usage: "用于发现低分维度并优化教学设计。",
       reuse: "可作为生成复盘建议的依据。",
@@ -8122,7 +8113,7 @@ function normalizeAssetSource(source = "") {
   if (/泛雅|学习通|同步/.test(value)) return "泛雅同步";
   if (/教学实践|实践|课堂|作业/.test(value)) return "教学实践";
   if (/上传|知识库|教师/.test(value)) return "教师上传";
-  if (/系统示例|新手教程|教学导航|导航|训练|示例/.test(value)) return "系统示例";
+  if (/教学导航|导航|训练|示例/.test(value)) return "教学导航";
   return "教师上传";
 }
 
@@ -8139,26 +8130,6 @@ function normalizeAssetType(type = "", title = "", summary = "") {
   return "其他";
 }
 
-function normalizeTutorialAssetText(value) {
-  if (typeof value !== "string") return value;
-  return value
-    .replace(/教学导航页系统示例课/g, "新手教程中的系统示例课")
-    .replace(/教学导航状态/g, "新手教程状态")
-    .replace(/教学导航训练/g, "新手教程训练")
-    .replace(/教学导航页/g, "新手教程")
-    .replace(/教学导航/g, "新手教程");
-}
-
-function normalizeTutorialAssetDisplay(asset) {
-  const display = { ...asset };
-  ["summary", "boundary", "usage", "reuse", "risk", "sourceBoundary", "databaseBoundary"].forEach((key) => {
-    if (display[key]) display[key] = normalizeTutorialAssetText(display[key]);
-  });
-  if (Array.isArray(display.tags)) display.tags = display.tags.map((tag) => normalizeTutorialAssetText(tag));
-  if (Array.isArray(display.evidence)) display.evidence = display.evidence.map((item) => normalizeTutorialAssetText(item));
-  return display;
-}
-
 function getAssetBoundary(asset) {
   return String(asset.boundary || asset.sourceBoundary || asset.databaseBoundary || "").trim();
 }
@@ -8173,7 +8144,7 @@ function getAssetWorkbenchStatus(asset, source) {
 
 function getAssetWorkbenchStage(asset, source, type) {
   if (asset.stage || asset.step || asset.workflowStep) return asset.stage || asset.step || asset.workflowStep;
-  if (source === "系统示例") return type === "评价量规" ? "新手教程：课堂表现评价示例" : "新手教程：教学设计训练记录";
+  if (source === "教学导航") return type === "评价量规" ? "第 15 环节：课堂表现评价" : "课前教学设计与准备";
   if (source === "教学实践") return "课中教学实施与调控";
   if (source === "泛雅同步") return "课后评价反馈与持续改进";
   return "课程知识库沉淀";
@@ -8191,12 +8162,11 @@ function getAssetEvidence(asset) {
 
 function toAssetWorkbenchItem(asset) {
   const source = normalizeAssetSource(asset.source);
-  const displayAsset = source === "系统示例" ? normalizeTutorialAssetDisplay(asset) : asset;
-  const type = normalizeAssetType(displayAsset.type, displayAsset.title, displayAsset.summary);
-  const boundary = getAssetBoundary(displayAsset);
-  const evidence = getAssetEvidence(displayAsset);
+  const type = normalizeAssetType(asset.type, asset.title, asset.summary);
+  const boundary = getAssetBoundary(asset);
+  const evidence = getAssetEvidence(asset);
   return {
-    ...displayAsset,
+    ...asset,
     rawSource: asset.source || "未标注",
     source,
     type,
@@ -8274,7 +8244,7 @@ const ASSET_GRAPH_TYPE_META = {
     glow: "rgba(185, 110, 70, 0.2)",
   },
   training: {
-    label: "新手教程",
+    label: "导航训练",
     color: "#547293",
     glow: "rgba(84, 114, 147, 0.18)",
   },
@@ -8329,7 +8299,7 @@ function classifyAssetGraphAsset(asset) {
   const source = `${asset.source || ""} ${asset.type || ""} ${asset.title || ""}`;
   if (/上传|知识库|文件元数据|数据库边界/.test(source)) return "knowledge";
   if (/泛雅/.test(source)) return "fanya";
-  if (/系统示例|新手教程|教学导航|导航|训练|评分记录|模板集合/.test(source)) return "training";
+  if (/教学导航|训练|评分记录|模板集合/.test(source)) return "training";
   return "generated";
 }
 
@@ -8368,7 +8338,7 @@ function getAssetGraphNodeCounts(nodes) {
 
 function buildAssetKnowledgeGraph() {
   const store = currentAssetStore || loadAssets();
-  const assets = getAssetWorkbenchItems().slice(0, 22);
+  const assets = collectAssetItems().slice(0, 22);
   const nodes = new Map();
   const links = [];
   const addNode = (node) => {
@@ -8385,7 +8355,7 @@ function buildAssetKnowledgeGraph() {
       "agent-core",
       "core",
       "教学智能体数据中枢",
-      "聚合新手教程示例记录、教学实践生成材料、上传知识库元数据和来源边界。",
+      "聚合教学导航训练、教学实践生成材料、上传知识库元数据和来源边界。",
       { radius: 28 },
     ),
   );
@@ -8809,10 +8779,6 @@ function disposeAssetGraphState() {
     cancelAnimationFrame(assetGraphRenderFrame);
     assetGraphRenderFrame = null;
   }
-  if (assetGraphRenderTimer) {
-    window.clearTimeout(assetGraphRenderTimer);
-    assetGraphRenderTimer = null;
-  }
   if (!assetGraphState) return;
   if (assetGraphState.animationFrame) {
     cancelAnimationFrame(assetGraphState.animationFrame);
@@ -8909,7 +8875,7 @@ function renderAssetGraphControls() {
   const filterLabels = {
     all: "全部",
     generated: "智能体生成",
-    training: "新手教程",
+    training: "导航训练",
     knowledge: "上传知识库",
     fanya: "泛雅记录",
     course: "课程",
