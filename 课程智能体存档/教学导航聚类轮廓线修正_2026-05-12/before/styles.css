@@ -16833,13 +16833,14 @@ body[data-page="teaching-navigation"] .route-map-card::after {
 
 body[data-page="teaching-navigation"] .route-map-stage-zone {
   --cluster-rgb: 136, 123, 108;
+  --cluster-soft-rgb: 255, 250, 242;
   --cluster-border: rgba(var(--cluster-rgb), 0.16);
   z-index: 2;
   overflow: visible;
   border: 1px solid var(--cluster-border);
   border-radius: 48% 52% 45% 55% / 58% 44% 56% 42%;
   background:
-    radial-gradient(ellipse at 50% 50%, rgba(var(--cluster-rgb), 0.038), transparent 62%),
+    radial-gradient(ellipse at 50% 50%, rgba(var(--cluster-rgb), 0.055), transparent 61%),
     rgba(255, 250, 242, 0.08);
   box-shadow: none;
   opacity: 0.88;
@@ -16853,70 +16854,57 @@ body[data-page="teaching-navigation"] .route-map-stage-zone::after {
 }
 
 body[data-page="teaching-navigation"] .route-map-stage-zone::before {
-  inset: 3% 4%;
-  border-radius: 52% 48% 44% 56% / 54% 43% 57% 46%;
-  opacity: 0.78;
-  background:
-    radial-gradient(ellipse at 50% 52%, transparent 48.2%, rgba(var(--cluster-rgb), 0.16) 48.8% 49.8%, transparent 50.4%),
-    radial-gradient(ellipse at 50% 52%, transparent 60.8%, rgba(var(--cluster-rgb), 0.13) 61.4% 62.4%, transparent 63%),
-    radial-gradient(ellipse at 50% 52%, transparent 73.5%, rgba(var(--cluster-rgb), 0.095) 74.1% 75%, transparent 75.7%);
+  inset: 7% 8%;
+  border-radius: inherit;
+  opacity: 0.58;
+  mix-blend-mode: multiply;
+  background-image:
+    radial-gradient(circle at 12% 68%, rgba(var(--cluster-rgb), 0.32) 0 1.4px, transparent 1.9px),
+    radial-gradient(circle at 24% 38%, rgba(var(--cluster-rgb), 0.22) 0 1.2px, transparent 1.8px),
+    radial-gradient(circle at 46% 18%, rgba(var(--cluster-rgb), 0.2) 0 1.35px, transparent 1.9px),
+    radial-gradient(circle at 64% 54%, rgba(var(--cluster-rgb), 0.24) 0 1.45px, transparent 2px),
+    radial-gradient(circle at 84% 32%, rgba(var(--cluster-rgb), 0.18) 0 1.25px, transparent 1.9px),
+    radial-gradient(circle at 76% 76%, rgba(var(--cluster-rgb), 0.2) 0 1.2px, transparent 1.8px);
+  background-size: 68px 54px, 86px 62px, 74px 58px, 96px 70px, 78px 64px, 90px 68px;
+  background-position: 0 0, 18px 7px, 36px 18px, 10px 24px, 52px 4px, 28px 34px;
 }
 
 body[data-page="teaching-navigation"] .route-map-stage-zone::after {
-  inset: 18% 19%;
-  border-radius: 43% 57% 55% 45% / 50% 59% 41% 50%;
-  opacity: 0.62;
+  inset: 10% 9%;
+  border-radius: inherit;
+  opacity: 0.74;
+  filter: blur(13px);
   background:
-    radial-gradient(ellipse at 48% 52%, transparent 47.5%, rgba(var(--cluster-rgb), 0.135) 48.1% 49.2%, transparent 49.8%),
-    radial-gradient(ellipse at 48% 52%, transparent 66.5%, rgba(var(--cluster-rgb), 0.09) 67.1% 68%, transparent 68.7%);
+    radial-gradient(ellipse at 30% 62%, rgba(var(--cluster-rgb), 0.12), transparent 42%),
+    radial-gradient(ellipse at 61% 34%, rgba(var(--cluster-rgb), 0.105), transparent 46%),
+    radial-gradient(ellipse at 74% 70%, rgba(var(--cluster-soft-rgb), 0.14), transparent 48%);
 }
 
 body[data-page="teaching-navigation"] .route-map-stage-zone.stage-zone-pre {
   --cluster-rgb: 200, 100, 52;
+  --cluster-soft-rgb: 240, 200, 173;
   border-color: rgba(200, 100, 52, 0.14);
   background:
-    radial-gradient(ellipse at 42% 58%, rgba(200, 100, 52, 0.04), transparent 63%),
+    radial-gradient(ellipse at 42% 58%, rgba(200, 100, 52, 0.048), transparent 63%),
     rgba(255, 250, 242, 0.055);
 }
 
 body[data-page="teaching-navigation"] .route-map-stage-zone.stage-zone-class {
   --cluster-rgb: 82, 106, 135;
+  --cluster-soft-rgb: 219, 228, 236;
   border-color: rgba(82, 106, 135, 0.13);
   background:
-    radial-gradient(ellipse at 58% 44%, rgba(82, 106, 135, 0.038), transparent 64%),
+    radial-gradient(ellipse at 58% 44%, rgba(82, 106, 135, 0.046), transparent 64%),
     rgba(255, 250, 242, 0.045);
 }
 
 body[data-page="teaching-navigation"] .route-map-stage-zone.stage-zone-review {
   --cluster-rgb: 115, 129, 107;
+  --cluster-soft-rgb: 221, 230, 211;
   border-color: rgba(115, 129, 107, 0.14);
   background:
-    radial-gradient(ellipse at 58% 50%, rgba(115, 129, 107, 0.042), transparent 64%),
+    radial-gradient(ellipse at 58% 50%, rgba(115, 129, 107, 0.052), transparent 64%),
     rgba(255, 250, 242, 0.048);
-}
-
-body[data-page="teaching-navigation"] .route-map-stage-zone.stage-zone-pre::before {
-  transform: rotate(-2deg) skewX(-1deg);
-}
-
-body[data-page="teaching-navigation"] .route-map-stage-zone.stage-zone-pre::after {
-  transform: translate(-4%, 3%) rotate(4deg);
-}
-
-body[data-page="teaching-navigation"] .route-map-stage-zone.stage-zone-class::before {
-  transform: rotate(3deg) skewY(-1deg);
-}
-
-body[data-page="teaching-navigation"] .route-map-stage-zone.stage-zone-class::after {
-  transform: translate(3%, -2%) rotate(-5deg);
-}
-
-body[data-page="teaching-navigation"] .route-map-stage-zone.stage-zone-review::before {
-  transform: rotate(-4deg) skewY(1deg);
-}
-
-body[data-page="teaching-navigation"] .route-map-stage-zone.stage-zone-review::after {
-  transform: translate(4%, 2%) rotate(5deg);
 }
 
 body[data-page="teaching-navigation"] .route-map-stage-zone strong {
@@ -16976,12 +16964,12 @@ body[data-page="teaching-navigation"] .route-node-locked .route-node-orb {
 
 @media (max-width: 760px) {
   body[data-page="teaching-navigation"] .route-map-stage-zone::before {
-    inset: 8% 9%;
-    opacity: 0.54;
+    opacity: 0.42;
+    background-size: 54px 42px, 68px 48px, 58px 46px, 74px 52px, 62px 48px, 72px 54px;
   }
 
   body[data-page="teaching-navigation"] .route-map-stage-zone::after {
-    inset: 22% 22%;
-    opacity: 0.46;
+    opacity: 0.58;
+    filter: blur(10px);
   }
 }
