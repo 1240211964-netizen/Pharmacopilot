@@ -17145,14 +17145,6 @@ body[data-page="assets"] .asset-relation-node {
   border: 1px solid rgba(77, 63, 49, 0.12);
   background: rgba(255, 252, 246, 0.94);
   box-shadow: 0 16px 38px rgba(70, 51, 34, 0.075);
-  color: inherit;
-  cursor: pointer;
-  font: inherit;
-  transition:
-    transform 0.2s ease,
-    border-color 0.2s ease,
-    background-color 0.2s ease,
-    box-shadow 0.2s ease;
 }
 
 body[data-page="assets"] .asset-relation-center {
@@ -17166,35 +17158,6 @@ body[data-page="assets"] .asset-relation-center {
   border-radius: 32px;
   text-align: center;
   transform: translate(-50%, -50%);
-}
-
-body[data-page="assets"] .asset-relation-center:hover,
-body[data-page="assets"] .asset-relation-node:hover,
-body[data-page="assets"] .asset-relation-center:focus-visible,
-body[data-page="assets"] .asset-relation-node:focus-visible,
-body[data-page="assets"] .asset-relation-center.is-selected,
-body[data-page="assets"] .asset-relation-node.is-selected {
-  border-color: rgba(49, 43, 37, 0.72);
-  background: #fffdf8;
-  box-shadow: 0 20px 46px rgba(70, 51, 34, 0.12), inset 0 0 0 1px rgba(49, 43, 37, 0.05);
-}
-
-body[data-page="assets"] .asset-relation-center:hover,
-body[data-page="assets"] .asset-relation-center:focus-visible,
-body[data-page="assets"] .asset-relation-center.is-selected {
-  transform: translate(-50%, calc(-50% - 2px));
-}
-
-body[data-page="assets"] .asset-relation-node:hover,
-body[data-page="assets"] .asset-relation-node:focus-visible,
-body[data-page="assets"] .asset-relation-node.is-selected {
-  transform: translateY(-2px);
-}
-
-body[data-page="assets"] .asset-relation-center:focus-visible,
-body[data-page="assets"] .asset-relation-node:focus-visible {
-  outline: 3px solid rgba(185, 110, 70, 0.18);
-  outline-offset: 3px;
 }
 
 body[data-page="assets"] .asset-relation-center span,
@@ -17226,7 +17189,6 @@ body[data-page="assets"] .asset-relation-node {
   width: min(220px, 34%);
   padding: 13px 14px;
   border-radius: 20px;
-  text-align: left;
 }
 
 body[data-page="assets"] .asset-relation-node strong {
@@ -17734,15 +17696,6 @@ body[data-page="assets"] .asset-reuse-grid button:hover {
   body[data-page="assets"] .asset-relation-node {
     position: static;
     width: 100%;
-    transform: none;
-  }
-
-  body[data-page="assets"] .asset-relation-center:hover,
-  body[data-page="assets"] .asset-relation-center:focus-visible,
-  body[data-page="assets"] .asset-relation-center.is-selected,
-  body[data-page="assets"] .asset-relation-node:hover,
-  body[data-page="assets"] .asset-relation-node:focus-visible,
-  body[data-page="assets"] .asset-relation-node.is-selected {
     transform: none;
   }
 

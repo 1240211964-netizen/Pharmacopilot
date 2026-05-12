@@ -1473,7 +1473,6 @@ let currentAssetStore = null;
 let pendingUploadFiles = [];
 let assetGraphState = null;
 let selectedAssetId = "";
-let selectedAssetRelationNode = "asset";
 const assetFilterState = {
   source: "全部",
   type: "全部",
@@ -8878,53 +8877,26 @@ function renderAssetKnowledgeGraph() {
       label: active.source,
       title: "来源",
       desc: active.rawSource && active.rawSource !== active.source ? active.rawSource : "来自当前资产库记录",
-      detailTitle: active.source,
-      detailBody: `该资产来自“${active.rawSource || active.source}”，当前同来源资产共 ${allItems.filter((asset) => asset.source === active.source).length} 项。`,
-      meta: [
-        ["来源类型", active.source],
-        ["原始来源", active.rawSource || active.source],
-      ],
     },
     {
       key: "stage",
       label: active.stage,
       title: "教学场景",
       desc: `${active.course || defaultTrainingCourse.courseName} · ${active.type}`,
-      detailTitle: active.stage,
-      detailBody: `该资产连接到“${active.stage}”，用于把资产放回具体教学环节，而不是作为孤立资料保存。`,
-      meta: [
-        ["课程", active.course || defaultTrainingCourse.courseName],
-        ["资产类型", active.type],
-      ],
     },
     {
       key: "boundary",
       label: "来源边界",
       title: active.boundary,
       desc: active.status === "待核验" ? "需要教师补充或核验" : "已进入资产说明书",
-      detailTitle: active.boundary,
-      detailBody: active.status === "待核验" ? "该节点提醒教师补充材料来源、授权范围和可分发边界。" : "该节点记录当前资产可解释、可追溯的使用边界。",
-      meta: [
-        ["边界状态", active.status],
-        ["风险提醒", active.risk],
-      ],
     },
     {
       key: "reuse",
       label: "复用任务",
       title: getAssetPrimaryReuse(active),
       desc: "用于下一次生成前仍需教师确认",
-      detailTitle: getAssetPrimaryReuse(active),
-      detailBody: `点击底部复用入口或资产说明书按钮，可把“${active.title}”转化为下一步生成提示词。`,
-      meta: [
-        ["可复用方式", active.reuse],
-        ["教师确认", "生成前仍需教师审校"],
-      ],
     },
   ];
-  if (!["asset", ...relationNodes.map((node) => node.key)].includes(selectedAssetRelationNode)) {
-    selectedAssetRelationNode = "asset";
-  }
 
   target.innerHTML = `
     <div class="asset-relation-map-inner">
@@ -8934,52 +8906,25 @@ function renderAssetKnowledgeGraph() {
         <path d="M222 276 C322 252 368 210 424 186" />
         <path d="M698 278 C602 252 554 210 496 186" />
       </svg>
-      <button class="asset-relation-center ${selectedAssetRelationNode === "asset" ? "is-selected" : ""}" type="button" data-asset-relation-node="asset" aria-pressed="${selectedAssetRelationNode === "asset"}">
+      <div class="asset-relation-center">
         <span>当前资产</span>
         <strong>${escapeHtml(active.title)}</strong>
         <small>${escapeHtml(active.type)} · ${escapeHtml(active.status)}</small>
-      </button>
-      ${relationNodes.map((node) => renderAssetRelationNode(node, selectedAssetRelationNode === node.key)).join("")}
+      </div>
+      ${relationNodes.map(renderAssetRelationNode).join("")}
     </div>
   `;
-  bindAssetRelationNodes(active, relationNodes, allItems, filteredItems);
-  renderAssetRelationInspector(active, allItems, filteredItems, relationNodes);
+  renderAssetRelationInspector(active, allItems, filteredItems);
 }
 
-function renderAssetRelationNode(node, isSelected = false) {
+function renderAssetRelationNode(node) {
   return `
-    <button
-      class="asset-relation-node relation-${escapeHtml(node.key)} ${isSelected ? "is-selected" : ""}"
-      type="button"
-      data-asset-relation-node="${escapeHtml(node.key)}"
-      aria-pressed="${isSelected ? "true" : "false"}"
-    >
+    <article class="asset-relation-node relation-${escapeHtml(node.key)}">
       <span>${escapeHtml(node.label)}</span>
       <strong>${escapeHtml(node.title)}</strong>
       <p>${escapeHtml(node.desc)}</p>
-    </button>
+    </article>
   `;
-}
-
-function bindAssetRelationNodes(active, relationNodes, allItems, filteredItems) {
-  const target = $("#assetKnowledgeCanvas");
-  if (!target || !active) return;
-  $$("[data-asset-relation-node]", target).forEach((nodeButton) => {
-    nodeButton.addEventListener("click", () => {
-      selectedAssetRelationNode = nodeButton.dataset.assetRelationNode || "asset";
-      updateAssetRelationSelection(active, relationNodes, allItems, filteredItems);
-    });
-  });
-}
-
-function updateAssetRelationSelection(active, relationNodes, allItems, filteredItems) {
-  $$("[data-asset-relation-node]").forEach((nodeButton) => {
-    const isSelected = nodeButton.dataset.assetRelationNode === selectedAssetRelationNode;
-    nodeButton.classList.toggle("is-selected", isSelected);
-    nodeButton.setAttribute("aria-pressed", String(isSelected));
-  });
-  renderAssetRelationInspector(active, allItems, filteredItems, relationNodes);
-  if (selectedAssetRelationNode === "asset") viewAssetDetail(active.id, { skipGraphSync: true, skipListSync: true });
 }
 
 function getAssetPrimaryReuse(asset) {
@@ -8990,7 +8935,7 @@ function getAssetPrimaryReuse(asset) {
   return "生成下一次课教学设计";
 }
 
-function renderAssetRelationInspector(active, allItems, filteredItems, relationNodes = []) {
+function renderAssetRelationInspector(active, allItems, filteredItems) {
   const kpisTarget = $("#assetGraphKpis");
   const filtersTarget = $("#assetGraphFilters");
   const legendTarget = $("#assetGraphLegend");
@@ -9032,18 +8977,9 @@ function renderAssetRelationInspector(active, allItems, filteredItems, relationN
     `;
   }
   if (detailTarget) {
-    if (!active) {
-      detailTarget.innerHTML = `
-        <span>当前资产</span>
-        <strong>暂无可解释资产</strong>
-        <p>保存训练报告、实践材料或知识库元数据后，这里会展示来源、边界和复用任务。</p>
-      `;
-      return;
-    }
-    const selectedRelation = relationNodes.find((node) => node.key === selectedAssetRelationNode);
-    if (!selectedRelation) {
-      detailTarget.innerHTML = `
-        <span>当前资产节点</span>
+    detailTarget.innerHTML = active
+      ? `
+        <span>证据链边界</span>
         <strong>${escapeHtml(active.title)}</strong>
         <p>${escapeHtml(active.summary || "该资产由当前资产库记录自动整理。")}</p>
         <dl>
@@ -9051,23 +8987,12 @@ function renderAssetRelationInspector(active, allItems, filteredItems, relationN
           <div><dt>边界</dt><dd>${escapeHtml(active.boundary)}</dd></div>
           <div><dt>复用</dt><dd>${escapeHtml(getAssetPrimaryReuse(active))}</dd></div>
         </dl>
+      `
+      : `
+        <span>当前资产</span>
+        <strong>暂无可解释资产</strong>
+        <p>保存训练报告、实践材料或知识库元数据后，这里会展示来源、边界和复用任务。</p>
       `;
-      return;
-    }
-    detailTarget.innerHTML = `
-      <span>${escapeHtml(selectedRelation.label)}</span>
-      <strong>${escapeHtml(selectedRelation.detailTitle || selectedRelation.title)}</strong>
-      <p>${escapeHtml(selectedRelation.detailBody || selectedRelation.desc)}</p>
-      <dl>
-        ${(selectedRelation.meta || [])
-          .map(
-            ([term, value]) => `
-              <div><dt>${escapeHtml(term)}</dt><dd>${escapeHtml(value || "待补充")}</dd></div>
-            `,
-          )
-          .join("")}
-      </dl>
-    `;
   }
 }
 
@@ -9208,7 +9133,6 @@ function viewAssetDetail(id, options = {}) {
   const asset = findAssetWorkbenchItem(id);
   if (!detail || !asset) return;
   selectedAssetId = asset.id;
-  if (!options.skipGraphSync) selectedAssetRelationNode = "asset";
   const assetId = escapeHtml(asset.id);
   detail.innerHTML = `
     <article class="detail-card asset-manual-card">

@@ -1,0 +1,8 @@
+Archive: /Users/yandilei/Desktop/课程智能体/课程智能体存档/资产关系图节点交互_2026-05-12
+Created: 2026-05-12 12:04:40 CST
+
+Before files:
+/Users/yandilei/Desktop/课程智能体/课程智能体存档/资产关系图节点交互_2026-05-12/before/app.js
+/Users/yandilei/Desktop/课程智能体/课程智能体存档/资产关系图节点交互_2026-05-12/before/assets.html
+/Users/yandilei/Desktop/课程智能体/课程智能体存档/资产关系图节点交互_2026-05-12/before/package.json
+/Users/yandilei/Desktop/课程智能体/课程智能体存档/资产关系图节点交互_2026-05-12/before/styles.css
