@@ -2192,35 +2192,33 @@ h3 {
 
 .asset-graph-section {
   margin: 0 0 32px;
-  border-color: rgba(77, 63, 49, 0.1);
-  background:
-    linear-gradient(135deg, rgba(255, 252, 246, 0.92), rgba(242, 236, 224, 0.62)),
-    radial-gradient(circle at 78% 8%, rgba(82, 106, 135, 0.08), transparent 34%),
-    radial-gradient(circle at 12% 82%, rgba(115, 129, 107, 0.1), transparent 32%);
 }
 
 .asset-graph-shell {
   display: grid;
-  grid-template-columns: minmax(0, 1.64fr) minmax(286px, 0.68fr);
-  gap: 22px;
+  grid-template-columns: minmax(0, 1.58fr) minmax(280px, 0.72fr);
+  gap: 18px;
   align-items: stretch;
 }
 
 .asset-graph-stage {
   position: relative;
-  min-height: 480px;
+  min-height: 420px;
   overflow: hidden;
-  border: 1px solid rgba(77, 63, 49, 0.11);
-  border-radius: 28px;
-  background: rgba(255, 252, 246, 0.7);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72), 0 18px 46px rgba(70, 51, 34, 0.07);
+  border: 1px solid color-mix(in srgb, var(--sage) 20%, var(--line));
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(90deg, rgba(47, 91, 75, 0.055) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(47, 91, 75, 0.055) 1px, transparent 1px),
+    rgba(255, 252, 246, 0.78);
+  background-size: 32px 32px;
 }
 
 #assetKnowledgeCanvas {
   display: block;
   width: 100%;
   height: 100%;
-  min-height: 480px;
+  min-height: 420px;
   touch-action: none;
 }
 
@@ -2251,12 +2249,11 @@ h3 {
 
 .asset-graph-tooltip {
   max-width: 190px;
-  padding: 10px 12px;
-  border: 1px solid rgba(126, 93, 63, 0.16);
-  border-radius: 14px;
-  background: rgba(255, 252, 246, 0.96);
-  box-shadow: 0 14px 34px rgba(70, 51, 34, 0.12);
-  backdrop-filter: blur(10px);
+  padding: 9px 11px;
+  border: 1px solid rgba(126, 93, 63, 0.2);
+  border-radius: var(--radius-xs);
+  background: rgba(255, 250, 242, 0.96);
+  box-shadow: var(--shadow-card);
 }
 
 .asset-graph-tooltip strong,
@@ -2280,7 +2277,6 @@ h3 {
   display: grid;
   align-content: start;
   gap: 14px;
-  padding: 2px;
 }
 
 .asset-graph-kpis {
@@ -2291,10 +2287,9 @@ h3 {
 
 .asset-graph-kpis div,
 .asset-graph-detail {
-  border: 1px solid rgba(77, 63, 49, 0.1);
-  border-radius: 20px;
-  background: rgba(255, 252, 246, 0.74);
-  box-shadow: 0 10px 28px rgba(70, 51, 34, 0.05);
+  border: 1px solid var(--soft-line);
+  border-radius: var(--radius-md);
+  background: rgba(255, 250, 242, 0.74);
 }
 
 .asset-graph-kpis div {
@@ -2307,9 +2302,9 @@ h3 {
 }
 
 .asset-graph-kpis strong {
-  color: #8e5138;
+  color: var(--accent-dark);
   font-family: var(--editorial);
-  font-size: 1.55rem;
+  font-size: 1.7rem;
   line-height: 1;
 }
 
@@ -2331,9 +2326,9 @@ h3 {
   align-items: center;
   gap: 7px;
   min-height: 34px;
-  border: 1px solid rgba(77, 63, 49, 0.12);
+  border: 1px solid var(--line);
   border-radius: 999px;
-  background: rgba(255, 252, 246, 0.64);
+  background: rgba(255, 250, 242, 0.72);
   color: var(--text-main);
   padding: 0 12px;
   cursor: pointer;
@@ -2348,9 +2343,8 @@ h3 {
 
 .asset-graph-filters button:hover,
 .asset-graph-filters button.is-active {
-  border-color: rgba(157, 79, 47, 0.3);
-  background: rgba(238, 220, 196, 0.64);
-  box-shadow: 0 6px 16px rgba(70, 51, 34, 0.055);
+  border-color: rgba(157, 79, 47, 0.36);
+  background: rgba(238, 220, 196, 0.58);
 }
 
 .asset-graph-legend {
@@ -2374,7 +2368,7 @@ h3 {
 }
 
 .asset-graph-detail {
-  padding: 18px;
+  padding: 16px;
 }
 
 .asset-graph-detail span,

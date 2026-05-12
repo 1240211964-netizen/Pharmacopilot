@@ -8003,43 +8003,43 @@ function collectAssetItems() {
 const ASSET_GRAPH_TYPE_META = {
   core: {
     label: "数据中枢",
-    color: "#24483d",
-    glow: "rgba(36, 72, 61, 0.22)",
+    color: "#2f5b4b",
+    glow: "rgba(47, 91, 75, 0.24)",
   },
   generated: {
     label: "智能体生成",
-    color: "#b96e46",
-    glow: "rgba(185, 110, 70, 0.2)",
+    color: "#b95f36",
+    glow: "rgba(185, 95, 54, 0.24)",
   },
   training: {
     label: "导航训练",
-    color: "#547293",
-    glow: "rgba(84, 114, 147, 0.18)",
+    color: "#547aa5",
+    glow: "rgba(84, 122, 165, 0.22)",
   },
   knowledge: {
     label: "上传知识库",
-    color: "#6f7554",
-    glow: "rgba(111, 117, 84, 0.2)",
+    color: "#7a6a3a",
+    glow: "rgba(122, 106, 58, 0.24)",
   },
   fanya: {
     label: "泛雅记录",
-    color: "#8a7d57",
-    glow: "rgba(138, 125, 87, 0.18)",
+    color: "#6a6f4c",
+    glow: "rgba(106, 111, 76, 0.22)",
   },
   course: {
     label: "关联课程",
-    color: "#49756d",
-    glow: "rgba(73, 117, 109, 0.18)",
+    color: "#4f7f74",
+    glow: "rgba(79, 127, 116, 0.2)",
   },
   tag: {
     label: "标签主题",
-    color: "#9a8775",
-    glow: "rgba(154, 135, 117, 0.16)",
+    color: "#8b7664",
+    glow: "rgba(139, 118, 100, 0.18)",
   },
   boundary: {
     label: "来源边界",
-    color: "#a0615a",
-    glow: "rgba(160, 97, 90, 0.18)",
+    color: "#a35d5d",
+    glow: "rgba(163, 93, 93, 0.2)",
   },
 };
 
@@ -8081,14 +8081,10 @@ function createAssetGraphNode(id, type, label, summary, extra = {}) {
     summary: compactAssetGraphText(summary, 118),
     color: meta.color,
     glow: meta.glow,
-    radius: extra.radius || (type === "core" ? 26 : type === "generated" || type === "training" || type === "knowledge" ? 13 : 8),
+    radius: extra.radius || (type === "core" ? 30 : type === "generated" || type === "training" || type === "knowledge" ? 18 : 13),
     vx: 0,
     vy: 0,
     pulse: Math.random() * Math.PI * 2,
-    anchorX: 0,
-    anchorY: 0,
-    orbit: 0,
-    orbitSpeed: 0,
     ...extra,
   };
 }
@@ -8124,7 +8120,7 @@ function buildAssetKnowledgeGraph() {
       "core",
       "教学智能体数据中枢",
       "聚合教学导航训练、教学实践生成材料、上传知识库元数据和来源边界。",
-      { radius: 28 },
+      { radius: 34 },
     ),
   );
 
@@ -8174,15 +8170,15 @@ function buildAssetKnowledgeGraph() {
   });
 
   collectedCourses.forEach((course, id) => {
-    addNode(createAssetGraphNode(id, "course", course, "课程维度把训练、实践和上传材料连接到同一个教学语境。", { radius: 10 }));
+    addNode(createAssetGraphNode(id, "course", course, "课程维度把训练、实践和上传材料连接到同一个教学语境。", { radius: 15 }));
     addLink(core.id, id, 0.62, "课程");
   });
   collectedTags.forEach((tag, id) => {
-    addNode(createAssetGraphNode(id, "tag", tag, "标签帮助教师按主题复用教学资产。", { radius: 7 }));
+    addNode(createAssetGraphNode(id, "tag", tag, "标签帮助教师按主题复用教学资产。", { radius: 12 }));
     addLink(core.id, id, 0.38, "标签");
   });
   collectedBoundaries.forEach((boundary, id) => {
-    addNode(createAssetGraphNode(id, "boundary", boundary, "来源边界用于提醒教师确认材料范围、授权和引用限制。", { radius: 8 }));
+    addNode(createAssetGraphNode(id, "boundary", boundary, "来源边界用于提醒教师确认材料范围、授权和引用限制。", { radius: 13 }));
     addLink(core.id, id, 0.48, "边界");
   });
 
@@ -8209,18 +8205,17 @@ function restoreAssetGraphPositions(nodes, previousNodes = []) {
 function layoutAssetGraphNodes(state) {
   const width = state.width || 760;
   const height = state.height || 420;
-  const compact = width < 520;
-  const centerX = width * (compact ? 0.5 : 0.48);
-  const centerY = height * 0.46;
-  const groupCenters = {
-    core: { x: centerX, y: centerY, spreadX: 0, spreadY: 0 },
-    generated: { x: width * 0.22, y: height * 0.36, spreadX: width * 0.14, spreadY: height * 0.18 },
-    training: { x: width * 0.34, y: height * 0.68, spreadX: width * 0.12, spreadY: height * 0.11 },
-    knowledge: { x: width * 0.78, y: height * 0.3, spreadX: width * 0.12, spreadY: height * 0.18 },
-    fanya: { x: width * 0.78, y: height * 0.62, spreadX: width * 0.09, spreadY: height * 0.12 },
-    course: { x: width * 0.64, y: height * 0.48, spreadX: width * 0.06, spreadY: height * 0.07 },
-    tag: { x: width * 0.5, y: height * 0.17, spreadX: width * 0.24, spreadY: height * 0.06 },
-    boundary: { x: width * 0.48, y: height * 0.8, spreadX: width * 0.26, spreadY: height * 0.06 },
+  const centerX = width * 0.45;
+  const centerY = height * 0.5;
+  const rings = {
+    core: 0,
+    generated: Math.min(width, height) * 0.25,
+    training: Math.min(width, height) * 0.31,
+    knowledge: Math.min(width, height) * 0.34,
+    fanya: Math.min(width, height) * 0.32,
+    course: Math.min(width, height) * 0.18,
+    tag: Math.min(width, height) * 0.39,
+    boundary: Math.min(width, height) * 0.42,
   };
   const groups = state.nodes.reduce((acc, node) => {
     acc[node.type] = acc[node.type] || [];
@@ -8230,40 +8225,19 @@ function layoutAssetGraphNodes(state) {
 
   Object.entries(groups).forEach(([type, nodes]) => {
     nodes.forEach((node, index) => {
-      const group = groupCenters[type] || groupCenters.generated;
+      if (Number.isFinite(node.x) && Number.isFinite(node.y)) return;
       if (type === "core") {
-        node.anchorX = centerX;
-        node.anchorY = centerY;
-        node.orbit = 0;
-        if (!Number.isFinite(node.x) || !Number.isFinite(node.y)) {
-          node.x = node.anchorX;
-          node.y = node.anchorY;
-        }
+        node.x = centerX;
+        node.y = centerY;
         return;
       }
-      const density = Math.max(nodes.length, 1);
-      const phaseOffset = {
-        generated: -0.18,
-        training: 0.8,
-        knowledge: 0.2,
-        fanya: 1.1,
-        course: -0.45,
-        tag: -0.85,
-        boundary: 0.55,
-      }[type] || 0;
-      const adjustedAngle = phaseOffset + (Math.PI * 2 * index) / density;
-      node.anchorX = group.x + Math.cos(adjustedAngle) * group.spreadX;
-      node.anchorY = group.y + Math.sin(adjustedAngle) * group.spreadY;
-      node.orbit = type === "tag" || type === "boundary" ? 1.8 : type === "course" ? 1.2 : 2.6;
-      node.orbitSpeed = 0.006 + ((index % 5) * 0.0015);
-      node.pulse = node.pulse || adjustedAngle;
-      if (!Number.isFinite(node.x) || !Number.isFinite(node.y) || state.forceRelayout) {
-        node.x = node.anchorX + Math.cos(adjustedAngle) * Math.min(16, 56 / density);
-        node.y = node.anchorY + Math.sin(adjustedAngle) * Math.min(10, 38 / density);
-      }
+      const ring = rings[type] || Math.min(width, height) * 0.32;
+      const offset = type === "knowledge" ? -0.65 : type === "boundary" ? 0.35 : type === "tag" ? 1.1 : 0;
+      const angle = offset + (Math.PI * 2 * index) / Math.max(nodes.length, 1);
+      node.x = centerX + Math.cos(angle) * ring + (type === "knowledge" ? width * 0.1 : 0);
+      node.y = centerY + Math.sin(angle) * ring * 0.72;
     });
   });
-  state.forceRelayout = false;
 }
 
 function resizeAssetGraphCanvas() {
@@ -8305,6 +8279,8 @@ function updateAssetGraphPhysics() {
   if (!state || state.reducedMotion) return;
   const width = state.width;
   const height = state.height;
+  const centerX = width * 0.45;
+  const centerY = height * 0.5;
   const nodes = state.nodes;
 
   for (let i = 0; i < nodes.length; i += 1) {
@@ -8314,8 +8290,8 @@ function updateAssetGraphPhysics() {
       const dx = b.x - a.x || 0.01;
       const dy = b.y - a.y || 0.01;
       const distSq = dx * dx + dy * dy;
-      const minDistance = a.radius + b.radius + 16;
-      const force = Math.min(0.3, (minDistance * minDistance) / Math.max(distSq, 120)) * 0.008;
+      const minDistance = a.radius + b.radius + 24;
+      const force = Math.min(0.8, (minDistance * minDistance) / Math.max(distSq, 80)) * 0.018;
       a.vx -= dx * force;
       a.vy -= dy * force;
       b.vx += dx * force;
@@ -8330,8 +8306,8 @@ function updateAssetGraphPhysics() {
     const dx = to.x - from.x;
     const dy = to.y - from.y;
     const distance = Math.max(Math.sqrt(dx * dx + dy * dy), 1);
-    const target = 120 + (1.2 - link.weight) * 36;
-    const pull = (distance - target) * 0.00018 * link.weight;
+    const target = 90 + (1.4 - link.weight) * 40;
+    const pull = (distance - target) * 0.0009 * link.weight;
     const fx = dx * pull;
     const fy = dy * pull;
     from.vx += fx;
@@ -8342,25 +8318,24 @@ function updateAssetGraphPhysics() {
 
   nodes.forEach((node) => {
     const focus = isAssetGraphNodeFocused(node) ? 1 : 0.34;
-    const orbitX = node.anchorX + Math.cos(node.pulse * 0.7) * (node.orbit || 0);
-    const orbitY = node.anchorY + Math.sin(node.pulse * 0.9) * (node.orbit || 0);
-    node.vx += (orbitX - node.x) * 0.018 * focus;
-    node.vy += (orbitY - node.y) * 0.018 * focus;
+    const anchorX = node.type === "core" ? centerX : centerX + (node.type === "knowledge" ? width * 0.1 : 0);
+    node.vx += (anchorX - node.x) * 0.0018 * focus;
+    node.vy += (centerY - node.y) * 0.0015 * focus;
     if (state.pointer?.active) {
       const dx = node.x - state.pointer.x;
       const dy = node.y - state.pointer.y;
       const distance = Math.max(Math.sqrt(dx * dx + dy * dy), 1);
-      if (distance < 86) {
-        const push = ((86 - distance) / 86) * 0.14;
+      if (distance < 120) {
+        const push = ((120 - distance) / 120) * 0.34;
         node.vx += (dx / distance) * push;
         node.vy += (dy / distance) * push;
       }
     }
-    node.vx *= 0.76;
-    node.vy *= 0.76;
+    node.vx *= 0.82;
+    node.vy *= 0.82;
     node.x = Math.min(width - node.radius - 8, Math.max(node.radius + 8, node.x + node.vx));
     node.y = Math.min(height - node.radius - 8, Math.max(node.radius + 8, node.y + node.vy));
-    node.pulse += node.orbitSpeed || 0.006;
+    node.pulse += 0.018;
   });
 }
 
@@ -8369,27 +8344,28 @@ function drawAssetGraphFrame() {
   if (!state?.context) return;
   const { context, width, height } = state;
   context.clearRect(0, 0, width, height);
-  drawAssetGraphBackground(context, width, height, state);
+
+  const gradient = context.createRadialGradient(width * 0.42, height * 0.42, 20, width * 0.5, height * 0.5, Math.max(width, height) * 0.66);
+  gradient.addColorStop(0, "rgba(255, 252, 246, 0.94)");
+  gradient.addColorStop(0.56, "rgba(244, 237, 225, 0.74)");
+  gradient.addColorStop(1, "rgba(230, 221, 207, 0.5)");
+  context.fillStyle = gradient;
+  context.fillRect(0, 0, width, height);
 
   state.links.forEach((link) => {
     const from = state.nodeMap.get(link.from);
     const to = state.nodeMap.get(link.to);
     if (!from || !to) return;
     const focus = isAssetGraphNodeFocused(from) && isAssetGraphNodeFocused(to);
-    const selectedByNode =
-      state.selectedNodeId &&
-      state.selectedNodeId !== "agent-core" &&
-      (state.selectedNodeId === from.id || state.selectedNodeId === to.id);
-    const selectedByHover = state.hoveredNodeId === from.id || state.hoveredNodeId === to.id;
-    const selected = selectedByNode || selectedByHover;
+    const selected = state.selectedNodeId === from.id || state.selectedNodeId === to.id || state.hoveredNodeId === from.id || state.hoveredNodeId === to.id;
     context.save();
-    context.globalAlpha = selected ? 0.58 : focus ? 0.14 : 0.035;
-    context.strokeStyle = selected ? "#a75f3d" : "#9b8a76";
-    context.lineWidth = selected ? 1.6 : 0.9;
+    context.globalAlpha = selected ? 0.82 : focus ? 0.32 : 0.08;
+    context.strokeStyle = selected ? "#9d4f2f" : "#8c7a65";
+    context.lineWidth = selected ? 1.8 : 1;
     context.beginPath();
     context.moveTo(from.x, from.y);
     const midX = (from.x + to.x) / 2;
-    const midY = (from.y + to.y) / 2 - 8;
+    const midY = (from.y + to.y) / 2 - 10;
     context.quadraticCurveTo(midX, midY, to.x, to.y);
     context.stroke();
     context.restore();
@@ -8399,26 +8375,21 @@ function drawAssetGraphFrame() {
     const focus = isAssetGraphNodeFocused(node);
     const selected = state.selectedNodeId === node.id;
     const hovered = state.hoveredNodeId === node.id;
-    const pulse = state.reducedMotion ? 0 : Math.sin(node.pulse * 1.6) * 0.9;
-    const radius = node.radius + (selected || hovered ? 2.6 : pulse);
+    const pulse = state.reducedMotion ? 0 : Math.sin(node.pulse) * 2.4;
+    const radius = node.radius + (selected || hovered ? 4 : pulse);
     context.save();
-    context.globalAlpha = focus ? 1 : 0.2;
-    context.fillStyle = node.glow;
-    context.beginPath();
-    context.arc(node.x, node.y, radius + (selected || hovered ? 13 : 8), 0, Math.PI * 2);
-    context.fill();
+    context.globalAlpha = focus ? 1 : 0.22;
+    context.shadowColor = node.glow;
+    context.shadowBlur = selected || hovered ? 28 : 16;
     context.fillStyle = node.color;
     context.beginPath();
     context.arc(node.x, node.y, radius, 0, Math.PI * 2);
     context.fill();
-    context.strokeStyle = selected ? "rgba(255, 250, 242, 0.96)" : "rgba(255, 250, 242, 0.84)";
-    context.lineWidth = selected ? 2.2 : 1.2;
+    context.shadowBlur = 0;
+    context.strokeStyle = selected ? "#fff7e8" : "rgba(255, 250, 242, 0.76)";
+    context.lineWidth = selected ? 3 : 1.5;
     context.stroke();
-    context.fillStyle = "rgba(255, 255, 255, 0.42)";
-    context.beginPath();
-    context.arc(node.x - radius * 0.28, node.y - radius * 0.32, Math.max(1.4, radius * 0.18), 0, Math.PI * 2);
-    context.fill();
-    if (node.type === "core" || selected || hovered) {
+    if (node.type === "core" || node.type === "course" || selected || hovered) {
       context.fillStyle = selected || hovered ? "#2f2923" : "rgba(47, 41, 35, 0.82)";
       context.font = `${selected || hovered ? 700 : 620} ${node.type === "core" ? 13 : 11}px sans-serif`;
       context.textAlign = "center";
@@ -8435,55 +8406,6 @@ function animateAssetGraph() {
   if (!assetGraphState?.reducedMotion) {
     assetGraphState.animationFrame = requestAnimationFrame(animateAssetGraph);
   }
-}
-
-function drawAssetGraphBackground(context, width, height, state) {
-  context.fillStyle = "#fbf7ee";
-  context.fillRect(0, 0, width, height);
-
-  const glow = context.createRadialGradient(width * 0.48, height * 0.5, 20, width * 0.5, height * 0.5, Math.max(width, height) * 0.72);
-  glow.addColorStop(0, "rgba(255, 253, 247, 0.96)");
-  glow.addColorStop(0.52, "rgba(241, 234, 222, 0.7)");
-  glow.addColorStop(1, "rgba(222, 232, 215, 0.36)");
-  context.fillStyle = glow;
-  context.fillRect(0, 0, width, height);
-
-  const core = state.nodeMap.get("agent-core");
-  const cx = core?.x || width * 0.48;
-  const cy = core?.y || height * 0.52;
-  context.save();
-  context.strokeStyle = "rgba(83, 99, 82, 0.12)";
-  context.lineWidth = 1;
-  [0.32, 0.52, 0.72].forEach((scale, index) => {
-    context.beginPath();
-    context.ellipse(cx, cy, width * scale * 0.46, height * scale * 0.34, -0.08, 0, Math.PI * 2);
-    context.setLineDash(index === 1 ? [3, 8] : []);
-    context.stroke();
-  });
-  context.setLineDash([]);
-
-  const labels = [
-    ["生成材料", width * 0.18, height * 0.18],
-    ["上传知识库", width * 0.7, height * 0.16],
-    ["来源边界", width * 0.64, height * 0.9],
-  ];
-  context.font = "700 11px sans-serif";
-  context.fillStyle = "rgba(96, 83, 70, 0.42)";
-  context.textAlign = "center";
-  labels.forEach(([label, x, y]) => context.fillText(label, x, y));
-
-  for (let i = 0; i < 34; i += 1) {
-    const angle = i * 2.399 + (state.nodes[0]?.pulse || 0) * 0.2;
-    const radius = (Math.min(width, height) * (0.18 + (i % 5) * 0.055));
-    const x = cx + Math.cos(angle) * radius * 1.08;
-    const y = cy + Math.sin(angle) * radius * 0.72;
-    context.globalAlpha = 0.14 + (i % 3) * 0.04;
-    context.fillStyle = i % 4 === 0 ? "#b96e46" : "#6f7554";
-    context.beginPath();
-    context.arc(x, y, i % 6 === 0 ? 1.8 : 1.1, 0, Math.PI * 2);
-    context.fill();
-  }
-  context.restore();
 }
 
 function getAssetGraphPointer(event) {
