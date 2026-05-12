@@ -8240,6 +8240,38 @@ body[data-page="home"].anthropic-inspired-home .lede {
   line-height: 1.78;
 }
 
+.home-proof-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  max-width: 620px;
+  margin-top: 34px;
+}
+
+.home-proof-row div {
+  padding: 16px 0 0;
+  border-top: 1px solid rgba(77, 63, 49, 0.18);
+}
+
+.home-proof-row strong,
+.home-proof-row span {
+  display: block;
+}
+
+.home-proof-row strong {
+  color: var(--home-ink);
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.home-proof-row span {
+  margin-top: 7px;
+  color: var(--home-muted);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
 body[data-page="home"] .home-agent-workbench {
   position: relative;
   min-width: 0;
@@ -9120,6 +9152,25 @@ body[data-page="home"] .agent-output-metrics dd {
   body[data-page="home"].anthropic-inspired-home .lede {
     font-size: 0.96rem;
     line-height: 1.68;
+  }
+
+  .home-proof-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 24px;
+  }
+
+  .home-proof-row div {
+    padding-top: 12px;
+  }
+
+  .home-proof-row strong {
+    font-size: 1.35rem;
+  }
+
+  .home-proof-row span {
+    font-size: 0.74rem;
+    line-height: 1.35;
   }
 
   body[data-page="home"] .home-agent-workbench {
@@ -13910,6 +13961,12 @@ body[data-page="home"].anthropic-inspired-home .lede {
 
 body[data-page="home"].anthropic-inspired-home .hero-actions {
   justify-content: center;
+}
+
+body[data-page="home"].anthropic-inspired-home .home-proof-row {
+  max-width: 760px;
+  margin-right: auto;
+  margin-left: auto;
 }
 
 body[data-page="home"] .home-agent-workbench.home-cowork-demo {
