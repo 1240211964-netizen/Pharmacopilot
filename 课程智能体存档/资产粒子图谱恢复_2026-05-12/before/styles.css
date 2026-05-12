@@ -17095,24 +17095,180 @@ body[data-page="assets"] .asset-graph-section {
   border-radius: 34px;
 }
 
-body[data-page="assets"] .asset-graph-shell {
+body[data-page="assets"] .asset-relation-shell {
   grid-template-columns: minmax(0, 1.45fr) minmax(300px, 0.72fr);
 }
 
-body[data-page="assets"] .asset-graph-stage {
-  min-height: 460px;
+body[data-page="assets"] .asset-relation-stage {
+  min-height: 390px;
   border-radius: 28px;
   background:
-    radial-gradient(circle at 34% 26%, rgba(83, 113, 143, 0.12), transparent 18rem),
-    radial-gradient(circle at 72% 66%, rgba(185, 110, 70, 0.1), transparent 16rem),
     linear-gradient(rgba(255, 252, 246, 0.82), rgba(255, 252, 246, 0.82)),
     linear-gradient(90deg, rgba(77, 63, 49, 0.035) 1px, transparent 1px),
     linear-gradient(180deg, rgba(77, 63, 49, 0.035) 1px, transparent 1px);
-  background-size: auto, auto, auto, 40px 40px, 40px 40px;
+  background-size: auto, 40px 40px, 40px 40px;
 }
 
-body[data-page="assets"] #assetKnowledgeCanvas {
-  min-height: 460px;
+body[data-page="assets"] .asset-relation-map {
+  position: relative;
+  display: block;
+  width: 100%;
+  min-height: 390px;
+  height: 100%;
+  padding: 18px;
+  touch-action: auto;
+}
+
+body[data-page="assets"] .asset-relation-map-inner {
+  position: relative;
+  min-height: 350px;
+  height: 100%;
+}
+
+body[data-page="assets"] .asset-relation-lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+body[data-page="assets"] .asset-relation-lines path {
+  stroke: rgba(126, 105, 80, 0.42);
+  stroke-width: 1.6;
+  stroke-dasharray: 7 8;
+}
+
+body[data-page="assets"] .asset-relation-center,
+body[data-page="assets"] .asset-relation-node {
+  position: absolute;
+  z-index: 1;
+  border: 1px solid rgba(77, 63, 49, 0.12);
+  background: rgba(255, 252, 246, 0.94);
+  box-shadow: 0 16px 38px rgba(70, 51, 34, 0.075);
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+body[data-page="assets"] .asset-relation-center {
+  left: 50%;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: min(230px, 42vw);
+  min-height: 146px;
+  padding: 18px;
+  border-radius: 32px;
+  text-align: center;
+  transform: translate(-50%, -50%);
+}
+
+body[data-page="assets"] .asset-relation-center:hover,
+body[data-page="assets"] .asset-relation-node:hover,
+body[data-page="assets"] .asset-relation-center:focus-visible,
+body[data-page="assets"] .asset-relation-node:focus-visible,
+body[data-page="assets"] .asset-relation-center.is-selected,
+body[data-page="assets"] .asset-relation-node.is-selected {
+  border-color: rgba(49, 43, 37, 0.72);
+  background: #fffdf8;
+  box-shadow: 0 20px 46px rgba(70, 51, 34, 0.12), inset 0 0 0 1px rgba(49, 43, 37, 0.05);
+}
+
+body[data-page="assets"] .asset-relation-center:hover,
+body[data-page="assets"] .asset-relation-center:focus-visible,
+body[data-page="assets"] .asset-relation-center.is-selected {
+  transform: translate(-50%, calc(-50% - 2px));
+}
+
+body[data-page="assets"] .asset-relation-node:hover,
+body[data-page="assets"] .asset-relation-node:focus-visible,
+body[data-page="assets"] .asset-relation-node.is-selected {
+  transform: translateY(-2px);
+}
+
+body[data-page="assets"] .asset-relation-center:focus-visible,
+body[data-page="assets"] .asset-relation-node:focus-visible {
+  outline: 3px solid rgba(185, 110, 70, 0.18);
+  outline-offset: 3px;
+}
+
+body[data-page="assets"] .asset-relation-center span,
+body[data-page="assets"] .asset-relation-node span {
+  color: var(--accent-dark);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+body[data-page="assets"] .asset-relation-center strong {
+  display: -webkit-box;
+  overflow: hidden;
+  margin-top: 7px;
+  color: var(--text-main);
+  font-size: 1.04rem;
+  line-height: 1.35;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+body[data-page="assets"] .asset-relation-center small {
+  margin-top: 7px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+body[data-page="assets"] .asset-relation-node {
+  width: min(220px, 34%);
+  padding: 13px 14px;
+  border-radius: 20px;
+  text-align: left;
+}
+
+body[data-page="assets"] .asset-relation-node strong {
+  display: -webkit-box;
+  overflow: hidden;
+  margin-top: 5px;
+  color: var(--text-main);
+  font-size: 0.92rem;
+  line-height: 1.35;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+body[data-page="assets"] .asset-relation-node p {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 6px 0 0;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+body[data-page="assets"] .relation-source {
+  left: 3%;
+  top: 12%;
+}
+
+body[data-page="assets"] .relation-stage {
+  right: 3%;
+  top: 12%;
+}
+
+body[data-page="assets"] .relation-boundary {
+  left: 6%;
+  bottom: 10%;
+}
+
+body[data-page="assets"] .relation-reuse {
+  right: 5%;
+  bottom: 10%;
 }
 
 body[data-page="assets"] .asset-import-panel[hidden] {
@@ -17509,7 +17665,7 @@ body[data-page="assets"] .asset-reuse-grid button:hover {
 
 @media (max-width: 980px) {
   body[data-page="assets"] .asset-workbench-hero,
-  body[data-page="assets"] .asset-graph-shell {
+  body[data-page="assets"] .asset-relation-shell {
     grid-template-columns: 1fr;
   }
 
@@ -17561,9 +17717,38 @@ body[data-page="assets"] .asset-reuse-grid button:hover {
     border-radius: 24px;
   }
 
-  body[data-page="assets"] .asset-graph-stage,
-  body[data-page="assets"] #assetKnowledgeCanvas {
-    min-height: 340px;
+  body[data-page="assets"] .asset-relation-stage,
+  body[data-page="assets"] .asset-relation-map {
+    min-height: 620px;
+  }
+
+  body[data-page="assets"] .asset-relation-map-inner {
+    min-height: 584px;
+  }
+
+  body[data-page="assets"] .asset-relation-lines {
+    display: none;
+  }
+
+  body[data-page="assets"] .asset-relation-center,
+  body[data-page="assets"] .asset-relation-node {
+    position: static;
+    width: 100%;
+    transform: none;
+  }
+
+  body[data-page="assets"] .asset-relation-center:hover,
+  body[data-page="assets"] .asset-relation-center:focus-visible,
+  body[data-page="assets"] .asset-relation-center.is-selected,
+  body[data-page="assets"] .asset-relation-node:hover,
+  body[data-page="assets"] .asset-relation-node:focus-visible,
+  body[data-page="assets"] .asset-relation-node.is-selected {
+    transform: none;
+  }
+
+  body[data-page="assets"] .asset-relation-map-inner {
+    display: grid;
+    gap: 12px;
   }
 
   body[data-page="assets"] .asset-results-head,
@@ -17580,88 +17765,8 @@ body[data-page="assets"] .asset-reuse-grid button:hover {
     display: grid;
   }
 
-body[data-page="assets"] .asset-actions button,
+  body[data-page="assets"] .asset-actions button,
   body[data-page="assets"] .asset-manual-actions button {
     width: 100%;
   }
-}
-
-/* Chrome renderer safety layer: keep the same layout and palette while removing persistent GPU-heavy effects. */
-:root {
-  --shadow-soft: 0 16px 42px rgba(93, 70, 46, 0.08);
-  --shadow-card: 0 10px 28px rgba(70, 51, 34, 0.07);
-  --shadow: var(--shadow-soft);
-}
-
-body[data-page] *,
-body[data-page] *::before,
-body[data-page] *::after {
-  -webkit-backdrop-filter: none !important;
-  backdrop-filter: none !important;
-}
-
-body[data-page="home"] .product-showcase,
-body[data-page="home"] .generated-board,
-body[data-page="home"] .home-cowork-stage,
-body[data-page="home"] .home-cowork-output,
-body[data-page="teaching-navigation"] .route-node-popover,
-body[data-page="teaching-navigation"] .route-map-card,
-body[data-page="navigation"] .game-map-card,
-body[data-page="workflow"] .workflow-node,
-body[data-page="assets"] .asset-reuse-band,
-body[data-page="assets"] .asset-detail-panel {
-  box-shadow: 0 16px 42px rgba(57, 42, 25, 0.11) !important;
-}
-
-body[data-page="home"] .product-showcase::before,
-body[data-page="home"] .sync-orbit,
-body[data-page="home"] .agent-pulse,
-body[data-page="home"] .agent-log .is-live span,
-body[data-page="home"] .agent-step.is-live > span,
-body[data-page="home"] .home-cowork-activity-step.is-live span,
-.route-node-current .route-node-orb,
-body[data-page="workflow"] .workflow-lane::before,
-body[data-page="workflow"] .workflow-edge-path.is-animated,
-body[data-page="workflow"] .workflow-edge-flow,
-body[data-page="workflow"] .workflow-node,
-body[data-page="workflow"] .workflow-node--subflow,
-body[data-page="workflow"] .workflow-node--output,
-body[data-page="teaching-navigation"] .route-node-popover.is-open {
-  animation: none !important;
-}
-
-body[data-page="home"] .reveal-on-load,
-body[data-page="workflow"] .workflow-edge-flow,
-body[data-page="teaching-navigation"] .route-path,
-body[data-page="navigation"] .route-path,
-body[data-page="navigation"] .game-map-route,
-body[data-page="navigation"] .route-map-svg {
-  filter: none !important;
-}
-
-body[data-page="workflow"] .workflow-edge-flow {
-  opacity: 0.42;
-}
-
-body[data-page="workflow"] .workflow-node--subflow,
-body[data-page="workflow"] .workflow-node--output {
-  box-shadow:
-    0 14px 34px rgba(42, 54, 78, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.85) !important;
-}
-
-body[data-page="home"] .agent-pulse,
-body[data-page="home"] .agent-step.is-live > span,
-body[data-page="home"] .home-cowork-activity-step.is-live span,
-.route-node-current .route-node-orb {
-  box-shadow: 0 0 0 4px rgba(200, 100, 52, 0.14) !important;
-}
-
-html.prefers-reduced-motion *,
-html.prefers-reduced-motion *::before,
-html.prefers-reduced-motion *::after {
-  scroll-behavior: auto !important;
-  animation-duration: 0.01ms !important;
-  animation-iteration-count: 1 !important;
-  transition-duration: 0.01ms !important;
 }

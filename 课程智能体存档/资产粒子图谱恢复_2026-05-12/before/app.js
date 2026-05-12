@@ -15,10 +15,6 @@ const FANYA_MOCK_ACCOUNT = {
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
 
-function prefersReducedMotion() {
-  return Boolean(window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches);
-}
-
 const goalCalibratorScenarioOutputs = {
   chronic: {
     task: "某高校药事管理本科课堂围绕药品政策与机构管理情境开展 SWOT 分析，请学生从课程案例事实、政策要求、组织资源、利益相关者和风险边界等角度完成判断。",
@@ -1078,7 +1074,6 @@ let workflowState = {
   dragging: null,
   panning: null,
   demoTimer: null,
-  edgeRenderFrame: null,
 };
 
 const TRAINING_REPORT_EXPORT_KEY = "pharmacopilot.trainingReport";
@@ -1477,8 +1472,8 @@ let practiceWorkflowState = null;
 let currentAssetStore = null;
 let pendingUploadFiles = [];
 let assetGraphState = null;
-let assetGraphRenderFrame = null;
 let selectedAssetId = "";
+let selectedAssetRelationNode = "asset";
 const assetFilterState = {
   source: "全部",
   type: "全部",
@@ -7794,19 +7789,10 @@ function renderAssetOverview() {
   $("#fanyaSyncCount") && ($("#fanyaSyncCount").textContent = String((store.fanyaSyncRecords || []).length));
 }
 
-function scheduleAssetKnowledgeGraphRender() {
-  if (!$("#assetKnowledgeCanvas")) return;
-  if (assetGraphRenderFrame) cancelAnimationFrame(assetGraphRenderFrame);
-  assetGraphRenderFrame = requestAnimationFrame(() => {
-    assetGraphRenderFrame = null;
-    renderAssetKnowledgeGraph();
-  });
-}
-
 function refreshAssetWorkbench() {
   renderAssetFilters();
   renderAssetList();
-  scheduleAssetKnowledgeGraphRender();
+  renderAssetKnowledgeGraph();
   const active = getActiveWorkbenchAsset(getFilteredAssetWorkbenchItems());
   if (active) {
     viewAssetDetail(active.id, { skipGraphSync: true, skipListSync: true });
@@ -8741,22 +8727,6 @@ function getAssetGraphNodeAtPoint(point) {
   return nearest;
 }
 
-function getNearestAssetGraphNode(point, maxDistance = 84) {
-  if (!assetGraphState) return null;
-  let nearest = null;
-  let nearestDistance = Infinity;
-  assetGraphState.nodes.forEach((node) => {
-    const dx = point.x - node.x;
-    const dy = point.y - node.y;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-    if (distance < nearestDistance) {
-      nearest = node;
-      nearestDistance = distance;
-    }
-  });
-  return nearestDistance <= maxDistance ? nearest : null;
-}
-
 function showAssetGraphTooltip(node, point) {
   const tooltip = $("#assetGraphTooltip");
   if (!tooltip || !node) return;
@@ -8772,22 +8742,6 @@ function showAssetGraphTooltip(node, point) {
 function hideAssetGraphTooltip() {
   const tooltip = $("#assetGraphTooltip");
   if (tooltip) tooltip.hidden = true;
-}
-
-function disposeAssetGraphState() {
-  if (assetGraphRenderFrame) {
-    cancelAnimationFrame(assetGraphRenderFrame);
-    assetGraphRenderFrame = null;
-  }
-  if (!assetGraphState) return;
-  if (assetGraphState.animationFrame) {
-    cancelAnimationFrame(assetGraphState.animationFrame);
-    assetGraphState.animationFrame = null;
-  }
-  if (assetGraphState.resizeListener) {
-    window.removeEventListener("resize", assetGraphState.resizeListener);
-  }
-  assetGraphState = null;
 }
 
 function renderAssetGraphDetail(node) {
@@ -8816,53 +8770,38 @@ function selectAssetGraphNode(nodeId, options = {}) {
   if (options.syncAssetDetail && node.assetId) viewAssetDetail(node.assetId, { skipGraphSync: true });
 }
 
-function selectAssetGraphNodeAtPoint(point, options = {}) {
-  const node = getAssetGraphNodeAtPoint(point) || getNearestAssetGraphNode(point, Number.POSITIVE_INFINITY);
-  if (!node) return false;
-  selectAssetGraphNode(node.id, options);
-  return true;
-}
-
 function highlightAssetGraphNodeByAsset(assetId) {
-  if (!assetGraphState || !assetId) return;
-  const node = assetGraphState.nodes.find((item) => item.assetId === assetId);
-  if (!node) return;
-  assetGraphState.selectedNodeId = node.id;
-  renderAssetGraphDetail(node);
-  drawAssetGraphFrame();
+  if (!assetId) return;
+  selectedAssetId = assetId;
+  renderAssetKnowledgeGraph();
 }
 
 function bindAssetGraphCanvas(canvas) {
-  if (canvas.dataset.assetGraphReady !== "true") {
-    canvas.dataset.assetGraphReady = "true";
-    canvas.addEventListener("pointermove", (event) => {
-      if (!assetGraphState) return;
-      const point = getAssetGraphPointer(event);
-      assetGraphState.pointer = { ...point, active: true };
-      const node = getAssetGraphNodeAtPoint(point);
-      assetGraphState.hoveredNodeId = node?.id || "";
-      canvas.style.cursor = node ? "pointer" : "default";
-      if (node) showAssetGraphTooltip(node, point);
-      else hideAssetGraphTooltip();
-    });
-    canvas.addEventListener("pointerleave", () => {
-      if (!assetGraphState) return;
-      assetGraphState.pointer = null;
-      assetGraphState.hoveredNodeId = "";
-      hideAssetGraphTooltip();
-      drawAssetGraphFrame();
-    });
-    canvas.addEventListener("pointerdown", (event) => {
-      if (!assetGraphState) return;
-      selectAssetGraphNodeAtPoint(getAssetGraphPointer(event), { syncAssetDetail: true });
-    });
-    canvas.addEventListener("click", (event) => {
-      if (!assetGraphState) return;
-      selectAssetGraphNodeAtPoint(getAssetGraphPointer(event), { syncAssetDetail: true });
-    });
-  }
-  assetGraphState.resizeListener = resizeAssetGraphCanvas;
-  window.addEventListener("resize", assetGraphState.resizeListener, { passive: true });
+  if (canvas.dataset.assetGraphReady === "true") return;
+  canvas.dataset.assetGraphReady = "true";
+  canvas.addEventListener("pointermove", (event) => {
+    if (!assetGraphState) return;
+    const point = getAssetGraphPointer(event);
+    assetGraphState.pointer = { ...point, active: true };
+    const node = getAssetGraphNodeAtPoint(point);
+    assetGraphState.hoveredNodeId = node?.id || "";
+    canvas.style.cursor = node ? "pointer" : "default";
+    if (node) showAssetGraphTooltip(node, point);
+    else hideAssetGraphTooltip();
+  });
+  canvas.addEventListener("pointerleave", () => {
+    if (!assetGraphState) return;
+    assetGraphState.pointer = null;
+    assetGraphState.hoveredNodeId = "";
+    hideAssetGraphTooltip();
+    drawAssetGraphFrame();
+  });
+  canvas.addEventListener("click", (event) => {
+    if (!assetGraphState) return;
+    const node = getAssetGraphNodeAtPoint(getAssetGraphPointer(event));
+    if (node) selectAssetGraphNode(node.id, { syncAssetDetail: true });
+  });
+  window.addEventListener("resize", resizeAssetGraphCanvas);
 }
 
 function renderAssetGraphControls() {
@@ -8918,42 +8857,129 @@ function renderAssetGraphControls() {
 }
 
 function renderAssetKnowledgeGraph() {
-  const previousState = assetGraphState;
-  const previousNodes = previousState?.nodes || [];
-  const previousFilter = previousState?.activeFilter || "all";
-  const previousSelectedNodeId = previousState?.selectedNodeId || "";
-  disposeAssetGraphState();
-  const canvas = $("#assetKnowledgeCanvas");
-  if (!canvas) return;
-  const context = canvas.getContext("2d");
-  if (!context) return;
-  const graph = buildAssetKnowledgeGraph();
-  restoreAssetGraphPositions(graph.nodes, previousNodes);
-  const selectedAssetNodeId = graph.nodes.find((node) => node.assetId === selectedAssetId)?.id || "";
-  const selectedNodeId = graph.nodes.some((node) => node.id === previousSelectedNodeId)
-    ? previousSelectedNodeId
-    : selectedAssetNodeId || "agent-core";
-  assetGraphState = {
-    canvas,
-    context,
-    nodes: graph.nodes,
-    links: graph.links,
-    nodeMap: new Map(graph.nodes.map((node) => [node.id, node])),
-    activeFilter: previousFilter,
-    selectedNodeId,
-    hoveredNodeId: "",
-    pointer: null,
-    reducedMotion: window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches || false,
-  };
+  if (assetGraphState?.animationFrame) cancelAnimationFrame(assetGraphState.animationFrame);
+  assetGraphState = null;
+  const target = $("#assetKnowledgeCanvas");
+  if (!target) return;
+  const allItems = getAssetWorkbenchItems();
+  const filteredItems = getFilteredAssetWorkbenchItems();
+  const active = getActiveWorkbenchAsset(filteredItems);
   const empty = $("#assetGraphEmpty");
-  if (empty) empty.hidden = graph.nodes.length > 1;
-  bindAssetGraphCanvas(canvas);
-  renderAssetGraphControls();
-  resizeAssetGraphCanvas();
-  selectAssetGraphNode(assetGraphState.selectedNodeId);
-  if (!assetGraphState.reducedMotion) {
-    assetGraphState.animationFrame = requestAnimationFrame(animateAssetGraph);
+  if (empty) empty.hidden = Boolean(active);
+  if (!active) {
+    target.innerHTML = "";
+    renderAssetRelationInspector(null, allItems, filteredItems);
+    return;
   }
+
+  const relationNodes = [
+    {
+      key: "source",
+      label: active.source,
+      title: "来源",
+      desc: active.rawSource && active.rawSource !== active.source ? active.rawSource : "来自当前资产库记录",
+      detailTitle: active.source,
+      detailBody: `该资产来自“${active.rawSource || active.source}”，当前同来源资产共 ${allItems.filter((asset) => asset.source === active.source).length} 项。`,
+      meta: [
+        ["来源类型", active.source],
+        ["原始来源", active.rawSource || active.source],
+      ],
+    },
+    {
+      key: "stage",
+      label: active.stage,
+      title: "教学场景",
+      desc: `${active.course || defaultTrainingCourse.courseName} · ${active.type}`,
+      detailTitle: active.stage,
+      detailBody: `该资产连接到“${active.stage}”，用于把资产放回具体教学环节，而不是作为孤立资料保存。`,
+      meta: [
+        ["课程", active.course || defaultTrainingCourse.courseName],
+        ["资产类型", active.type],
+      ],
+    },
+    {
+      key: "boundary",
+      label: "来源边界",
+      title: active.boundary,
+      desc: active.status === "待核验" ? "需要教师补充或核验" : "已进入资产说明书",
+      detailTitle: active.boundary,
+      detailBody: active.status === "待核验" ? "该节点提醒教师补充材料来源、授权范围和可分发边界。" : "该节点记录当前资产可解释、可追溯的使用边界。",
+      meta: [
+        ["边界状态", active.status],
+        ["风险提醒", active.risk],
+      ],
+    },
+    {
+      key: "reuse",
+      label: "复用任务",
+      title: getAssetPrimaryReuse(active),
+      desc: "用于下一次生成前仍需教师确认",
+      detailTitle: getAssetPrimaryReuse(active),
+      detailBody: `点击底部复用入口或资产说明书按钮，可把“${active.title}”转化为下一步生成提示词。`,
+      meta: [
+        ["可复用方式", active.reuse],
+        ["教师确认", "生成前仍需教师审校"],
+      ],
+    },
+  ];
+  if (!["asset", ...relationNodes.map((node) => node.key)].includes(selectedAssetRelationNode)) {
+    selectedAssetRelationNode = "asset";
+  }
+
+  target.innerHTML = `
+    <div class="asset-relation-map-inner">
+      <svg class="asset-relation-lines" viewBox="0 0 920 360" fill="none" aria-hidden="true">
+        <path d="M212 90 C318 104 362 154 424 174" />
+        <path d="M708 88 C604 106 556 150 496 174" />
+        <path d="M222 276 C322 252 368 210 424 186" />
+        <path d="M698 278 C602 252 554 210 496 186" />
+      </svg>
+      <button class="asset-relation-center ${selectedAssetRelationNode === "asset" ? "is-selected" : ""}" type="button" data-asset-relation-node="asset" aria-pressed="${selectedAssetRelationNode === "asset"}">
+        <span>当前资产</span>
+        <strong>${escapeHtml(active.title)}</strong>
+        <small>${escapeHtml(active.type)} · ${escapeHtml(active.status)}</small>
+      </button>
+      ${relationNodes.map((node) => renderAssetRelationNode(node, selectedAssetRelationNode === node.key)).join("")}
+    </div>
+  `;
+  bindAssetRelationNodes(active, relationNodes, allItems, filteredItems);
+  renderAssetRelationInspector(active, allItems, filteredItems, relationNodes);
+}
+
+function renderAssetRelationNode(node, isSelected = false) {
+  return `
+    <button
+      class="asset-relation-node relation-${escapeHtml(node.key)} ${isSelected ? "is-selected" : ""}"
+      type="button"
+      data-asset-relation-node="${escapeHtml(node.key)}"
+      aria-pressed="${isSelected ? "true" : "false"}"
+    >
+      <span>${escapeHtml(node.label)}</span>
+      <strong>${escapeHtml(node.title)}</strong>
+      <p>${escapeHtml(node.desc)}</p>
+    </button>
+  `;
+}
+
+function bindAssetRelationNodes(active, relationNodes, allItems, filteredItems) {
+  const target = $("#assetKnowledgeCanvas");
+  if (!target || !active) return;
+  $$("[data-asset-relation-node]", target).forEach((nodeButton) => {
+    nodeButton.addEventListener("click", () => {
+      selectedAssetRelationNode = nodeButton.dataset.assetRelationNode || "asset";
+      updateAssetRelationSelection(active, relationNodes, allItems, filteredItems);
+    });
+  });
+}
+
+function updateAssetRelationSelection(active, relationNodes, allItems, filteredItems) {
+  $$("[data-asset-relation-node]").forEach((nodeButton) => {
+    const isSelected = nodeButton.dataset.assetRelationNode === selectedAssetRelationNode;
+    nodeButton.classList.toggle("is-selected", isSelected);
+    nodeButton.setAttribute("aria-pressed", String(isSelected));
+  });
+  renderAssetRelationInspector(active, allItems, filteredItems, relationNodes);
+  if (selectedAssetRelationNode === "asset") viewAssetDetail(active.id, { skipGraphSync: true, skipListSync: true });
 }
 
 function getAssetPrimaryReuse(asset) {
@@ -8962,6 +8988,87 @@ function getAssetPrimaryReuse(asset) {
   if (asset.type === "案例材料") return "生成学生任务单";
   if (asset.type === "教学复盘" || asset.type === "学习证据") return "生成教学复盘报告";
   return "生成下一次课教学设计";
+}
+
+function renderAssetRelationInspector(active, allItems, filteredItems, relationNodes = []) {
+  const kpisTarget = $("#assetGraphKpis");
+  const filtersTarget = $("#assetGraphFilters");
+  const legendTarget = $("#assetGraphLegend");
+  const detailTarget = $("#assetGraphDetail");
+  const sourceCounts = ASSET_SOURCE_FILTERS.slice(1).map((source) => ({
+    source,
+    count: allItems.filter((asset) => asset.source === source).length,
+  }));
+  if (kpisTarget) {
+    kpisTarget.innerHTML = `
+      <div><strong>${allItems.length}</strong><span>资产</span></div>
+      <div><strong>${filteredItems.length}</strong><span>当前结果</span></div>
+      <div><strong>${allItems.filter((asset) => asset.status === "待核验").length}</strong><span>待核验</span></div>
+    `;
+  }
+  if (filtersTarget) {
+    filtersTarget.innerHTML = sourceCounts
+      .map(
+        (item) => `
+          <button type="button" data-asset-graph-source="${escapeHtml(item.source)}" class="${assetFilterState.source === item.source ? "is-active" : ""}">
+            ${escapeHtml(item.source)}<span>${item.count}</span>
+          </button>
+        `,
+      )
+      .join("");
+    $$("[data-asset-graph-source]", filtersTarget).forEach((button) => {
+      button.addEventListener("click", () => {
+        assetFilterState.source = assetFilterState.source === button.dataset.assetGraphSource ? "全部" : button.dataset.assetGraphSource || "全部";
+        refreshAssetWorkbench();
+      });
+    });
+  }
+  if (legendTarget) {
+    legendTarget.innerHTML = `
+      <span><i style="--legend-color:#547293"></i>来源</span>
+      <span><i style="--legend-color:#7f8f68"></i>教学场景</span>
+      <span><i style="--legend-color:#b96e46"></i>边界</span>
+      <span><i style="--legend-color:#2f7d68"></i>复用</span>
+    `;
+  }
+  if (detailTarget) {
+    if (!active) {
+      detailTarget.innerHTML = `
+        <span>当前资产</span>
+        <strong>暂无可解释资产</strong>
+        <p>保存训练报告、实践材料或知识库元数据后，这里会展示来源、边界和复用任务。</p>
+      `;
+      return;
+    }
+    const selectedRelation = relationNodes.find((node) => node.key === selectedAssetRelationNode);
+    if (!selectedRelation) {
+      detailTarget.innerHTML = `
+        <span>当前资产节点</span>
+        <strong>${escapeHtml(active.title)}</strong>
+        <p>${escapeHtml(active.summary || "该资产由当前资产库记录自动整理。")}</p>
+        <dl>
+          <div><dt>来源</dt><dd>${escapeHtml(active.source)} / ${escapeHtml(active.rawSource || active.source)}</dd></div>
+          <div><dt>边界</dt><dd>${escapeHtml(active.boundary)}</dd></div>
+          <div><dt>复用</dt><dd>${escapeHtml(getAssetPrimaryReuse(active))}</dd></div>
+        </dl>
+      `;
+      return;
+    }
+    detailTarget.innerHTML = `
+      <span>${escapeHtml(selectedRelation.label)}</span>
+      <strong>${escapeHtml(selectedRelation.detailTitle || selectedRelation.title)}</strong>
+      <p>${escapeHtml(selectedRelation.detailBody || selectedRelation.desc)}</p>
+      <dl>
+        ${(selectedRelation.meta || [])
+          .map(
+            ([term, value]) => `
+              <div><dt>${escapeHtml(term)}</dt><dd>${escapeHtml(value || "待补充")}</dd></div>
+            `,
+          )
+          .join("")}
+      </dl>
+    `;
+  }
 }
 
 function renderAssetList() {
@@ -9101,6 +9208,7 @@ function viewAssetDetail(id, options = {}) {
   const asset = findAssetWorkbenchItem(id);
   if (!detail || !asset) return;
   selectedAssetId = asset.id;
+  if (!options.skipGraphSync) selectedAssetRelationNode = "asset";
   const assetId = escapeHtml(asset.id);
   detail.innerHTML = `
     <article class="detail-card asset-manual-card">
@@ -9399,15 +9507,6 @@ function renderWorkflowEdges() {
         feedback: 2.7,
       }[edge.type] || 3;
       const flowDelay = (index % 9) * -0.26;
-      const shouldRenderFlow = isRunning || edge.animated || isHighlighted;
-      const flowPath = shouldRenderFlow
-        ? `
-        <path
-          class="workflow-edge-flow workflow-flow--${escapeHtml(edge.type)} ${isHighlighted ? "is-highlighted" : ""}"
-          d="${d}"
-          style="--edge-color: ${edgeColor}; --flow-duration: ${flowDuration}s; --flow-delay: ${flowDelay}s;"
-        ></path>`
-        : "";
       return `
         <path
           class="workflow-edge-path workflow-edge--${escapeHtml(edge.type)} ${edge.dashed ? "is-dashed" : ""} ${edge.animated ? "is-animated" : ""} ${isHighlighted ? "is-highlighted" : ""} ${isRunning ? "is-running" : ""}"
@@ -9415,26 +9514,16 @@ function renderWorkflowEdges() {
           marker-end="url(#${markerId})"
           style="--edge-color: ${edgeColor};"
         ></path>
-        ${flowPath}
+        <path
+          class="workflow-edge-flow workflow-flow--${escapeHtml(edge.type)} ${isHighlighted ? "is-highlighted" : ""}"
+          d="${d}"
+          style="--edge-color: ${edgeColor}; --flow-duration: ${flowDuration}s; --flow-delay: ${flowDelay}s;"
+        ></path>
         ${label}
       `;
     })
     .join("");
   svg.innerHTML = defs + paths;
-}
-
-function scheduleWorkflowEdgesRender() {
-  if (workflowState.edgeRenderFrame) return;
-  workflowState.edgeRenderFrame = requestAnimationFrame(() => {
-    workflowState.edgeRenderFrame = null;
-    renderWorkflowEdges();
-  });
-}
-
-function cancelWorkflowEdgesRender() {
-  if (!workflowState.edgeRenderFrame) return;
-  cancelAnimationFrame(workflowState.edgeRenderFrame);
-  workflowState.edgeRenderFrame = null;
 }
 
 function bindWorkflowControls() {
@@ -9571,14 +9660,12 @@ function moveWorkflowNode(event) {
   };
   event.currentTarget.style.left = `${workflowState.nodePositions[dragging.nodeId].x}px`;
   event.currentTarget.style.top = `${workflowState.nodePositions[dragging.nodeId].y}px`;
-  scheduleWorkflowEdgesRender();
+  renderWorkflowEdges();
 }
 
 function stopWorkflowNodeDrag(event) {
   if (!workflowState.dragging) return;
   workflowState.dragging = null;
-  cancelWorkflowEdgesRender();
-  renderWorkflowEdges();
   event.currentTarget.releasePointerCapture?.(event.pointerId);
 }
 
@@ -9608,18 +9695,7 @@ function getWorkflowDownstreamEdgeIds(rootId) {
   return edgeIds;
 }
 
-function cleanupPageResources() {
-  disposeAssetGraphState();
-  cancelWorkflowEdgesRender();
-  if (workflowState.demoTimer) {
-    window.clearInterval(workflowState.demoTimer);
-    workflowState.demoTimer = null;
-  }
-}
-
 document.addEventListener("DOMContentLoaded", () => {
-  document.documentElement.classList.toggle("prefers-reduced-motion", prefersReducedMotion());
-  window.addEventListener("pagehide", cleanupPageResources, { once: true });
   initGlobalNav();
   initTheoryAnchorToggles();
   const page = document.body.dataset.page;

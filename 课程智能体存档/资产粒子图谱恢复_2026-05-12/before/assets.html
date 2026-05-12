@@ -78,29 +78,29 @@
 
       <section class="asset-graph-section section-block" aria-labelledby="asset-graph-title">
         <div class="section-head">
-          <p class="eyebrow">Asset knowledge graph</p>
-          <h2 id="asset-graph-title">用粒子图谱查看资产网络。</h2>
+          <p class="eyebrow">Explainable asset graph</p>
+          <h2 id="asset-graph-title">先看资产从哪里来、连到哪里去。</h2>
           <p class="section-copy">
-            图谱连接教学导航、教学实践、教师上传、泛雅同步、课程、标签和来源边界。点击粒子节点可以查看它的来源、用途和限制，再进入右侧资产说明书复用。
+            图谱不再做装饰性星图，而是围绕当前选中资产展示来源、教学场景、来源边界和复用任务。每条连接都要能回答：来自哪里、用于哪里、限制是什么。
           </p>
         </div>
-        <div class="asset-graph-shell">
-          <div class="asset-graph-stage" aria-label="教学资产知识图谱交互区">
-            <canvas id="assetKnowledgeCanvas" aria-label="教学资产粒子知识图谱"></canvas>
+        <div class="asset-graph-shell asset-relation-shell">
+          <div class="asset-graph-stage asset-relation-stage" aria-label="教学资产可解释关系图">
+            <div id="assetKnowledgeCanvas" class="asset-relation-map" aria-label="教学资产可解释关系图"></div>
             <div id="assetGraphEmpty" class="asset-graph-empty" hidden>
-              <strong>暂无可视化节点</strong>
-              <span>保存训练报告、实践材料或知识库元数据后，这里会形成可交互的资产网络。</span>
+              <strong>暂无可解释资产</strong>
+              <span>保存训练报告、实践材料或知识库元数据后，这里会形成资产关系图。</span>
             </div>
             <div id="assetGraphTooltip" class="asset-graph-tooltip" hidden></div>
           </div>
-          <aside class="asset-graph-inspector" aria-label="知识图谱筛选和节点说明">
+          <aside class="asset-graph-inspector" aria-label="资产关系说明">
             <div class="asset-graph-kpis" id="assetGraphKpis"></div>
-            <div class="asset-graph-filters" id="assetGraphFilters" aria-label="图谱节点筛选"></div>
+            <div class="asset-graph-filters" id="assetGraphFilters" aria-label="资产关系快捷筛选"></div>
             <div class="asset-graph-legend" id="assetGraphLegend"></div>
             <div class="asset-graph-detail" id="assetGraphDetail">
-              <span>当前节点</span>
-              <strong>教学智能体数据中枢</strong>
-              <p>点击粒子节点，可查看它来自训练、实践、上传知识库、标签还是来源边界。</p>
+              <span>当前资产</span>
+              <strong>等待选择资产</strong>
+              <p>点击资产卡片后，这里会展示它的证据链边界。</p>
             </div>
           </aside>
         </div>
