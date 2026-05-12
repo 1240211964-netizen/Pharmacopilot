@@ -17765,88 +17765,8 @@ body[data-page="assets"] .asset-reuse-grid button:hover {
     display: grid;
   }
 
-body[data-page="assets"] .asset-actions button,
+  body[data-page="assets"] .asset-actions button,
   body[data-page="assets"] .asset-manual-actions button {
     width: 100%;
   }
-}
-
-/* Chrome renderer safety layer: keep the same layout and palette while removing persistent GPU-heavy effects. */
-:root {
-  --shadow-soft: 0 16px 42px rgba(93, 70, 46, 0.08);
-  --shadow-card: 0 10px 28px rgba(70, 51, 34, 0.07);
-  --shadow: var(--shadow-soft);
-}
-
-body[data-page] *,
-body[data-page] *::before,
-body[data-page] *::after {
-  -webkit-backdrop-filter: none !important;
-  backdrop-filter: none !important;
-}
-
-body[data-page="home"] .product-showcase,
-body[data-page="home"] .generated-board,
-body[data-page="home"] .home-cowork-stage,
-body[data-page="home"] .home-cowork-output,
-body[data-page="teaching-navigation"] .route-node-popover,
-body[data-page="teaching-navigation"] .route-map-card,
-body[data-page="navigation"] .game-map-card,
-body[data-page="workflow"] .workflow-node,
-body[data-page="assets"] .asset-reuse-band,
-body[data-page="assets"] .asset-detail-panel {
-  box-shadow: 0 16px 42px rgba(57, 42, 25, 0.11) !important;
-}
-
-body[data-page="home"] .product-showcase::before,
-body[data-page="home"] .sync-orbit,
-body[data-page="home"] .agent-pulse,
-body[data-page="home"] .agent-log .is-live span,
-body[data-page="home"] .agent-step.is-live > span,
-body[data-page="home"] .home-cowork-activity-step.is-live span,
-.route-node-current .route-node-orb,
-body[data-page="workflow"] .workflow-lane::before,
-body[data-page="workflow"] .workflow-edge-path.is-animated,
-body[data-page="workflow"] .workflow-edge-flow,
-body[data-page="workflow"] .workflow-node,
-body[data-page="workflow"] .workflow-node--subflow,
-body[data-page="workflow"] .workflow-node--output,
-body[data-page="teaching-navigation"] .route-node-popover.is-open {
-  animation: none !important;
-}
-
-body[data-page="home"] .reveal-on-load,
-body[data-page="workflow"] .workflow-edge-flow,
-body[data-page="teaching-navigation"] .route-path,
-body[data-page="navigation"] .route-path,
-body[data-page="navigation"] .game-map-route,
-body[data-page="navigation"] .route-map-svg {
-  filter: none !important;
-}
-
-body[data-page="workflow"] .workflow-edge-flow {
-  opacity: 0.42;
-}
-
-body[data-page="workflow"] .workflow-node--subflow,
-body[data-page="workflow"] .workflow-node--output {
-  box-shadow:
-    0 14px 34px rgba(42, 54, 78, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.85) !important;
-}
-
-body[data-page="home"] .agent-pulse,
-body[data-page="home"] .agent-step.is-live > span,
-body[data-page="home"] .home-cowork-activity-step.is-live span,
-.route-node-current .route-node-orb {
-  box-shadow: 0 0 0 4px rgba(200, 100, 52, 0.14) !important;
-}
-
-html.prefers-reduced-motion *,
-html.prefers-reduced-motion *::before,
-html.prefers-reduced-motion *::after {
-  scroll-behavior: auto !important;
-  animation-duration: 0.01ms !important;
-  animation-iteration-count: 1 !important;
-  transition-duration: 0.01ms !important;
 }

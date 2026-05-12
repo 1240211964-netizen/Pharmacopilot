@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pharmacopilot | 工作流</title>
+    <meta
+      name="description"
+      content="工作流以可视化画布展示 Pharmacopilot 教学智能体的输入、编排、生成、评价、反馈和资产沉淀链路。"
+    />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./styles.css" />
+    <script defer src="./app.js"></script>
+  </head>
+  <body data-page="workflow">
+    <main class="workflow-canvas-only">
+      <section class="workflow-board-pure" aria-label="Pharmacopilot 工作流画布">
+        <div id="workflowCanvas" class="workflow-canvas pure-canvas" aria-label="可拖拽工作流画布">
+          <div class="workflow-canvas-grid" aria-hidden="true"></div>
+          <div id="workflowTransform" class="workflow-transform">
+            <div id="workflowLanes" class="workflow-lanes" aria-hidden="true"></div>
+            <svg id="workflowEdges" class="workflow-edges" viewBox="0 0 2600 1240" aria-hidden="true"></svg>
+            <div id="workflowNodes" class="workflow-nodes" aria-live="polite"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

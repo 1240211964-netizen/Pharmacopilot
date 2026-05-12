@@ -15,10 +15,6 @@ const FANYA_MOCK_ACCOUNT = {
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
 
-function prefersReducedMotion() {
-  return Boolean(window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches);
-}
-
 const goalCalibratorScenarioOutputs = {
   chronic: {
     task: "某高校药事管理本科课堂围绕药品政策与机构管理情境开展 SWOT 分析，请学生从课程案例事实、政策要求、组织资源、利益相关者和风险边界等角度完成判断。",
@@ -1078,7 +1074,6 @@ let workflowState = {
   dragging: null,
   panning: null,
   demoTimer: null,
-  edgeRenderFrame: null,
 };
 
 const TRAINING_REPORT_EXPORT_KEY = "pharmacopilot.trainingReport";
@@ -1477,7 +1472,6 @@ let practiceWorkflowState = null;
 let currentAssetStore = null;
 let pendingUploadFiles = [];
 let assetGraphState = null;
-let assetGraphRenderFrame = null;
 let selectedAssetId = "";
 let selectedAssetRelationNode = "asset";
 const assetFilterState = {
@@ -7795,19 +7789,10 @@ function renderAssetOverview() {
   $("#fanyaSyncCount") && ($("#fanyaSyncCount").textContent = String((store.fanyaSyncRecords || []).length));
 }
 
-function scheduleAssetKnowledgeGraphRender() {
-  if (!$("#assetKnowledgeCanvas")) return;
-  if (assetGraphRenderFrame) cancelAnimationFrame(assetGraphRenderFrame);
-  assetGraphRenderFrame = requestAnimationFrame(() => {
-    assetGraphRenderFrame = null;
-    renderAssetKnowledgeGraph();
-  });
-}
-
 function refreshAssetWorkbench() {
   renderAssetFilters();
   renderAssetList();
-  scheduleAssetKnowledgeGraphRender();
+  renderAssetKnowledgeGraph();
   const active = getActiveWorkbenchAsset(getFilteredAssetWorkbenchItems());
   if (active) {
     viewAssetDetail(active.id, { skipGraphSync: true, skipListSync: true });
@@ -8759,25 +8744,6 @@ function hideAssetGraphTooltip() {
   if (tooltip) tooltip.hidden = true;
 }
 
-function disposeAssetGraphState() {
-  if (assetGraphRenderFrame) {
-    cancelAnimationFrame(assetGraphRenderFrame);
-    assetGraphRenderFrame = null;
-  }
-  if (!assetGraphState) return;
-  if (assetGraphState.animationFrame) {
-    cancelAnimationFrame(assetGraphState.animationFrame);
-    assetGraphState.animationFrame = null;
-  }
-  if (assetGraphState.resizeListener) {
-    window.removeEventListener("resize", assetGraphState.resizeListener);
-  }
-  if (assetGraphState.canvas) {
-    delete assetGraphState.canvas.dataset.assetGraphReady;
-  }
-  assetGraphState = null;
-}
-
 function renderAssetGraphDetail(node) {
   const detail = $("#assetGraphDetail");
   if (!detail || !node) return;
@@ -8835,8 +8801,7 @@ function bindAssetGraphCanvas(canvas) {
     const node = getAssetGraphNodeAtPoint(getAssetGraphPointer(event));
     if (node) selectAssetGraphNode(node.id, { syncAssetDetail: true });
   });
-  assetGraphState.resizeListener = resizeAssetGraphCanvas;
-  window.addEventListener("resize", assetGraphState.resizeListener, { passive: true });
+  window.addEventListener("resize", resizeAssetGraphCanvas);
 }
 
 function renderAssetGraphControls() {
@@ -8892,7 +8857,8 @@ function renderAssetGraphControls() {
 }
 
 function renderAssetKnowledgeGraph() {
-  disposeAssetGraphState();
+  if (assetGraphState?.animationFrame) cancelAnimationFrame(assetGraphState.animationFrame);
+  assetGraphState = null;
   const target = $("#assetKnowledgeCanvas");
   if (!target) return;
   const allItems = getAssetWorkbenchItems();
@@ -9541,15 +9507,6 @@ function renderWorkflowEdges() {
         feedback: 2.7,
       }[edge.type] || 3;
       const flowDelay = (index % 9) * -0.26;
-      const shouldRenderFlow = isRunning || edge.animated || isHighlighted;
-      const flowPath = shouldRenderFlow
-        ? `
-        <path
-          class="workflow-edge-flow workflow-flow--${escapeHtml(edge.type)} ${isHighlighted ? "is-highlighted" : ""}"
-          d="${d}"
-          style="--edge-color: ${edgeColor}; --flow-duration: ${flowDuration}s; --flow-delay: ${flowDelay}s;"
-        ></path>`
-        : "";
       return `
         <path
           class="workflow-edge-path workflow-edge--${escapeHtml(edge.type)} ${edge.dashed ? "is-dashed" : ""} ${edge.animated ? "is-animated" : ""} ${isHighlighted ? "is-highlighted" : ""} ${isRunning ? "is-running" : ""}"
@@ -9557,26 +9514,16 @@ function renderWorkflowEdges() {
           marker-end="url(#${markerId})"
           style="--edge-color: ${edgeColor};"
         ></path>
-        ${flowPath}
+        <path
+          class="workflow-edge-flow workflow-flow--${escapeHtml(edge.type)} ${isHighlighted ? "is-highlighted" : ""}"
+          d="${d}"
+          style="--edge-color: ${edgeColor}; --flow-duration: ${flowDuration}s; --flow-delay: ${flowDelay}s;"
+        ></path>
         ${label}
       `;
     })
     .join("");
   svg.innerHTML = defs + paths;
-}
-
-function scheduleWorkflowEdgesRender() {
-  if (workflowState.edgeRenderFrame) return;
-  workflowState.edgeRenderFrame = requestAnimationFrame(() => {
-    workflowState.edgeRenderFrame = null;
-    renderWorkflowEdges();
-  });
-}
-
-function cancelWorkflowEdgesRender() {
-  if (!workflowState.edgeRenderFrame) return;
-  cancelAnimationFrame(workflowState.edgeRenderFrame);
-  workflowState.edgeRenderFrame = null;
 }
 
 function bindWorkflowControls() {
@@ -9713,14 +9660,12 @@ function moveWorkflowNode(event) {
   };
   event.currentTarget.style.left = `${workflowState.nodePositions[dragging.nodeId].x}px`;
   event.currentTarget.style.top = `${workflowState.nodePositions[dragging.nodeId].y}px`;
-  scheduleWorkflowEdgesRender();
+  renderWorkflowEdges();
 }
 
 function stopWorkflowNodeDrag(event) {
   if (!workflowState.dragging) return;
   workflowState.dragging = null;
-  cancelWorkflowEdgesRender();
-  renderWorkflowEdges();
   event.currentTarget.releasePointerCapture?.(event.pointerId);
 }
 
@@ -9750,18 +9695,7 @@ function getWorkflowDownstreamEdgeIds(rootId) {
   return edgeIds;
 }
 
-function cleanupPageResources() {
-  disposeAssetGraphState();
-  cancelWorkflowEdgesRender();
-  if (workflowState.demoTimer) {
-    window.clearInterval(workflowState.demoTimer);
-    workflowState.demoTimer = null;
-  }
-}
-
 document.addEventListener("DOMContentLoaded", () => {
-  document.documentElement.classList.toggle("prefers-reduced-motion", prefersReducedMotion());
-  window.addEventListener("pagehide", cleanupPageResources, { once: true });
   initGlobalNav();
   initTheoryAnchorToggles();
   const page = document.body.dataset.page;
