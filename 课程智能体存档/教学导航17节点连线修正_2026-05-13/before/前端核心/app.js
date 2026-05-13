@@ -3822,7 +3822,7 @@ const routeMetroLineDefinitions = [
     stageId: 5,
     title: "复盘改进",
     tone: "olive",
-    d: "M 9 68 C 20 76 37 79 52 80 L 64 80 L 76 80 C 82 80 85 76 89 80",
+    d: "M 43 68 C 46 75 48 79 52 80 L 64 80 L 76 80 C 82 80 85 76 89 80",
   },
 ];
 
