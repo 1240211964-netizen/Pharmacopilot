@@ -17910,7 +17910,7 @@ body[data-page="teaching-navigation"] .route-node-current .route-node-orb::after
   border-radius: 999px;
   background: var(--journey-accent);
   color: #fffaf2;
-  content: "当前环节";
+  content: "当前所在";
   font-size: 0.6rem;
   font-weight: 900;
   white-space: nowrap;
@@ -18191,10 +18191,6 @@ body[data-page="teaching-navigation"] .route-node-orb {
   transform: translate(-50%, -50%);
 }
 
-body[data-page="teaching-navigation"] .route-node-current .route-node-orb::after {
-  content: none !important;
-}
-
 body[data-page="teaching-navigation"] .route-node:hover .route-node-orb,
 body[data-page="teaching-navigation"] .route-node:focus-visible .route-node-orb {
   transform: translate(-50%, calc(-50% - 2px));
@@ -18252,7 +18248,7 @@ body[data-page="teaching-navigation"] .route-node-label-above .route-node-title 
   }
 }
 
-/* Teaching navigation design route */
+/* Teaching navigation metro map */
 body[data-page="teaching-navigation"] {
   background:
     radial-gradient(circle at 12% 4%, color-mix(in srgb, var(--accent) 11%, transparent), transparent 24rem),
@@ -18383,12 +18379,6 @@ body[data-page="teaching-navigation"] .route-stage-tab-blue.is-selected {
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--blue-muted) 16%, transparent);
 }
 
-body[data-page="teaching-navigation"] .route-stage-tab-accent.is-current,
-body[data-page="teaching-navigation"] .route-stage-tab-accent.is-selected {
-  border-color: color-mix(in srgb, var(--accent) 50%, var(--line));
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 14%, transparent);
-}
-
 body[data-page="teaching-navigation"] .route-stage-tab-orange.is-current,
 body[data-page="teaching-navigation"] .route-stage-tab-orange.is-selected {
   border-color: color-mix(in srgb, var(--warning) 52%, var(--line));
@@ -18417,12 +18407,6 @@ body[data-page="teaching-navigation"] .route-stage-tab-blue.is-current .teaching
 body[data-page="teaching-navigation"] .route-stage-tab-blue.is-selected .teaching-stage-index {
   background: var(--blue-soft);
   color: var(--blue-muted);
-}
-
-body[data-page="teaching-navigation"] .route-stage-tab-accent.is-current .teaching-stage-index,
-body[data-page="teaching-navigation"] .route-stage-tab-accent.is-selected .teaching-stage-index {
-  background: var(--accent-wash);
-  color: var(--accent-dark);
 }
 
 body[data-page="teaching-navigation"] .route-stage-tab-orange.is-current .teaching-stage-index,
@@ -18619,66 +18603,80 @@ body[data-page="teaching-navigation"] .route-map-nodes {
   z-index: 5;
 }
 
-body[data-page="teaching-navigation"] .route-stage-lane {
-  fill: color-mix(in srgb, var(--surface) 24%, transparent);
+body[data-page="teaching-navigation"] .route-stage-island {
+  fill: color-mix(in srgb, var(--surface) 28%, transparent);
   stroke: var(--line);
-  stroke-width: 0.34;
-  stroke-dasharray: 1.8 2;
+  stroke-width: 0.36;
+  stroke-dasharray: 1.7 1.7;
   vector-effect: non-scaling-stroke;
 }
 
-body[data-page="teaching-navigation"] .route-stage-lane-sage {
-  fill: color-mix(in srgb, var(--sage) 18%, transparent);
+body[data-page="teaching-navigation"] .route-stage-island-sage {
   stroke: color-mix(in srgb, var(--sage) 42%, transparent);
 }
 
-body[data-page="teaching-navigation"] .route-stage-lane-accent {
-  fill: color-mix(in srgb, var(--accent) 18%, transparent);
-  stroke: color-mix(in srgb, var(--accent) 36%, transparent);
+body[data-page="teaching-navigation"] .route-stage-island-blue {
+  stroke: color-mix(in srgb, var(--blue-muted) 42%, transparent);
 }
 
-body[data-page="teaching-navigation"] .route-stage-lane-blue {
-  fill: color-mix(in srgb, var(--blue-muted) 19%, transparent);
-  stroke: color-mix(in srgb, var(--blue-muted) 38%, transparent);
+body[data-page="teaching-navigation"] .route-stage-island-orange {
+  stroke: color-mix(in srgb, var(--warning) 42%, transparent);
 }
 
-body[data-page="teaching-navigation"] .route-stage-lane.is-active {
+body[data-page="teaching-navigation"] .route-stage-island-violet {
+  stroke: color-mix(in srgb, var(--blue-muted) 34%, var(--accent));
+}
+
+body[data-page="teaching-navigation"] .route-stage-island-olive {
+  stroke: color-mix(in srgb, var(--sage) 54%, var(--warning));
+}
+
+body[data-page="teaching-navigation"] .route-stage-island.is-active {
+  fill: color-mix(in srgb, var(--accent-wash) 20%, transparent);
   stroke-width: 0.52;
   opacity: 1;
 }
 
-body[data-page="teaching-navigation"] .route-path-shadow,
-body[data-page="teaching-navigation"] .route-path-stroke {
+body[data-page="teaching-navigation"] .route-metro-shadow,
+body[data-page="teaching-navigation"] .route-metro-line {
   fill: none;
   stroke-linecap: round;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
 }
 
-body[data-page="teaching-navigation"] .route-path-shadow {
+body[data-page="teaching-navigation"] .route-metro-shadow {
   stroke: rgba(77, 63, 49, 0.13);
-  stroke-width: 4.8;
+  stroke-width: 3.9;
 }
 
-body[data-page="teaching-navigation"] .route-path-stroke {
-  stroke-width: 3;
+body[data-page="teaching-navigation"] .route-metro-line {
+  stroke-width: 2.1;
   opacity: 0.96;
 }
 
-body[data-page="teaching-navigation"] .route-path-stroke.is-active {
-  stroke-width: 3.35;
+body[data-page="teaching-navigation"] .route-metro-line.is-active {
+  stroke-width: 2.55;
 }
 
-body[data-page="teaching-navigation"] .route-path-stroke-sage {
+body[data-page="teaching-navigation"] .route-metro-line-sage {
   stroke: var(--sage);
 }
 
-body[data-page="teaching-navigation"] .route-path-stroke-accent {
-  stroke: var(--accent);
+body[data-page="teaching-navigation"] .route-metro-line-blue {
+  stroke: var(--blue-muted);
 }
 
-body[data-page="teaching-navigation"] .route-path-stroke-blue {
-  stroke: var(--blue-muted);
+body[data-page="teaching-navigation"] .route-metro-line-orange {
+  stroke: var(--warning);
+}
+
+body[data-page="teaching-navigation"] .route-metro-line-violet {
+  stroke: color-mix(in srgb, var(--blue-muted) 62%, var(--accent));
+}
+
+body[data-page="teaching-navigation"] .route-metro-line-olive {
+  stroke: color-mix(in srgb, var(--sage) 66%, var(--warning));
 }
 
 body[data-page="teaching-navigation"] .route-node {
@@ -18773,39 +18771,32 @@ body[data-page="teaching-navigation"] .route-node-title {
   width: 112px;
   max-width: 112px;
   overflow: hidden;
-  padding: 5px 8px;
-  border: 1px solid rgba(77, 63, 49, 0.1);
-  border-radius: 999px;
-  background: rgba(255, 250, 242, 0.82);
+  padding: 0;
+  border: 0;
+  background: transparent;
   color: var(--text-soft);
-  box-shadow: 0 6px 14px rgba(70, 51, 34, 0.055);
+  box-shadow: none;
   font-size: 0.72rem;
-  font-weight: 680;
+  font-weight: 820;
   line-height: 1.25;
-  letter-spacing: -0.01em;
   text-align: center;
   text-overflow: ellipsis;
   text-shadow: none;
   white-space: normal;
-  backdrop-filter: blur(10px);
   transform: translateX(-50%);
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 }
 
 body[data-page="teaching-navigation"] .route-node-current .route-node-title {
-  top: calc(50% + 58px);
-  border-color: rgba(200, 100, 52, 0.26);
-  background: rgba(255, 250, 242, 0.94);
+  top: calc(50% + 56px);
   color: var(--accent-dark);
-  font-weight: 760;
+  font-weight: 900;
 }
 
 body[data-page="teaching-navigation"] .route-node.is-selected:not(.route-node-current) .route-node-title {
-  border-color: rgba(200, 100, 52, 0.26);
-  background: rgba(255, 250, 242, 0.94);
   color: var(--accent-dark);
-  font-weight: 760;
+  font-weight: 900;
 }
 
 body[data-page="teaching-navigation"] .route-node-current-tag {
@@ -19106,68 +19097,7 @@ body[data-page="teaching-navigation"] .route-node-popover.is-training-mode .rout
   background: color-mix(in srgb, var(--surface) 78%, white);
 }
 
-body[data-page="teaching-navigation"] .route-map-section .section-head {
-  display: grid;
-  grid-template-columns: minmax(280px, 430px) minmax(320px, 560px);
-  gap: 24px;
-  align-items: end;
-  max-width: none;
-  margin-bottom: 22px;
-}
-
-body[data-page="teaching-navigation"] .route-map-section .section-head .eyebrow {
-  color: var(--accent-dark);
-  writing-mode: horizontal-tb;
-}
-
-body[data-page="teaching-navigation"] .route-map-section .section-head h2 {
-  max-width: 430px;
-  color: var(--text-main);
-  font-size: clamp(2.35rem, 3.4vw, 3.35rem);
-  line-height: 1.08;
-}
-
-body[data-page="teaching-navigation"] .route-node-popover.route-detail-card .route-detail-kicker > span,
-body[data-page="teaching-navigation"] .route-node-popover.route-detail-card .eyebrow,
-body[data-page="teaching-navigation"] .route-node-popover.route-detail-card .route-workbench-meta span {
-  color: var(--text-muted);
-}
-
-body[data-page="teaching-navigation"] .route-node-popover.route-detail-card .route-workbench-head h3,
-body[data-page="teaching-navigation"] .route-node-popover.route-detail-card .route-block-head h4,
-body[data-page="teaching-navigation"] .route-node-popover.route-detail-card .route-story-copy strong {
-  color: var(--text-main);
-}
-
-body[data-page="teaching-navigation"] .route-node-popover.route-detail-card .route-workbench-head > p,
-body[data-page="teaching-navigation"] .route-node-popover.route-detail-card .route-story-copy p,
-body[data-page="teaching-navigation"] .route-node-popover.route-detail-card .route-story-rubric p {
-  color: var(--text-soft);
-}
-
-body[data-page="teaching-navigation"] .route-node-popover.route-detail-card .route-detail-status {
-  border-color: var(--line);
-  background: var(--surface);
-  color: var(--text-soft);
-}
-
-body[data-page="teaching-navigation"] .route-node-popover.route-detail-card .route-detail-status.status-current {
-  border-color: color-mix(in srgb, var(--accent) 28%, var(--line));
-  background: var(--accent-wash);
-  color: var(--accent-dark);
-}
-
-body[data-page="teaching-navigation"] .route-node-popover.route-detail-card .route-popover-close {
-  border-color: var(--line);
-  background: var(--surface);
-  color: var(--text-soft);
-}
-
 @media (max-width: 1180px) {
-  body[data-page="teaching-navigation"] .route-map-section .section-head {
-    grid-template-columns: 1fr;
-  }
-
   body[data-page="teaching-navigation"] .teaching-route-stage-tabs {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }

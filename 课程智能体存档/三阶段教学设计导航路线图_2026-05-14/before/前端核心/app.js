@@ -3726,27 +3726,27 @@ const routeTrainingNodes = [
   },
 ];
 
-const routeCoordinates = {
-  1: { x: 7, y: 27 },
-  2: { x: 18, y: 27 },
-  3: { x: 30, y: 27 },
-  4: { x: 42, y: 27 },
-  5: { x: 54, y: 27 },
-  6: { x: 66, y: 27 },
-  7: { x: 78, y: 27 },
-  8: { x: 90, y: 27 },
-  9: { x: 90, y: 53 },
-  10: { x: 78, y: 53 },
-  11: { x: 66, y: 53 },
-  12: { x: 54, y: 53 },
-  13: { x: 42, y: 53 },
-  14: { x: 30, y: 53 },
-  15: { x: 18, y: 53 },
-  16: { x: 7, y: 53 },
-  17: { x: 18, y: 78 },
-  18: { x: 42, y: 78 },
-  19: { x: 66, y: 78 },
-  20: { x: 90, y: 78 },
+const metroRouteCoordinates = {
+  1: { x: 6, y: 31 },
+  2: { x: 17, y: 31 },
+  3: { x: 30, y: 31 },
+  4: { x: 42, y: 28 },
+  5: { x: 52, y: 34 },
+  6: { x: 62, y: 31 },
+  7: { x: 74, y: 29 },
+  8: { x: 86, y: 31 },
+  9: { x: 86, y: 50 },
+  10: { x: 76, y: 52 },
+  11: { x: 65, y: 52 },
+  12: { x: 54, y: 52 },
+  13: { x: 43, y: 68 },
+  14: { x: 32, y: 68 },
+  15: { x: 20, y: 68 },
+  16: { x: 9, y: 68 },
+  17: { x: 28, y: 80 },
+  18: { x: 49, y: 80 },
+  19: { x: 70, y: 80 },
+  20: { x: 89, y: 80 },
 };
 
 const routeStageDefinitions = [
@@ -3756,10 +3756,10 @@ const routeStageDefinitions = [
     range: "01–08",
     title: "课前教学设计与准备",
     copy: "从课程理解、目标设定、资源支架到教学活动序列，形成可执行的课前方案。",
-    x: 4,
-    y: 12,
-    width: 92,
-    height: 25,
+    x: 45,
+    y: 30,
+    rx: 45,
+    ry: 13,
     tone: "sage",
   },
   {
@@ -3768,11 +3768,11 @@ const routeStageDefinitions = [
     range: "09–16",
     title: "课中教学实施与调控",
     copy: "围绕案例任务、课堂协作、展示讨论和形成性评价组织真实课堂证据。",
-    x: 4,
-    y: 40,
-    width: 92,
-    height: 25,
-    tone: "accent",
+    x: 47,
+    y: 60,
+    rx: 46,
+    ry: 17,
+    tone: "blue",
   },
   {
     id: 3,
@@ -3780,40 +3780,57 @@ const routeStageDefinitions = [
     range: "17–20",
     title: "课后评价反馈与持续改进",
     copy: "基于学生成果、数据诊断和教师反思完成反馈支持与资源沉淀。",
-    x: 4,
-    y: 68,
-    width: 92,
-    height: 20,
-    tone: "blue",
+    x: 59,
+    y: 80,
+    rx: 36,
+    ry: 8,
+    tone: "olive",
   },
 ];
 
-const routePathDefinitions = [
+const routeMetroLineDefinitions = [
   {
+    id: "course",
     stageId: 1,
-    title: "课前设计路径",
+    title: "课程理解",
     tone: "sage",
-    d: "M 7 27 C 18 27 18 27 30 27 C 42 27 42 27 54 27 C 66 27 66 27 78 27 C 86 27 90 31 90 40 C 90 48 90 49 90 53",
+    d: "M 6 31 L 17 31 L 30 31 C 35 31 38 28 42 28 C 46 28 48 34 52 34",
   },
   {
+    id: "goal",
     stageId: 2,
-    title: "课中实施路径",
-    tone: "accent",
-    d: "M 90 53 C 78 53 78 53 66 53 C 54 53 54 53 42 53 C 30 53 30 53 18 53 C 11 53 7 58 7 64 C 7 70 11 76 18 78",
+    title: "目标设计",
+    tone: "blue",
+    d: "M 52 34 C 55 34 58 31 62 31 C 66 31 70 29 74 29 L 86 31",
   },
   {
+    id: "case",
     stageId: 3,
-    title: "课后改进路径",
-    tone: "blue",
-    d: "M 18 78 C 30 78 30 78 42 78 C 54 78 54 78 66 78 C 78 78 78 78 90 78",
+    title: "案例任务",
+    tone: "orange",
+    d: "M 86 31 C 96 34 96 47 86 50 L 76 52 L 65 52 L 54 52 C 49 53 47 61 43 68",
+  },
+  {
+    id: "evidence",
+    stageId: 4,
+    title: "评价证据",
+    tone: "violet",
+    d: "M 43 68 C 39 68 36 68 32 68 L 20 68 L 9 68",
+  },
+  {
+    id: "review",
+    stageId: 5,
+    title: "复盘改进",
+    tone: "olive",
+    d: "M 9 68 C 12 75 18 80 28 80 L 49 80 L 70 80 C 80 80 84 76 89 80",
   },
 ];
 
 const routeStatusLabels = {
   completed: "已完成",
-  current: "当前",
+  current: "进行中",
   available: "可进入",
-  locked: "未开始",
+  locked: "待解锁",
 };
 
 const routeStatusTone = {
@@ -3833,9 +3850,29 @@ function getRouteNode(nodeId = selectedRouteNodeId) {
   return routeTrainingNodes.find((node) => node.id === Number(nodeId)) || routeTrainingNodes.find((node) => node.status === "current") || routeTrainingNodes[0];
 }
 
+function getMetroStageIdByNodeId(id) {
+  if (id <= 4) return 1;
+  if (id <= 8) return 2;
+  if (id <= 12) return 3;
+  if (id <= 16) return 4;
+  return 5;
+}
+
+function getMetroStageTitle(stageId) {
+  const titles = {
+    1: "课程理解",
+    2: "目标设计",
+    3: "案例任务",
+    4: "评价证据",
+    5: "复盘改进",
+  };
+  return titles[Number(stageId)] || "教学训练";
+}
+
 function getTeachingPhaseIdByNodeId(id) {
-  if (Number(id) <= 8) return 1;
-  if (Number(id) <= 16) return 2;
+  const numericId = Number(id);
+  if (numericId <= 8) return 1;
+  if (numericId <= 16) return 2;
   return 3;
 }
 
@@ -3848,8 +3885,12 @@ function getTeachingPhaseTitle(stageId) {
   return titles[Number(stageId)] || "高校教学全流程训练";
 }
 
-function getRouteCoordinate(node) {
-  return routeCoordinates[Number(node?.id)] || { x: Number(node?.x || 50), y: Number(node?.y || 50) };
+function getMetroRouteCoordinate(node) {
+  return metroRouteCoordinates[Number(node?.id)] || { x: Number(node?.x || 50), y: Number(node?.y || 50) };
+}
+
+function getMetroStageNodes(stageId) {
+  return routeTrainingNodes.filter((node) => getMetroStageIdByNodeId(node.id) === Number(stageId));
 }
 
 function getTeachingPhaseNodes(stageId) {
@@ -3857,14 +3898,20 @@ function getTeachingPhaseNodes(stageId) {
 }
 
 function getRouteNodeInputRequirements(node) {
-  const phaseId = getTeachingPhaseIdByNodeId(Number(node?.id || 1));
-  if (phaseId === 2) {
+  const metroStageId = getMetroStageIdByNodeId(Number(node?.id || 1));
+  if (metroStageId === 2) {
+    return ["课程目标、学习成果与评价要求", "案例资源、预习支架和学习任务", "本节课时间、平台数据和学生产出边界"];
+  }
+  if (metroStageId === 3) {
     return ["课前诊断结果与学生疑问", "案例材料、课堂时间与分组约束", "课堂组织方式、评价任务与教师观察点"];
   }
-  if (phaseId === 3) {
+  if (metroStageId === 4) {
+    return ["小组任务、展示规则与过程记录", "课堂提问、即时测验与学生产出", "形成性评价标准和课后衔接要求"];
+  }
+  if (metroStageId === 5) {
     return ["学生作品、作业与课堂产出", "泛雅模拟数据、课堂观察与评价记录", "教师反思、学生反馈与可复用资源"];
   }
-  return ["课程大纲与本次课章节定位", "学情资料与学习起点诊断", "课程目标、学习成果、案例资源和评价要求"];
+  return ["课程大纲与本次课章节定位", "学情资料与学习起点诊断", "课程材料、案例资料与平台数据边界"];
 }
 
 function getRouteNodeRubricDimensionLabels(stepId) {
@@ -3967,7 +4014,7 @@ function getRouteStageStatus(nodes) {
   if (statuses.every((status) => status === "completed")) return "已完成";
   if (statuses.some((status) => status === "current")) return "进行中";
   if (statuses.some((status) => status === "available")) return "可进入";
-  return "未开始";
+  return "待解锁";
 }
 
 function hasRouteStepId(list, stepId) {
@@ -3996,35 +4043,35 @@ function renderRouteMapPaths() {
   if (!svg) return;
   const selectedNode = getRouteNode(selectedRouteNodeId);
   const activeTeachingPhaseId = getTeachingPhaseIdByNodeId(selectedNode.id);
+  const activeMetroLineId = getMetroStageIdByNodeId(selectedNode.id);
   svg.innerHTML = `
     <defs>
-      <filter id="routePathSoftShadow" x="-25%" y="-25%" width="150%" height="150%">
+      <filter id="routeMetroSoftShadow" x="-25%" y="-25%" width="150%" height="150%">
         <feDropShadow dx="0" dy="0.75" stdDeviation="0.7" flood-color="#4d3f31" flood-opacity="0.18" />
       </filter>
     </defs>
     ${routeStageDefinitions
       .map(
         (stage) => `
-          <rect
-            class="route-stage-lane route-stage-lane-${stage.tone} ${activeTeachingPhaseId === Number(stage.id) ? "is-active" : ""}"
-            x="${stage.x}"
-            y="${stage.y}"
-            width="${stage.width}"
-            height="${stage.height}"
-            rx="7"
-          ></rect>
+          <ellipse
+            class="route-stage-island route-stage-island-${stage.tone} ${activeTeachingPhaseId === Number(stage.id) ? "is-active" : ""}"
+            cx="${stage.x}"
+            cy="${stage.y}"
+            rx="${stage.rx}"
+            ry="${stage.ry}"
+          ></ellipse>
         `,
       )
       .join("")}
-    ${routePathDefinitions
+    ${routeMetroLineDefinitions
       .map(
-        (path) => `
-          <path class="route-path-shadow" d="${path.d}"></path>
+        (line) => `
+          <path class="route-metro-shadow" d="${line.d}"></path>
           <path
-            class="route-path route-path-stroke route-path-stroke-${path.tone} ${activeTeachingPhaseId === path.stageId ? "is-active" : ""}"
-            d="${path.d}"
+            class="route-path route-metro-line route-metro-line-${line.tone} ${activeMetroLineId === line.stageId ? "is-active" : ""}"
+            d="${line.d}"
             pathLength="100"
-            filter="url(#routePathSoftShadow)"
+            filter="url(#routeMetroSoftShadow)"
           ></path>
         `,
       )
@@ -4124,25 +4171,25 @@ function renderMapNode(node) {
   const selected = node.id === selectedRouteNodeId;
   const status = getRouteNodeStatus(node.id);
   const statusLabel = routeStatusLabels[status] || status;
-  const stepLabel = String(node.id).padStart(2, "0");
-  const stepText = status === "completed" ? "✓" : stepLabel;
-  const position = getRouteCoordinate(node);
-  const teachingPhaseId = getTeachingPhaseIdByNodeId(node.id);
+  const stationLabel = String(node.id).padStart(2, "0");
+  const stationText = status === "completed" ? "✓" : stationLabel;
+  const position = getMetroRouteCoordinate(node);
+  const metroStageId = getMetroStageIdByNodeId(node.id);
   return `
     <button
-      class="route-node route-node-${status} route-node-phase-${teachingPhaseId} ${selected ? "is-selected route-node-selected" : ""}"
+      class="route-node route-node-${status} route-node-stage-${metroStageId} ${selected ? "is-selected route-node-selected" : ""}"
       type="button"
       style="left:${position.x}%; top:${position.y}%"
       data-route-node="${node.id}"
       data-route-status="${status}"
       aria-pressed="${selected ? "true" : "false"}"
-      aria-label="${stepLabel} ${escapeHtml(node.title)}：${escapeHtml(statusLabel)}"
+      aria-label="${stationLabel} ${escapeHtml(node.title)}：${escapeHtml(statusLabel)}"
     >
-      <span class="route-node-orb"><span>${stepText}</span></span>
+      <span class="route-node-orb"><span>${stationText}</span></span>
       <span class="route-node-title">${escapeHtml(getStepShortName(node.id))}</span>
-      ${status === "current" ? `<span class="route-node-current-tag">当前环节</span>` : ""}
+      ${status === "current" ? `<span class="route-node-current-tag">当前所在</span>` : ""}
       <span class="route-node-tooltip" role="tooltip">
-        <strong>${stepLabel} ${escapeHtml(node.title)}</strong>
+        <strong>${stationLabel} ${escapeHtml(node.title)}</strong>
         <em>${escapeHtml(statusLabel)}</em>
       </span>
     </button>
@@ -4150,6 +4197,8 @@ function renderMapNode(node) {
 }
 
 function renderRouteStoryRows(node, step, stepId) {
+  const teachingPhaseTitle = getTeachingPhaseTitle(getTeachingPhaseIdByNodeId(stepId));
+  const metroLineTitle = getMetroStageTitle(getMetroStageIdByNodeId(stepId));
   const storyRows = [
     {
       icon: "问",
@@ -4170,6 +4219,11 @@ function renderRouteStoryRows(node, step, stepId) {
       icon: "准",
       title: "怎样判断是否合格",
       description: node.rubric,
+    },
+    {
+      icon: "例",
+      title: "查看示例",
+      description: `${teachingPhaseTitle}中的${metroLineTitle}线路示例，会对照药事管理真实课堂语境展示输入、产出与评价依据。`,
     },
   ];
   return storyRows
@@ -4217,8 +4271,10 @@ function renderNodeDetailPanel() {
   const isConfirmed = Boolean(trainingState.stepResults?.[String(stepId)]);
   const isLocked = status === "locked";
   const isTrainingMode = routeNodeCardMode === "training" && !isLocked;
+  const metroStageId = getMetroStageIdByNodeId(stepId);
   const teachingPhaseId = getTeachingPhaseIdByNodeId(stepId);
   const teachingPhaseTitle = getTeachingPhaseTitle(teachingPhaseId);
+  const metroLineTitle = getMetroStageTitle(metroStageId);
   if (isLocked && routeNodeCardMode === "training") routeNodeCardMode = "explain";
   container.setAttribute("tabindex", "-1");
   panel?.classList.add("is-open");
@@ -4230,17 +4286,17 @@ function renderNodeDetailPanel() {
 
   const commonHeader = `
       <div class="route-detail-kicker">
-        <span>环节说明</span>
+        <span>${escapeHtml(teachingPhaseTitle)} · ${String(stepId).padStart(2, "0")}</span>
         <div class="route-popover-title-actions">
           <strong class="route-detail-status status-${status}">${escapeHtml(detailStatusLabel)}</strong>
-          <button class="route-popover-close" data-route-action="close-card" type="button" aria-label="关闭环节说明卡">×</button>
+          <button class="route-popover-close" data-route-action="close-card" type="button" aria-label="关闭节点任务卡">×</button>
         </div>
       </div>
       <header class="route-workbench-head">
         <h3>${String(stepId).padStart(2, "0")}｜${escapeHtml(step.title)}</h3>
         <p>${escapeHtml(node.goal)}</p>
         <div class="route-workbench-meta">
-          <span>${escapeHtml(teachingPhaseTitle)}</span>
+          <span>线路分组：${escapeHtml(metroLineTitle)}</span>
           <span>当前评分：${escapeHtml(scoreMeta.label)}</span>
           ${isConfirmed ? `<span>已确认结果</span>` : `<span>尚未确认</span>`}
         </div>
@@ -4258,7 +4314,7 @@ function renderNodeDetailPanel() {
         <section class="route-workbench-block route-explain-workbench" aria-labelledby="route-explain-title-${stepId}">
           <div class="route-block-head">
             <div>
-              <p class="eyebrow">环节说明</p>
+              <p class="eyebrow">StoryMaps node</p>
               <h4 id="route-explain-title-${stepId}">开始前先理解这个环节</h4>
             </div>
           </div>
@@ -4268,12 +4324,12 @@ function renderNodeDetailPanel() {
           <div class="route-story-rubric">${renderRouteNodeQualification(node, stepId)}</div>
           <div class="route-detail-actions route-popover-summary-actions">
             <button class="primary-action" data-route-action="start-training" type="button" ${isLocked ? "disabled aria-disabled=\"true\"" : ""}>
-              ${isLocked ? "完成前序环节后进入设计" : "进入本环节设计"}
+              ${isLocked ? "完成前序节点后开始训练" : "开始本环节训练"}
             </button>
           </div>
           ${
             isLocked
-              ? `<p class="route-locked-hint">该环节仍可预览说明，但需要先完成前序环节，才能进入本环节设计流程。</p>`
+              ? `<p class="route-locked-hint">该节点仍可预览说明，但需要先完成前序关卡，才能进入本环节训练流程。</p>`
               : ""
           }
         </section>
@@ -4321,8 +4377,8 @@ function renderNodeDetailPanel() {
       <section class="route-workbench-block route-task-workbench" aria-labelledby="route-task-title-${stepId}">
         <div class="route-block-head">
           <div>
-            <p class="eyebrow">环节任务</p>
-            <h4 id="route-task-title-${stepId}">本环节任务区</h4>
+            <p class="eyebrow">Node task</p>
+            <h4 id="route-task-title-${stepId}">本节点任务区</h4>
           </div>
         </div>
         <div class="route-task-grid">
@@ -4363,7 +4419,7 @@ function closeRouteNodeCard() {
 function startRouteNodeTraining() {
   const status = getRouteNodeStatus(selectedRouteNodeId);
   if (status === "locked") {
-    showToast("请先完成前序环节，再进入本环节设计");
+    showToast("请先完成前序关卡，再开始本环节训练");
     return;
   }
   routeNodeCardOpen = true;
@@ -4435,7 +4491,7 @@ function confirmRouteStep() {
 
   const result = createConfirmedTrainingStepResult(stepId, selectedOptionId);
   if (!result) {
-    showToast("当前环节还不能确认");
+    showToast("当前节点还不能确认");
     return;
   }
 
@@ -4461,14 +4517,14 @@ function confirmRouteStep() {
   routeNodeCardMode = "explain";
   routeNodeRecommendationMessage =
     nextStep > stepId
-      ? `已确认环节 ${String(stepId).padStart(2, "0")}，推荐下一步进入环节 ${String(nextStep).padStart(2, "0")}：${nextNode.title}。`
-      : "已确认全部环节，可进入下方复盘区查看整体完成情况。";
+      ? `已确认节点 ${String(stepId).padStart(2, "0")}，推荐下一步进入节点 ${String(nextStep).padStart(2, "0")}：${nextNode.title}。`
+      : "已确认全部节点，可进入下方复盘区查看整体完成情况。";
   trainingState.currentStepId = nextStep;
   trainingState.isTrainingCompleted = trainingState.completedStepIds.length >= trainingSteps.length;
 
   saveTrainingState();
   renderTeachingNavigationPage();
-  showToast("已确认本环节，路线已更新");
+  showToast("已确认本节点，路线已更新");
   focusRouteNodeDetailPanel();
 }
 
@@ -4525,7 +4581,7 @@ function openTrainingRouteModal(node) {
     </dl>
     <div class="training-route-modal-actions">
       <button class="primary-action" type="button" data-route-modal-start>开始填写任务单</button>
-      <button class="secondary-action" type="button" data-close-training-modal>先返回路线图</button>
+      <button class="secondary-action" type="button" data-close-training-modal>先返回地图</button>
     </div>
   `;
   $("[data-route-modal-start]", body)?.addEventListener("click", () => {
