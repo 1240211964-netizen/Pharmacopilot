@@ -3743,9 +3743,9 @@ const metroRouteCoordinates = {
   14: { x: 32, y: 68 },
   15: { x: 20, y: 68 },
   16: { x: 9, y: 68 },
-  17: { x: 28, y: 80 },
-  18: { x: 49, y: 80 },
-  19: { x: 70, y: 80 },
+  17: { x: 52, y: 80 },
+  18: { x: 64, y: 80 },
+  19: { x: 76, y: 80 },
   20: { x: 89, y: 80 },
 };
 
@@ -3780,9 +3780,9 @@ const routeStageDefinitions = [
     range: "17–20",
     title: "课后评价反馈与持续改进",
     copy: "基于学生成果、数据诊断和教师反思完成反馈支持与资源沉淀。",
-    x: 59,
+    x: 70,
     y: 80,
-    rx: 36,
+    rx: 29,
     ry: 8,
     tone: "olive",
   },
@@ -3822,7 +3822,7 @@ const routeMetroLineDefinitions = [
     stageId: 5,
     title: "复盘改进",
     tone: "olive",
-    d: "M 9 68 C 12 75 18 80 28 80 L 49 80 L 70 80 C 80 80 84 76 89 80",
+    d: "M 9 68 C 20 76 37 79 52 80 L 64 80 L 76 80 C 82 80 85 76 89 80",
   },
 ];
 
