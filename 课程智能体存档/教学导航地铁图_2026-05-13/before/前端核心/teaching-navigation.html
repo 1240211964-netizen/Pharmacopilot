@@ -9,8 +9,8 @@
       content="面向药事管理本科生的管理学原理课程，以 SWOT 分析为例完成新教师教学导航训练。"
     />
     <link rel="icon" href="data:," />
-    <link rel="stylesheet" href="./styles.css?v=route-metro-20260513" />
-    <script defer src="./app.js?v=route-metro-20260513"></script>
+    <link rel="stylesheet" href="./styles.css?v=route-node-scale-20260512" />
+    <script defer src="./app.js?v=route-node-scale-20260512"></script>
   </head>
   <body data-page="teaching-navigation" class="teaching-navigation-page">
     <header class="site-header">
@@ -47,12 +47,13 @@
     <main class="teaching-route-shell">
       <section class="teaching-route-hero" aria-labelledby="teaching-navigation-title">
         <div class="teaching-route-hero-copy">
-          <p class="eyebrow">Teaching metro map</p>
+          <p class="eyebrow">Course-to-class route</p>
           <h1 id="teaching-navigation-title">
-            把教学导航升级为教学地铁图
+            把教学导航变成可执行的
+            <span class="teaching-title-tail">20 环节训练路线</span>
           </h1>
           <p class="lede">
-            用一条可读、可点、可复盘的 20 环节路线，帮助新教师完成从课程理解到教学改进的全过程训练。
+            围绕《管理学原理》SWOT 分析单元，把课前教学设计、课中教学实施、课后评价反馈拆成可点击、可审校、可复用的训练任务。
           </p>
         </div>
         <aside class="teaching-route-status-card" aria-label="当前训练状态">
@@ -66,24 +67,24 @@
         </aside>
       </section>
 
-      <section class="teaching-route-stage-band" aria-label="五阶段教学地铁线路">
+      <section class="teaching-route-stage-band" aria-label="三阶段教学训练概览">
         <div class="teaching-route-stage-tabs" id="teachingStageOverview"></div>
       </section>
 
       <section class="teaching-route-section route-map-section" aria-labelledby="route-map-title">
         <div class="section-head">
-          <p class="eyebrow">Pharmacopilot metro</p>
-          <h2 id="route-map-title">20 环节教学地铁图</h2>
+          <p class="eyebrow">Cowork route stage</p>
+          <h2 id="route-map-title">20 环节教学训练地图</h2>
           <p class="section-copy">
-            点击任意站点可查看该环节的目标、输入、产出和合格标准；点击“开始本环节训练”后，才进入方案选择、生成与确认。
+            这张地图把一节 SWOT 分析课拆成课程理解、目标设定、案例任务、课堂组织、评价证据和复盘改进。点击任意节点可在当前界面查看任务、产出物和评价依据。
           </p>
         </div>
         <div class="route-map-layout">
           <section class="route-map-card" aria-label="20 环节路线地图">
             <div class="route-map-card-head">
               <div class="route-map-card-title">
-                <span class="route-map-card-icon" aria-hidden="true">线</span>
-                <strong>20 环节教学地铁图</strong>
+                <span class="route-map-card-icon" aria-hidden="true">图</span>
+                <strong>混合式视觉地图</strong>
               </div>
               <div class="route-map-legend" aria-label="节点状态图例">
                 <span class="legend-completed">已完成</span>
@@ -93,8 +94,20 @@
             </div>
             <div class="route-map-canvas">
               <div class="route-map-badge" aria-hidden="true">
-                <span>Pharmacopilot Line</span>
+                <span>课程设计地图</span>
                 <strong>管理学原理 · SWOT 分析</strong>
+              </div>
+              <div class="route-map-stage-zone stage-zone-pre" aria-hidden="true">
+                <span>课前 · 01-08</span>
+                <strong>课前教学设计与准备</strong>
+              </div>
+              <div class="route-map-stage-zone stage-zone-class" aria-hidden="true">
+                <span>课中 · 09-16</span>
+                <strong>课中教学实施与调控</strong>
+              </div>
+              <div class="route-map-stage-zone stage-zone-review" aria-hidden="true">
+                <span>课后 · 17-20</span>
+                <strong>课后评价反馈与持续改进</strong>
               </div>
               <svg id="teachingRouteMapSvg" class="route-map-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg>
               <div id="teachingRouteMapNodes" class="route-map-nodes"></div>
