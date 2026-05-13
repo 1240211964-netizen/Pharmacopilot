@@ -3958,10 +3958,7 @@ function renderTeachingHeroStatus() {
   const progress = $("#teachingRouteProgress");
   const stage = $("#teachingRouteStage");
   const task = $("#teachingRouteNextTask");
-  if (progress) {
-    const visibleStep = Math.min(Math.max(currentStepId, completed), routeTrainingNodes.length);
-    progress.textContent = `${String(visibleStep).padStart(2, "0")} / ${routeTrainingNodes.length}`;
-  }
+  if (progress) progress.textContent = `${Math.min(Math.max(currentStepId, completed), routeTrainingNodes.length)} / ${routeTrainingNodes.length}`;
   if (stage) stage.textContent = getRouteCurrentPhaseLabel(current);
   if (task) task.textContent = current.task;
 }
