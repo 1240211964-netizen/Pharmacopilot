@@ -20371,7 +20371,6 @@ body[data-page="practice"] .practice-copilot-hero {
 }
 
 body[data-page="practice"] .practice-copilot-hero .eyebrow,
-body[data-page="practice"] .practice-route-overview .eyebrow,
 body[data-page="practice"] .practice-progress-window .eyebrow,
 body[data-page="practice"] .practice-copilot-grid .eyebrow {
   margin: 0 0 12px;
@@ -20398,262 +20397,12 @@ body[data-page="practice"] .practice-copilot-hero h1 {
 }
 
 body[data-page="practice"] .practice-copilot-hero .lede {
-  width: 100%;
   max-width: 780px;
   margin: 22px 0 0;
   color: var(--text-soft);
   font-size: 1.08rem;
   font-weight: 560;
   line-height: 1.78;
-  white-space: normal;
-  overflow-wrap: anywhere;
-  word-break: break-word;
-}
-
-body[data-page="practice"] .copilot-status-strip {
-  display: grid;
-  grid-template-columns: 1.1fr repeat(4, minmax(0, 1fr)) 1.05fr;
-  gap: 12px;
-  margin: 10px 0 20px;
-}
-
-body[data-page="practice"] .copilot-status-card {
-  min-height: 86px;
-  padding: 16px 18px;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: rgba(255, 250, 242, 0.78);
-  box-shadow: 0 12px 32px rgba(70, 51, 34, 0.055);
-}
-
-body[data-page="practice"] .copilot-status-card span {
-  display: block;
-  color: var(--text-muted);
-  font-size: 0.76rem;
-  font-weight: 760;
-}
-
-body[data-page="practice"] .copilot-status-card strong {
-  display: block;
-  margin-top: 12px;
-  color: var(--text-main);
-  font-size: 1rem;
-  line-height: 1.28;
-}
-
-body[data-page="practice"] .copilot-status-card.is-running {
-  border-color: rgba(47, 41, 35, 0.22);
-  background: #2b241d;
-}
-
-body[data-page="practice"] .copilot-status-card.is-running span {
-  color: #d8b275;
-}
-
-body[data-page="practice"] .copilot-status-card.is-running strong {
-  color: #fff8eb;
-}
-
-body[data-page="practice"] .copilot-status-card.is-alert {
-  border-color: rgba(184, 121, 45, 0.34);
-  background: #f6ddb8;
-}
-
-body[data-page="practice"] .copilot-status-card.is-alert span,
-body[data-page="practice"] .copilot-status-card.is-alert strong {
-  color: #6e4214;
-}
-
-body[data-page="practice"] .practice-route-overview {
-  margin: 20px 0 24px;
-  padding: clamp(20px, 2.6vw, 30px);
-  border: 1px solid var(--line);
-  border-radius: 30px;
-  background: rgba(255, 250, 242, 0.84);
-  box-shadow: 0 18px 52px rgba(70, 51, 34, 0.07);
-}
-
-body[data-page="practice"] .practice-route-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 18px;
-}
-
-body[data-page="practice"] .practice-route-head h2 {
-  margin: 0;
-  color: var(--text-main);
-  font-size: clamp(1.72rem, 2.7vw, 2.55rem);
-  font-weight: 780;
-  line-height: 1.16;
-  letter-spacing: 0;
-}
-
-body[data-page="practice"] .practice-route-head p:not(.eyebrow) {
-  max-width: 760px;
-  margin: 10px 0 0;
-  color: var(--text-soft);
-  font-size: 0.97rem;
-  line-height: 1.72;
-}
-
-body[data-page="practice"] .practice-route-legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px 16px;
-  margin-top: 18px;
-  color: var(--text-muted);
-  font-size: 0.82rem;
-  font-weight: 700;
-}
-
-body[data-page="practice"] .practice-route-legend span {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-}
-
-body[data-page="practice"] .practice-route-legend i {
-  width: 10px;
-  height: 10px;
-  border-radius: 999px;
-  background: #d6ccc0;
-}
-
-body[data-page="practice"] .practice-route-legend .done {
-  background: var(--sage);
-}
-
-body[data-page="practice"] .practice-route-legend .current {
-  background: #2b241d;
-}
-
-body[data-page="practice"] .practice-route-legend .confirm {
-  background: var(--warning);
-}
-
-body[data-page="practice"] .practice-route-legend .later {
-  background: #d8b275;
-}
-
-body[data-page="practice"] .practice-route-nodes {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 10px;
-  margin-top: 18px;
-}
-
-body[data-page="practice"] .practice-route-nodes article {
-  min-height: 104px;
-  padding: 13px 14px;
-  border: 1px solid rgba(77, 63, 49, 0.12);
-  border-radius: 15px;
-  background: rgba(246, 234, 220, 0.52);
-}
-
-body[data-page="practice"] .practice-route-nodes span {
-  display: block;
-  color: var(--text-muted);
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.02em;
-}
-
-body[data-page="practice"] .practice-route-nodes strong {
-  display: block;
-  margin-top: 8px;
-  color: var(--text-main);
-  font-size: 0.9rem;
-  line-height: 1.34;
-}
-
-body[data-page="practice"] .practice-route-nodes small {
-  display: block;
-  margin-top: 9px;
-  color: var(--text-muted);
-  font-size: 0.76rem;
-}
-
-body[data-page="practice"] .practice-route-nodes .is-done {
-  border-color: rgba(104, 124, 89, 0.35);
-  background: rgba(221, 232, 210, 0.72);
-}
-
-body[data-page="practice"] .practice-route-nodes .is-current {
-  border-color: rgba(47, 41, 35, 0.44);
-  background: #2b241d;
-  box-shadow: 0 18px 40px rgba(47, 36, 29, 0.16);
-}
-
-body[data-page="practice"] .practice-route-nodes .is-current span,
-body[data-page="practice"] .practice-route-nodes .is-current small {
-  color: #d8b275;
-}
-
-body[data-page="practice"] .practice-route-nodes .is-current strong {
-  color: #fff8eb;
-}
-
-body[data-page="practice"] .practice-route-nodes .needs-confirm {
-  border-color: rgba(184, 121, 45, 0.42);
-  background: #f5d8a8;
-  box-shadow: 0 14px 34px rgba(184, 121, 45, 0.13);
-}
-
-body[data-page="practice"] .practice-route-nodes .needs-confirm span,
-body[data-page="practice"] .practice-route-nodes .needs-confirm small,
-body[data-page="practice"] .practice-route-nodes .needs-confirm strong {
-  color: #6e4214;
-}
-
-body[data-page="practice"] .practice-route-nodes .is-later-confirm {
-  border-color: rgba(216, 178, 117, 0.5);
-  background: rgba(246, 221, 184, 0.5);
-}
-
-body[data-page="practice"] .practice-route-nodes .is-pending {
-  opacity: 0.74;
-}
-
-body[data-page="practice"] .practice-route-interventions {
-  display: grid;
-  grid-template-columns: 1.1fr repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  margin-top: 18px;
-}
-
-body[data-page="practice"] .practice-route-interventions article {
-  padding: 16px;
-  border: 1px solid rgba(77, 63, 49, 0.12);
-  border-radius: 18px;
-  background: rgba(255, 250, 242, 0.7);
-}
-
-body[data-page="practice"] .practice-route-interventions article.is-primary {
-  border-color: rgba(184, 121, 45, 0.36);
-  background: rgba(246, 221, 184, 0.66);
-}
-
-body[data-page="practice"] .practice-route-interventions span {
-  display: block;
-  color: var(--accent-dark);
-  font-size: 0.76rem;
-  font-weight: 820;
-}
-
-body[data-page="practice"] .practice-route-interventions strong {
-  display: block;
-  margin-top: 8px;
-  color: var(--text-main);
-  font-size: 1rem;
-  line-height: 1.35;
-}
-
-body[data-page="practice"] .practice-route-interventions p {
-  margin: 8px 0 0;
-  color: var(--text-soft);
-  font-size: 0.88rem;
-  line-height: 1.62;
 }
 
 body[data-page="practice"] .practice-copilot-grid {
@@ -21038,44 +20787,16 @@ body[data-page="practice"] .practice-legacy-tools {
 
 @media (max-width: 960px) {
   body[data-page="practice"] main {
-    width: 100%;
-    max-width: 100%;
-    padding: 54px 16px 96px;
-    overflow-x: clip;
-  }
-
-  body[data-page="practice"] .practice-copilot-hero,
-  body[data-page="practice"] main > section {
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
+    width: calc(100vw - 32px);
+    max-width: calc(100vw - 32px);
+    padding-top: 54px;
   }
 
   body[data-page="practice"] .practice-copilot-grid,
-  body[data-page="practice"] .copilot-status-strip,
   body[data-page="practice"] .practice-copilot-metrics,
-  body[data-page="practice"] .practice-route-interventions,
+  body[data-page="practice"] .practice-window-nodes,
   body[data-page="practice"] .copilot-runtime-notes {
     grid-template-columns: 1fr;
-  }
-
-  body[data-page="practice"] .practice-route-nodes {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
-  body[data-page="practice"] .practice-route-head {
-    display: grid;
-  }
-
-  body[data-page="practice"] .practice-copilot-hero .lede,
-  body[data-page="practice"] .practice-route-head p:not(.eyebrow),
-  body[data-page="practice"] .copilot-runtime-head p:not(.eyebrow),
-  body[data-page="practice"] .takeover-card.is-primary-confirm p:not(.eyebrow) {
-    width: 100%;
-    max-width: 100%;
-    white-space: normal;
-    overflow-wrap: anywhere;
-    word-break: break-word;
   }
 
   body[data-page="practice"] .practice-progress-head {
@@ -21088,29 +20809,15 @@ body[data-page="practice"] .practice-legacy-tools {
     width: 100%;
     max-width: 100%;
     padding: 36px 14px 72px;
-    overflow-x: clip;
+    overflow: hidden;
   }
 
   body[data-page="practice"] .practice-copilot-hero {
-    width: calc(100vw - 28px);
-    max-width: calc(100vw - 28px);
     padding: 24px 0 28px;
-  }
-
-  body[data-page="practice"] main > section {
-    max-width: calc(100vw - 28px);
   }
 
   body[data-page="practice"] .practice-copilot-hero h1 {
     font-size: clamp(2.1rem, 10.5vw, 2.72rem);
-  }
-
-  body[data-page="practice"] .practice-copilot-hero .lede,
-  body[data-page="practice"] .practice-route-head p:not(.eyebrow),
-  body[data-page="practice"] .copilot-runtime-head p:not(.eyebrow),
-  body[data-page="practice"] .takeover-card.is-primary-confirm p:not(.eyebrow) {
-    width: 100%;
-    max-width: min(100%, calc(100vw - 28px));
   }
 
   body[data-page="practice"] .practice-copilot-grid {
@@ -21121,26 +20828,12 @@ body[data-page="practice"] .practice-legacy-tools {
     overflow: hidden;
   }
 
-  body[data-page="practice"] .copilot-status-strip,
-  body[data-page="practice"] .practice-route-overview,
-  body[data-page="practice"] .practice-route-head,
-  body[data-page="practice"] .practice-route-nodes,
-  body[data-page="practice"] .practice-route-interventions {
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-  }
-
   body[data-page="practice"] .copilot-runtime-card,
   body[data-page="practice"] .copilot-info-card,
-  body[data-page="practice"] .copilot-status-card,
   body[data-page="practice"] .practice-copilot-metrics article,
-  body[data-page="practice"] .practice-route-nodes article,
-  body[data-page="practice"] .practice-route-interventions article,
   body[data-page="practice"] .practice-window-nodes article {
     width: 100%;
     max-width: 100%;
-    min-width: 0;
   }
 
   body[data-page="practice"] .copilot-runtime-head h2 {
@@ -21153,47 +20846,17 @@ body[data-page="practice"] .practice-legacy-tools {
 
   body[data-page="practice"] .practice-copilot-hero h1,
   body[data-page="practice"] .practice-copilot-hero .lede,
-  body[data-page="practice"] .practice-route-head h2,
-  body[data-page="practice"] .practice-route-head p,
-  body[data-page="practice"] .practice-route-nodes strong,
   body[data-page="practice"] .copilot-runtime-head h2,
   body[data-page="practice"] .copilot-runtime-head p,
   body[data-page="practice"] .takeover-card.is-primary-confirm h2,
   body[data-page="practice"] .takeover-card.is-primary-confirm p {
     overflow-wrap: anywhere;
-    word-break: break-word;
-    white-space: normal;
   }
 
   body[data-page="practice"] .copilot-confirm-actions,
-  body[data-page="practice"] .practice-route-nodes,
   body[data-page="practice"] .copilot-runtime-labels,
   body[data-page="practice"] .copilot-runtime-track {
     grid-template-columns: 1fr;
-  }
-
-  body[data-page="practice"] .practice-route-head .secondary-action {
-    width: 100%;
-  }
-
-  body[data-page="practice"] .practice-route-legend {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    padding-bottom: 4px;
-  }
-
-  body[data-page="practice"] .practice-route-legend span {
-    flex: 0 0 auto;
-  }
-
-  body[data-page="practice"] .practice-route-overview {
-    padding: 20px;
-    border-radius: 24px;
-  }
-
-  body[data-page="practice"] .copilot-status-card,
-  body[data-page="practice"] .practice-route-nodes article {
-    min-height: auto;
   }
 
   body[data-page="practice"] .copilot-runtime-track {
