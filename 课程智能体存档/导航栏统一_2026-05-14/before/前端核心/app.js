@@ -2097,8 +2097,7 @@ function initTheoryAnchorToggles() {
 
 function setActiveNav() {
   const page = document.body.dataset.page;
-  const activePage = page === "navigation" ? "teaching-navigation" : page;
-  $$(".nav-link").forEach((link) => link.classList.toggle("active", link.dataset.nav === activePage));
+  $$(".nav-link").forEach((link) => link.classList.toggle("active", link.dataset.nav === page));
 }
 
 const HOME_FEATURE_DEMOS = {

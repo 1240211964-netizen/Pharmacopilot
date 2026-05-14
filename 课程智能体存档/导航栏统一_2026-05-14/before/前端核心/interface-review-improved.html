@@ -96,7 +96,7 @@
     </style>
     <script defer src="./app.js"></script>
   </head>
-  <body data-page="interface-review">
+  <body>
     <svg class="icon-sprite" aria-hidden="true">
       <symbol id="icon-spark" viewBox="0 0 24 24">
         <path d="M12 2l1.6 6.1L20 10l-6.4 1.9L12 18l-1.6-6.1L4 10l6.4-1.9L12 2z" />
@@ -140,31 +140,28 @@
 
     <header class="site-header">
       <div class="topbar">
-        <a class="brand" href="./index.html" aria-label="Pharmacopilot 首页">
-          <span class="brand-mark" aria-hidden="true"><span class="brand-monogram">P</span></span>
+        <a class="brand" href="#top" aria-label="Pharmacopilot 首页">
+          <span class="brand-mark" aria-hidden="true">
+            <span class="brand-monogram">P</span>
+          </span>
           <span class="brand-lockup">
             <span class="brand-wordmark">Pharmacopilot</span>
-            <span class="brand-submark">药学教学智能体</span>
+            <span class="brand-submark">新教师教学智能体</span>
           </span>
         </a>
-        <button
-          class="nav-menu-toggle"
-          id="navMenuToggle"
-          type="button"
-          aria-label="打开导航菜单"
-          aria-controls="primaryNav"
-          aria-expanded="false"
-        >
-          <span aria-hidden="true"></span>
-        </button>
-        <nav class="topnav" id="primaryNav" aria-label="页面导航">
-          <a class="nav-link" data-nav="home" href="./index.html">首页</a>
-          <a class="nav-link" data-nav="teaching-navigation" href="./teaching-navigation.html">教学导航</a>
-          <a class="nav-link" data-nav="practice" href="./practice.html">教学实践</a>
-          <a class="nav-link" data-nav="assets" href="./assets.html">教学资产</a>
+        <nav class="topnav" aria-label="页面导航">
+          <a class="nav-link has-caret" href="#review-path">评审路径</a>
+          <a class="nav-link has-caret" href="#demo">本次课运行中心</a>
+          <a class="nav-link has-caret" href="#painpoints">教学全景</a>
+          <a class="nav-link has-caret" href="#fanya">泛雅执行出口</a>
         </nav>
         <div class="top-actions">
-          <a class="nav-primary-action" href="./practice.html">完成训练后进入实践</a>
+          <button class="nav-text-action" id="themeToggle" type="button" title="切换明暗外观" aria-label="切换明暗外观">
+            外观
+          </button>
+          <button class="nav-outline-action" id="openAgentTop" type="button">泛雅发布</button>
+          <button class="nav-outline-action" id="connectTop" type="button">校方授权</button>
+          <a class="nav-primary-action" href="#demo">进入运行中心</a>
         </div>
       </div>
     </header>
