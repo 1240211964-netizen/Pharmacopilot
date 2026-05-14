@@ -20215,48 +20215,6 @@ body[data-page="home"] .site-header .nav-primary-action:hover {
   align-items: center;
 }
 
-.top-actions[data-account-actions] .nav-outline-action,
-.top-actions[data-account-actions] .nav-primary-action {
-  display: inline-flex;
-  flex: 0 0 auto;
-  align-items: center;
-  justify-content: center;
-  min-height: 44px;
-  padding: 0 18px;
-  border-radius: 999px;
-  font-size: inherit;
-  font-weight: 700;
-  line-height: 1;
-  text-decoration: none;
-}
-
-.top-actions[data-account-actions] .nav-outline-action {
-  border: 1px solid var(--line-strong);
-  background: rgba(255, 250, 242, 0.78);
-  color: var(--text-main);
-  box-shadow: none;
-}
-
-.top-actions[data-account-actions] .nav-primary-action {
-  border: 1px solid rgba(157, 79, 47, 0.35);
-  background: linear-gradient(135deg, #cc7045, #9d4f2f);
-  color: #fff9f2;
-  box-shadow: 0 12px 26px rgba(157, 79, 47, 0.24);
-}
-
-.top-actions[data-account-actions] .nav-outline-action:hover,
-.top-actions[data-account-actions] .nav-primary-action:hover {
-  transform: translateY(-2px);
-}
-
-.top-actions[data-account-actions] .nav-outline-action:hover {
-  box-shadow: 0 16px 34px rgba(62, 45, 32, 0.14);
-}
-
-.top-actions[data-account-actions] .nav-primary-action:hover {
-  box-shadow: 0 16px 36px rgba(157, 79, 47, 0.28);
-}
-
 .nav-account-chip {
   display: inline-flex;
   align-items: center;

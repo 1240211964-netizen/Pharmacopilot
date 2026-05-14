@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pharmacopilot | 教学实践</title>
+    <meta
+      name="description"
+      content="教学实践页由 Copilot 自动推进 20 环节课堂实践流程，教师只在关键教学决策处接管确认。"
+    />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./styles.css" />
+    <script defer src="./app.js"></script>
+  </head>
+  <body data-page="practice">
+    <header class="site-header">
+      <div class="topbar">
+        <a class="brand" href="./index.html" aria-label="Pharmacopilot 首页">
+          <span class="brand-mark" aria-hidden="true"><span class="brand-monogram">P</span></span>
+          <span class="brand-lockup">
+            <span class="brand-wordmark">Pharmacopilot</span>
+            <span class="brand-submark">药学教学智能体</span>
+          </span>
+        </a>
+        <button
+          class="nav-menu-toggle"
+          id="navMenuToggle"
+          type="button"
+          aria-label="打开导航菜单"
+          aria-controls="primaryNav"
+          aria-expanded="false"
+        >
+          <span aria-hidden="true"></span>
+        </button>
+        <nav class="topnav" id="primaryNav" aria-label="页面导航">
+          <a class="nav-link" data-nav="home" href="./index.html">首页</a>
+          <a class="nav-link" data-nav="teaching-navigation" href="./teaching-navigation.html">教学导航</a>
+          <a class="nav-link active" data-nav="practice" href="./practice.html">教学实践</a>
+          <a class="nav-link" data-nav="assets" href="./assets.html">教学资产</a>
+        </nav>
+        <div class="top-actions" data-account-actions>
+          <a class="nav-outline-action" href="./auth.html?mode=login">登录</a>
+          <a class="nav-primary-action" href="./auth.html?mode=register">注册</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="practice-copilot-hero" aria-labelledby="practice-title">
+        <p class="eyebrow">Classroom Copilot workspace</p>
+        <h1 id="practice-title">Copilot 正在推进本次课堂实践</h1>
+        <p class="lede">
+          系统已接入泛雅课程资源、班级学情与作业记录，正在自动运行 20 环节教学实践流程。教师无需逐项填写，只需在关键教学决策处接管确认。
+        </p>
+      </section>
+
+      <section class="copilot-status-strip" aria-label="Copilot 当前运行状态">
+        <article class="copilot-status-card is-running"><span>Copilot 运行中</span><strong>20 环节自动推进</strong></article>
+        <article class="copilot-status-card"><span>课程</span><strong>管理学原理</strong></article>
+        <article class="copilot-status-card"><span>章节</span><strong>SWOT 分析</strong></article>
+        <article class="copilot-status-card"><span>班级</span><strong>药事管理 2024 级 1 班</strong></article>
+        <article class="copilot-status-card"><span>当前节点</span><strong>STEP 12 案例探究</strong></article>
+        <article class="copilot-status-card is-alert"><span>教师接管</span><strong>3 项待确认</strong></article>
+      </section>
+
+      <section class="practice-copilot-grid" aria-labelledby="copilot-route-title">
+        <article class="copilot-route-card">
+          <div class="copilot-route-head">
+            <div>
+              <p class="eyebrow">20 环节自动推进路线</p>
+              <h2 id="copilot-route-title">当前运行：STEP 12 案例探究与证据分析活动</h2>
+              <p>
+                智能体正在根据课程资源、学情数据和作业记录自动推进 20 环节。已完成环节保持稳定，当前环节持续运行，涉及教学情境、组织方式和评价标准的关键节点将交由教师确认。
+              </p>
+            </div>
+            <div class="copilot-metric-grid" aria-label="Copilot 路线指标">
+              <span><strong>20</strong><small>总环节</small></span>
+              <span><strong>16</strong><small>已编排</small></span>
+              <span><strong>3</strong><small>待确认</small></span>
+              <span><strong>1</strong><small>阻塞</small></span>
+            </div>
+          </div>
+
+          <div class="copilot-route-map" aria-label="20 环节 Copilot 自动推进航线图">
+            <div class="copilot-route-legend" aria-hidden="true">
+              <span><i class="done"></i>已完成</span>
+              <span><i class="current"></i>当前运行</span>
+              <span><i class="confirm"></i>待教师确认</span>
+              <span><i class="next"></i>即将运行</span>
+              <span><i class="pending"></i>待运行</span>
+            </div>
+            <div id="copilotRouteNodes" class="copilot-route-nodes" aria-live="polite"></div>
+          </div>
+
+          <div class="copilot-current-detail" aria-label="当前节点详情">
+            <div>
+              <span>当前节点详情</span>
+              <strong>STEP 12 案例探究与证据分析活动</strong>
+              <small>当前由 Copilot 自动生成任务与追问链</small>
+            </div>
+            <div class="copilot-io">
+              <p><b>输入</b>课程资源、学情数据、作业记录</p>
+              <p><b>输出</b>小组 SWOT 任务单、证据表、教师追问链</p>
+            </div>
+          </div>
+        </article>
+
+        <aside class="copilot-side-panel" aria-label="Copilot 诊断与教师接管">
+          <article class="copilot-info-card">
+            <p class="eyebrow">Diagnosis</p>
+            <h2>Copilot 诊断建议</h2>
+            <p>
+              系统检测到学生对“内部因素 / 外部因素”的区分不稳定，且小组讨论参与度偏低。Copilot 已在 STEP 11 增加概念边界澄清，在 STEP 12 增加证据标注要求，并建议教师确认案例情境与小组协作规则。
+            </p>
+            <button class="secondary-action" type="button" data-copilot-copy="查看推荐依据">查看推荐依据</button>
+          </article>
+
+          <article class="copilot-info-card takeover-card">
+            <p class="eyebrow">Teacher takeover</p>
+            <h2>教师接管点</h2>
+            <div class="takeover-list">
+              <section>
+                <strong>教学情境确认</strong>
+                <p>是否采用“慢病管理服务市场进入”作为本节课核心案例？</p>
+                <small>影响：决定 STEP 09 情境导入、STEP 12 案例探究、STEP 14 汇报追问的材料生成。</small>
+                <div><button type="button" data-copilot-confirm="教学情境确认">确认采用</button><button type="button" data-copilot-copy="调整教学情境设置">调整设置</button></div>
+              </section>
+              <section>
+                <strong>课堂组织确认</strong>
+                <p>是否按 6 人一组，并设置记录员、证据员、汇报员？</p>
+                <small>影响：决定 STEP 13 协作学习设计与课堂观察记录。</small>
+                <div><button type="button" data-copilot-confirm="课堂组织确认">确认采用</button><button type="button" data-copilot-copy="调整课堂组织设置">调整设置</button></div>
+              </section>
+              <section>
+                <strong>评价标准确认</strong>
+                <p>是否采用概念准确性、证据充分性、策略匹配度、风险意识四维 Rubric？</p>
+                <small>影响：决定 STEP 15 形成性评价、STEP 17 表现性评价和 STEP 20 复盘归档。</small>
+                <div><button type="button" data-copilot-confirm="评价标准确认">确认采用</button><button type="button" data-copilot-copy="调整评价标准设置">调整设置</button></div>
+              </section>
+            </div>
+            <button class="primary-action publish-practice-plan" id="publishCopilotPracticePlan" type="button">发布最终实践方案</button>
+          </article>
+        </aside>
+      </section>
+
+      <section class="practice-copilot-lower" aria-label="Copilot 执行记录与生成材料">
+        <article class="copilot-log-card">
+          <div class="section-head mini">
+            <p class="eyebrow">Execution log</p>
+            <h2>智能体执行记录</h2>
+          </div>
+          <div class="copilot-execution-list">
+            <div><span>已完成</span><p>读取泛雅课程资源、章节课件、测验错题与讨论记录</p><small>课程资源 / 学情数据</small></div>
+            <div><span>已完成</span><p>自动预填 STEP 01–08 的课程情境、学习目标、资源材料与评价量规</p><small>课前教学设计与准备</small></div>
+            <div><span class="is-running">进行中</span><p>生成 STEP 12 小组 SWOT 分析任务、证据表与教师追问链</p><small>课中教学实施与调控</small></div>
+            <div><span class="is-waiting">待教师确认</span><p>案例情境、小组协作规则与 Rubric 四维评价尚需教师确认</p><small>教师接管点</small></div>
+          </div>
+        </article>
+
+        <article class="copilot-material-card">
+          <div class="section-head mini">
+            <p class="eyebrow">Generated materials</p>
+            <h2>已生成教学材料</h2>
+          </div>
+          <div class="copilot-material-grid">
+            <article><span>课堂脚本</span><strong>45 分钟教学流程已生成</strong><small>已生成</small></article>
+            <article><span>案例材料</span><strong>药事管理真实决策情境已生成</strong><small>已生成</small></article>
+            <article class="needs-confirm"><span>小组活动卡</span><strong>需确认分组规则后生成最终版</strong><small>待确认</small></article>
+            <article><span>教师追问链</span><strong>8 个分层追问已生成</strong><small>已生成</small></article>
+            <article class="needs-confirm"><span>Rubric 评价表</span><strong>需确认四维评价标准</strong><small>待确认</small></article>
+            <article><span>证据回收清单</span><strong>已连接教学资产库</strong><small>已生成</small></article>
+          </div>
+        </article>
+      </section>
+
+      <details class="practice-legacy-tools" id="practiceLegacyTools">
+        <summary>
+          <span>原有工具与导出区</span>
+          <strong>泛雅模拟授权、课程选择、20 环节细节确认、完整方案导出与资产保存仍保留在这里。</strong>
+        </summary>
+        <div class="practice-legacy-tools-body">
+
+      <section class="practice-auth-grid" aria-label="泛雅模拟授权">
+        <article class="upload-panel auth-panel">
+          <div class="section-head mini">
+            <p class="eyebrow">Authorization simulation</p>
+            <h2>泛雅登录 / 授权</h2>
+            <p>第一版只做前端模拟授权，不接入真实 API，不读取真实学生数据，也不会把模拟状态描述为真实平台连接。</p>
+          </div>
+          <form id="fanyaAuthForm" class="asset-form">
+            <div class="mock-login-card">
+              <div>
+                <strong>测试账号模式</strong>
+                <p>使用内置测试账号和假 token 跑通课程选择、20 环节实践、复制到泛雅和教学资产保存流程。</p>
+              </div>
+              <button class="secondary-action" id="useMockFanyaAccount" type="button">一键测试登录</button>
+            </div>
+            <label>
+              <span>泛雅账号 / 手机号 / 工号</span>
+              <input id="fanyaAccount" type="text" autocomplete="username" value="teacher.demo@pharmacopilot.test" placeholder="例如：teacher@example.edu" />
+            </label>
+            <label>
+              <span>授权码 / 模拟登录凭证</span>
+              <input id="fanyaToken" type="password" autocomplete="one-time-code" placeholder="mock-fanya-token-2026" />
+            </label>
+            <label>
+              <span>课程平台地址</span>
+              <input id="fanyaPlatformUrl" type="url" value="https://fanya.chaoxing.com" />
+            </label>
+            <div class="report-actions">
+              <button class="primary-action" type="submit">连接泛雅课程（模拟）</button>
+              <a class="secondary-action" href="./teaching-navigation.html">暂无账号，返回教学导航</a>
+              <button class="secondary-action" id="showAuthGuide" type="button">查看授权说明</button>
+            </div>
+          </form>
+          <div id="authGuide" class="notice-card" hidden>
+            本页仅保存模拟授权状态到浏览器 localStorage。真实接入时，需要由学校或课程平台提供 OAuth、API Token 或课程数据导出授权，并由教师确认数据范围。
+          </div>
+        </article>
+
+        <aside class="asset-detail-panel auth-status-panel">
+          <div class="section-head mini">
+            <p class="eyebrow">Data boundary</p>
+            <h2>授权说明与数据边界</h2>
+            <p>当前为前端模拟导入数据。真实接入后，将由教师授权泛雅账号后读取，并由教师确认课程、班级、资源、作业和学习过程数据范围。</p>
+          </div>
+          <div id="fanyaAuthStatus"></div>
+        </aside>
+      </section>
+
+      <section class="section-block" id="courseListSection" aria-labelledby="course-list-title" hidden>
+        <div class="section-head">
+          <p class="eyebrow">Authorized courses</p>
+          <h2 id="course-list-title">选择真实课程</h2>
+          <p class="section-copy">模拟授权后，这里会展示可进入真实课程 20 环节实践的课程。第一版使用前端模拟课程数据。</p>
+        </div>
+        <div id="authorizedCourses" class="course-card-grid"></div>
+      </section>
+
+      <section id="practiceWorkspace" class="practice-workspace-shell" aria-labelledby="workspace-title" hidden>
+        <div class="section-head">
+          <p class="eyebrow">Data-enhanced workflow</p>
+          <h2 id="workspace-title">真实课程 20 环节实践</h2>
+          <p class="section-copy">基于泛雅模拟导入上下文进行学情驱动推荐、数据增强评分和真实课程方案生成。第一版不会向泛雅写入内容。</p>
+        </div>
+
+        <section id="practiceImportedDataOverview" class="imported-data-section" aria-label="泛雅导入数据概览"></section>
+
+        <section class="practice-diagnostic-bridge" aria-label="教学实践评价增强说明">
+          <p class="eyebrow">Data-enhanced diagnosis</p>
+          <h3>教学实践沿用 20 环节评价量规，并叠加真实课程数据。</h3>
+          <p>
+            教学实践沿用教学导航中的 20 环节评价量规，但会结合泛雅模拟导入的课程资源、作业记录、测验结果、讨论数据和学生反馈，对环节评分、风险提示和改进建议进行数据增强。
+          </p>
+        </section>
+
+        <section id="practiceWorkflow" class="practice-workflow-section">
+          <div class="practice-workbench real-practice-workbench">
+            <aside class="workflow-sidebar">
+              <div class="panel-title">
+                <p class="eyebrow">Real course workflow</p>
+                <h2>真实课程流程</h2>
+              </div>
+              <div id="practiceWorkflowSidebar" class="workflow-steps" aria-live="polite"></div>
+            </aside>
+
+            <section class="decision-panel" aria-live="polite">
+              <div id="practiceCurrentStep"></div>
+            </section>
+          </div>
+        </section>
+
+        <section id="practiceFinalPlan" class="practice-final-plan-section" aria-labelledby="practice-final-title">
+          <div class="section-head">
+            <p class="eyebrow">Final practice plan</p>
+            <h2 id="practice-final-title">《真实课程教学实践方案》</h2>
+            <p class="section-copy">完成或预览 20 环节后，可生成完整方案，保存到教学资产，或复制到泛雅课程对应位置。</p>
+          </div>
+          <div class="report-actions">
+            <button class="primary-action" id="generateFinalPracticePlan" type="button">生成真实课程教学方案</button>
+            <button class="secondary-action" id="copyFinalPracticePlan" type="button">复制完整方案</button>
+            <button class="secondary-action" id="downloadFinalPracticePlan" type="button">导出 Markdown</button>
+            <button class="secondary-action" id="saveFinalPracticePlan" type="button">保存到教学资产</button>
+            <button class="secondary-action" id="copyFinalPlanToFanya" type="button">复制到泛雅课程</button>
+          </div>
+          <article class="report-preview" id="finalPracticePlanPreview">
+            <p class="muted">尚未生成真实课程教学实践方案。请确认环节，或点击“生成真实课程教学方案”预览当前内容。</p>
+          </article>
+        </section>
+
+        <section class="quick-task-section" aria-labelledby="quick-task-title">
+          <div class="section-head mini">
+            <p class="eyebrow">Quick task helper</p>
+            <h2 id="quick-task-title">快速生成单项任务</h2>
+            <p>这是辅助功能，不替代上方真实课程 20 环节实践流程。</p>
+          </div>
+          <div class="practice-workspace-grid">
+            <article class="decision-panel">
+              <form id="practiceTaskForm" class="asset-form practice-task-form">
+                <label>
+                  <span>教学任务类型</span>
+                  <select id="practiceTaskType">
+                    <option>课堂任务</option>
+                    <option>作业说明</option>
+                    <option>评价量规</option>
+                    <option>作业反馈模板</option>
+                    <option>课程复盘建议</option>
+                  </select>
+                </label>
+                <label>
+                  <span>真实课程需求</span>
+                  <textarea id="practiceNeed" rows="5" placeholder="例如：请为本周课程生成小组任务、提交要求和评价标准，系统会自动带入当前泛雅课程与学情数据。"></textarea>
+                </label>
+                <button class="primary-action" type="submit">生成单项任务</button>
+              </form>
+            </article>
+
+            <aside class="summary-panel">
+              <div class="panel-title">
+                <p class="eyebrow">Copy boundary</p>
+                <h2>单项任务操作</h2>
+              </div>
+              <p>单项任务同样只生成可复制文本。请教师人工粘贴到泛雅课程对应位置，并结合真实班级情况核验。</p>
+              <div class="report-actions">
+                <button class="secondary-action" id="copyToFanya" type="button">复制到泛雅课程</button>
+                <button class="secondary-action" id="savePracticeTask" type="button">保存单项任务到教学资产</button>
+              </div>
+            </aside>
+          </div>
+          <article class="report-preview" id="practiceTaskOutput">
+            <p class="muted">生成单项任务后，这里显示可复制到泛雅课程对应位置的内容。</p>
+          </article>
+        </section>
+      </section>
+        </div>
+      </details>
+    </main>
+  </body>
+</html>
