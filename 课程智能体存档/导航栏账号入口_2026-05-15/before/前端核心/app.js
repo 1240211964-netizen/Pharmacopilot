@@ -2081,7 +2081,6 @@ function initGlobalNav() {
     });
   }
   setActiveNav();
-  renderGlobalAccountActions();
 }
 
 function initTheoryAnchorToggles() {
@@ -2100,30 +2099,6 @@ function setActiveNav() {
   const page = document.body.dataset.page;
   const activePage = page === "navigation" ? "teaching-navigation" : page;
   $$(".nav-link").forEach((link) => link.classList.toggle("active", link.dataset.nav === activePage));
-}
-
-function getAccountDisplayName(session = loadAccountSession()) {
-  const account = session?.account || {};
-  return account.teacherName || account.name || account.identifier || account.email || "课程教师";
-}
-
-function renderGlobalAccountActions(session = loadAccountSession()) {
-  $$("[data-account-actions]").forEach((container) => {
-    if (session?.isAuthenticated && session.account) {
-      const displayName = getAccountDisplayName(session);
-      container.innerHTML = `
-        <a class="nav-account-chip" href="./auth.html" aria-label="当前登录账号：${escapeHtml(displayName)}">
-          <span>欢迎回来，</span>
-          <strong>${escapeHtml(displayName)}</strong>
-        </a>
-      `;
-      return;
-    }
-    container.innerHTML = `
-      <a class="nav-outline-action" href="./auth.html?mode=login">登录</a>
-      <a class="nav-primary-action" href="./auth.html?mode=register">注册</a>
-    `;
-  });
 }
 
 const HOME_FEATURE_DEMOS = {
@@ -2731,9 +2706,8 @@ function renderAccountSession(session = loadAccountSession()) {
     </div>
   `;
   $("[data-auth-logout]", panel)?.addEventListener("click", () => {
-    const session = clearAccountSession();
+    clearAccountSession();
     renderAccountSession();
-    renderGlobalAccountActions(session);
     showToast("已退出登录");
   });
 }
@@ -2760,7 +2734,6 @@ function handleLoginSubmit(event) {
     },
   });
   renderAccountSession(session);
-  renderGlobalAccountActions(session);
   showToast("登录成功，已进入本地账号会话");
 }
 
@@ -2792,7 +2765,6 @@ function handleRegisterSubmit(event) {
     },
   });
   renderAccountSession(session);
-  renderGlobalAccountActions(session);
   showToast("账号已创建，已进入本地账号会话");
 }
 
