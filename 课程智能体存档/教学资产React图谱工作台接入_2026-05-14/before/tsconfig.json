@@ -39,9 +39,6 @@
   "exclude": [
     "node_modules",
     "dist",
-    ".next",
-    "change-records",
-    "课程智能体存档",
-    "API版的后端"
+    "change-records"
   ]
 }
