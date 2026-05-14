@@ -6703,30 +6703,8 @@ function normalizeFanyaAuthState(state) {
   return state;
 }
 
-function initPracticeCopilotSurface() {
-  $$("[data-copilot-confirm]").forEach((button) => {
-    if (button.dataset.ready === "true") return;
-    button.dataset.ready = "true";
-    button.addEventListener("click", () => {
-      button.textContent = "已确认";
-      button.setAttribute("aria-pressed", "true");
-      button.disabled = true;
-      showToast(`已确认采用：${button.dataset.copilotConfirm}`);
-    });
-  });
-
-  $$("[data-copilot-copy]").forEach((button) => {
-    if (button.dataset.ready === "true") return;
-    button.dataset.ready = "true";
-    button.addEventListener("click", () => {
-      copyText(button.dataset.copilotCopy || button.textContent || "");
-    });
-  });
-}
-
 function initPracticePage() {
   if (!$("#fanyaAuthForm")) return;
-  initPracticeCopilotSurface();
   fanyaAuthState = {
     ...makeEmptyFanyaAuthState(),
     ...loadFromLocalStorage(FANYA_AUTH_KEY, makeEmptyFanyaAuthState()),
