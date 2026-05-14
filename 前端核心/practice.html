@@ -6,7 +6,7 @@
     <title>Pharmacopilot | 教学实践</title>
     <meta
       name="description"
-      content="教学实践页用于在完成教学导航训练后，模拟授权泛雅账号，并使用学情驱动的 20 环节流程生成真实课程教学方案。"
+      content="教学实践页由 Copilot 自动推进 20 环节课堂实践流程，教师只在关键教学决策处接管确认。"
     />
     <link rel="icon" href="data:," />
     <link rel="stylesheet" href="./styles.css" />
@@ -37,21 +37,148 @@
           <a class="nav-link" data-nav="teaching-navigation" href="./teaching-navigation.html">教学导航</a>
           <a class="nav-link active" data-nav="practice" href="./practice.html">教学实践</a>
           <a class="nav-link" data-nav="assets" href="./assets.html">教学资产</a>
+          <a class="nav-link" data-nav="course-resources" href="./practice.html#practiceImportedDataOverview">课程资源</a>
         </nav>
         <div class="top-actions">
-          <a class="nav-primary-action" href="./assets.html">查看教学资产</a>
+          <button class="nav-primary-action" id="startClassCopilot" type="button">启动课堂 Copilot</button>
         </div>
       </div>
     </header>
 
     <main>
-      <section class="page-hero" aria-labelledby="practice-title">
-        <p class="eyebrow">Fanya practice workspace</p>
-        <h1 id="practice-title">教学实践：用真实学情驱动 20 环节课程设计。</h1>
+      <section class="practice-copilot-hero" aria-labelledby="practice-title">
+        <p class="eyebrow">Classroom Copilot workspace</p>
+        <h1 id="practice-title">Copilot 正在推进本次课堂实践</h1>
         <p class="lede">
-          完成教学导航训练后，教师可以授权泛雅账号，导入个人教学信息、课程资源、班级学情、作业记录和学习过程数据。系统将在同样的 20 环节流程中自动预填课程上下文、推荐方案、识别风险，并生成可用于真实课程的教学方案、课堂任务、评价量规和复盘建议。
+          系统已接入泛雅课程资源、班级学情与作业记录，正在自动运行 20 环节教学实践流程。教师无需逐项填写，只需在关键教学决策处接管确认。
         </p>
       </section>
+
+      <section class="copilot-status-strip" aria-label="Copilot 当前运行状态">
+        <article class="copilot-status-card is-running"><span>Copilot 运行中</span><strong>20 环节自动推进</strong></article>
+        <article class="copilot-status-card"><span>课程</span><strong>管理学原理</strong></article>
+        <article class="copilot-status-card"><span>章节</span><strong>SWOT 分析</strong></article>
+        <article class="copilot-status-card"><span>班级</span><strong>药事管理 2024 级 1 班</strong></article>
+        <article class="copilot-status-card"><span>当前节点</span><strong>STEP 12 案例探究</strong></article>
+        <article class="copilot-status-card is-alert"><span>教师接管</span><strong>3 项待确认</strong></article>
+      </section>
+
+      <section class="practice-copilot-grid" aria-labelledby="copilot-route-title">
+        <article class="copilot-route-card">
+          <div class="copilot-route-head">
+            <div>
+              <p class="eyebrow">20 环节自动推进路线</p>
+              <h2 id="copilot-route-title">当前运行：STEP 12 案例探究与证据分析活动</h2>
+              <p>
+                智能体正在根据课程资源、学情数据和作业记录自动推进 20 环节。已完成环节保持稳定，当前环节持续运行，涉及教学情境、组织方式和评价标准的关键节点将交由教师确认。
+              </p>
+            </div>
+            <div class="copilot-metric-grid" aria-label="Copilot 路线指标">
+              <span><strong>20</strong><small>总环节</small></span>
+              <span><strong>16</strong><small>已编排</small></span>
+              <span><strong>3</strong><small>待确认</small></span>
+              <span><strong>1</strong><small>阻塞</small></span>
+            </div>
+          </div>
+
+          <div class="copilot-route-map" aria-label="20 环节 Copilot 自动推进航线图">
+            <div class="copilot-route-legend" aria-hidden="true">
+              <span><i class="done"></i>已完成</span>
+              <span><i class="current"></i>当前运行</span>
+              <span><i class="confirm"></i>待教师确认</span>
+              <span><i class="next"></i>即将运行</span>
+              <span><i class="pending"></i>待运行</span>
+            </div>
+            <div id="copilotRouteNodes" class="copilot-route-nodes" aria-live="polite"></div>
+          </div>
+
+          <div class="copilot-current-detail" aria-label="当前节点详情">
+            <div>
+              <span>当前节点详情</span>
+              <strong>STEP 12 案例探究与证据分析活动</strong>
+              <small>当前由 Copilot 自动生成任务与追问链</small>
+            </div>
+            <div class="copilot-io">
+              <p><b>输入</b>课程资源、学情数据、作业记录</p>
+              <p><b>输出</b>小组 SWOT 任务单、证据表、教师追问链</p>
+            </div>
+          </div>
+        </article>
+
+        <aside class="copilot-side-panel" aria-label="Copilot 诊断与教师接管">
+          <article class="copilot-info-card">
+            <p class="eyebrow">Diagnosis</p>
+            <h2>Copilot 诊断建议</h2>
+            <p>
+              系统检测到学生对“内部因素 / 外部因素”的区分不稳定，且小组讨论参与度偏低。Copilot 已在 STEP 11 增加概念边界澄清，在 STEP 12 增加证据标注要求，并建议教师确认案例情境与小组协作规则。
+            </p>
+            <button class="secondary-action" type="button" data-copilot-copy="查看推荐依据">查看推荐依据</button>
+          </article>
+
+          <article class="copilot-info-card takeover-card">
+            <p class="eyebrow">Teacher takeover</p>
+            <h2>教师接管点</h2>
+            <div class="takeover-list">
+              <section>
+                <strong>教学情境确认</strong>
+                <p>是否采用“慢病管理服务市场进入”作为本节课核心案例？</p>
+                <small>影响：决定 STEP 09 情境导入、STEP 12 案例探究、STEP 14 汇报追问的材料生成。</small>
+                <div><button type="button" data-copilot-confirm="教学情境确认">确认采用</button><button type="button" data-copilot-copy="调整教学情境设置">调整设置</button></div>
+              </section>
+              <section>
+                <strong>课堂组织确认</strong>
+                <p>是否按 6 人一组，并设置记录员、证据员、汇报员？</p>
+                <small>影响：决定 STEP 13 协作学习设计与课堂观察记录。</small>
+                <div><button type="button" data-copilot-confirm="课堂组织确认">确认采用</button><button type="button" data-copilot-copy="调整课堂组织设置">调整设置</button></div>
+              </section>
+              <section>
+                <strong>评价标准确认</strong>
+                <p>是否采用概念准确性、证据充分性、策略匹配度、风险意识四维 Rubric？</p>
+                <small>影响：决定 STEP 15 形成性评价、STEP 17 表现性评价和 STEP 20 复盘归档。</small>
+                <div><button type="button" data-copilot-confirm="评价标准确认">确认采用</button><button type="button" data-copilot-copy="调整评价标准设置">调整设置</button></div>
+              </section>
+            </div>
+            <button class="primary-action publish-practice-plan" id="publishCopilotPracticePlan" type="button">发布最终实践方案</button>
+          </article>
+        </aside>
+      </section>
+
+      <section class="practice-copilot-lower" aria-label="Copilot 执行记录与生成材料">
+        <article class="copilot-log-card">
+          <div class="section-head mini">
+            <p class="eyebrow">Execution log</p>
+            <h2>智能体执行记录</h2>
+          </div>
+          <div class="copilot-execution-list">
+            <div><span>已完成</span><p>读取泛雅课程资源、章节课件、测验错题与讨论记录</p><small>课程资源 / 学情数据</small></div>
+            <div><span>已完成</span><p>自动预填 STEP 01–08 的课程情境、学习目标、资源材料与评价量规</p><small>课前教学设计与准备</small></div>
+            <div><span class="is-running">进行中</span><p>生成 STEP 12 小组 SWOT 分析任务、证据表与教师追问链</p><small>课中教学实施与调控</small></div>
+            <div><span class="is-waiting">待教师确认</span><p>案例情境、小组协作规则与 Rubric 四维评价尚需教师确认</p><small>教师接管点</small></div>
+          </div>
+        </article>
+
+        <article class="copilot-material-card">
+          <div class="section-head mini">
+            <p class="eyebrow">Generated materials</p>
+            <h2>已生成教学材料</h2>
+          </div>
+          <div class="copilot-material-grid">
+            <article><span>课堂脚本</span><strong>45 分钟教学流程已生成</strong><small>已生成</small></article>
+            <article><span>案例材料</span><strong>药事管理真实决策情境已生成</strong><small>已生成</small></article>
+            <article class="needs-confirm"><span>小组活动卡</span><strong>需确认分组规则后生成最终版</strong><small>待确认</small></article>
+            <article><span>教师追问链</span><strong>8 个分层追问已生成</strong><small>已生成</small></article>
+            <article class="needs-confirm"><span>Rubric 评价表</span><strong>需确认四维评价标准</strong><small>待确认</small></article>
+            <article><span>证据回收清单</span><strong>已连接教学资产库</strong><small>已生成</small></article>
+          </div>
+        </article>
+      </section>
+
+      <details class="practice-legacy-tools" id="practiceLegacyTools">
+        <summary>
+          <span>原有工具与导出区</span>
+          <strong>泛雅模拟授权、课程选择、20 环节细节确认、完整方案导出与资产保存仍保留在这里。</strong>
+        </summary>
+        <div class="practice-legacy-tools-body">
 
       <section class="practice-auth-grid" aria-label="泛雅模拟授权">
         <article class="upload-panel auth-panel">
@@ -205,6 +332,8 @@
           </article>
         </section>
       </section>
+        </div>
+      </details>
     </main>
   </body>
 </html>
