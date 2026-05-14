@@ -111,6 +111,73 @@
         </div>
       </section>
 
+      <section class="practice-copilot-grid" aria-labelledby="copilot-runtime-title">
+        <article class="copilot-route-card copilot-runtime-card">
+          <div class="copilot-runtime-head">
+            <div>
+              <p class="eyebrow">Copilot 正在运行</p>
+              <h2 id="copilot-runtime-title">系统正在汇总课堂讨论结果，并生成下一步教学反馈。</h2>
+              <p>
+                当前任务：对学生小组提交的分析结果进行结构校验，识别证据缺口、利益相关者遗漏与风险判断不足。
+              </p>
+            </div>
+          </div>
+
+          <div class="copilot-runtime-rail" aria-label="Copilot 运行进度">
+            <div class="copilot-runtime-track" aria-hidden="true">
+              <span class="is-done"></span>
+              <span class="is-done"></span>
+              <span class="is-current"></span>
+              <span></span>
+            </div>
+            <div class="copilot-runtime-labels">
+              <span>结果接收</span>
+              <span>结构校验</span>
+              <span>反馈生成</span>
+              <span>教师确认</span>
+            </div>
+          </div>
+
+          <div class="copilot-runtime-notes" aria-label="Copilot 本轮输入与输出">
+            <div>
+              <span>本轮输入</span>
+              <strong>学生小组分析结果</strong>
+              <p>SWOT 矩阵、证据说明与课堂发言记录。</p>
+            </div>
+            <div>
+              <span>系统输出</span>
+              <strong>教学反馈与追问建议</strong>
+              <p>聚焦证据缺口、利益相关者遗漏和风险判断不足。</p>
+            </div>
+          </div>
+        </article>
+
+        <aside class="copilot-side-panel" aria-label="教师确认事项">
+          <article class="copilot-info-card takeover-card is-primary-confirm">
+            <p class="eyebrow">教师确认</p>
+            <h2>是否将医保准入情境作为下一轮课堂讨论案例？</h2>
+            <p>
+              该情境能够强化学生对资源约束、政策目标、支付方视角与患者可及性的综合判断。
+            </p>
+            <div class="copilot-confirm-actions">
+              <button class="primary-action" type="button" data-copilot-confirm="医保准入情境">确认采用</button>
+              <button class="secondary-action" type="button" data-copilot-copy="请调整下一轮课堂讨论案例，重点保留资源约束、政策目标、支付方视角与患者可及性四类判断依据。">调整案例</button>
+            </div>
+          </article>
+
+          <article class="copilot-info-card copilot-secondary-confirm-card">
+            <div class="copilot-secondary-head">
+              <span>次要确认项</span>
+              <strong>稍后处理</strong>
+            </div>
+            <div class="copilot-secondary-list">
+              <p>保留学生原始表达作为课堂证据</p>
+              <p>将本轮评价量表保存为课程模板</p>
+            </div>
+          </article>
+        </aside>
+      </section>
+
       <section class="practice-copilot-metrics" aria-label="课堂执行概览指标">
         <article><span>已完成节点</span><strong>11 / 20</strong><small>演示进度</small></article>
         <article><span>待确认事项</span><strong>1 项</strong><small>仅保留关键判断</small></article>

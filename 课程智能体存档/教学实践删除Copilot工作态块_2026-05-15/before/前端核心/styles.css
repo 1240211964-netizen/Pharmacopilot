@@ -20372,13 +20372,18 @@ body[data-page="practice"] .practice-copilot-hero {
 
 body[data-page="practice"] .practice-copilot-hero .eyebrow,
 body[data-page="practice"] .practice-route-overview .eyebrow,
-body[data-page="practice"] .practice-progress-window .eyebrow {
+body[data-page="practice"] .practice-progress-window .eyebrow,
+body[data-page="practice"] .practice-copilot-grid .eyebrow {
   margin: 0 0 12px;
   color: var(--accent-dark);
   font-size: 0.78rem;
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+
+body[data-page="practice"] .practice-copilot-grid .eyebrow {
+  color: #e0c08e;
 }
 
 body[data-page="practice"] .practice-copilot-hero h1 {
@@ -20651,12 +20656,257 @@ body[data-page="practice"] .practice-route-interventions p {
   line-height: 1.62;
 }
 
+body[data-page="practice"] .practice-copilot-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.16fr) minmax(340px, 0.72fr);
+  gap: 24px;
+  align-items: stretch;
+  margin-top: 12px;
+  padding: clamp(22px, 3vw, 34px);
+  border: 1px solid rgba(255, 250, 242, 0.1);
+  border-radius: 32px;
+  background: linear-gradient(145deg, #171411 0%, #211a14 58%, #171411 100%);
+  box-shadow: 0 28px 84px rgba(45, 31, 20, 0.26);
+}
+
+body[data-page="practice"] .copilot-route-card,
+body[data-page="practice"] .copilot-info-card {
+  min-width: 0;
+  border: 1px solid rgba(255, 250, 242, 0.1);
+  border-radius: 26px;
+}
+
+body[data-page="practice"] .copilot-runtime-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 28px;
+  padding: clamp(22px, 3vw, 34px);
+  background: rgba(255, 250, 242, 0.035);
+  color: #fff6e8;
+}
+
+body[data-page="practice"] .copilot-runtime-head h2 {
+  max-width: 740px;
+  margin: 0;
+  color: #fff8eb;
+  font-size: clamp(2rem, 3.4vw, 3.35rem);
+  font-weight: 760;
+  line-height: 1.12;
+  letter-spacing: 0;
+  text-wrap: balance;
+}
+
+body[data-page="practice"] .copilot-runtime-head p:not(.eyebrow) {
+  max-width: 720px;
+  margin: 18px 0 0;
+  color: #d4c5b3;
+  font-size: 1rem;
+  line-height: 1.82;
+}
+
+body[data-page="practice"] .copilot-runtime-rail {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid rgba(255, 250, 242, 0.1);
+  border-radius: 22px;
+  background: rgba(9, 8, 7, 0.34);
+}
+
+body[data-page="practice"] .copilot-runtime-track {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  min-height: 18px;
+}
+
+body[data-page="practice"] .copilot-runtime-track::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  left: 4px;
+  height: 2px;
+  border-radius: 999px;
+  background: rgba(255, 250, 242, 0.16);
+  transform: translateY(-50%);
+}
+
+body[data-page="practice"] .copilot-runtime-track span {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 250, 242, 0.32);
+  border-radius: 999px;
+  background: #211a14;
+}
+
+body[data-page="practice"] .copilot-runtime-track .is-done {
+  border-color: #d8b275;
+  background: #d8b275;
+}
+
+body[data-page="practice"] .copilot-runtime-track .is-current {
+  border-color: #d8b275;
+  background: #171411;
+  box-shadow: 0 0 0 7px rgba(216, 178, 117, 0.12);
+}
+
+body[data-page="practice"] .copilot-runtime-track .is-current::after {
+  content: "";
+  position: absolute;
+  inset: -7px;
+  border: 1px solid rgba(216, 178, 117, 0.34);
+  border-radius: inherit;
+  animation: copilotCurrentPulse 2.4s ease-in-out infinite;
+}
+
+body[data-page="practice"] .copilot-runtime-labels {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  color: #b8a895;
+  font-size: 0.78rem;
+  font-weight: 650;
+}
+
+body[data-page="practice"] .copilot-runtime-notes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+body[data-page="practice"] .copilot-runtime-notes div {
+  padding: 18px;
+  border: 1px solid rgba(255, 250, 242, 0.1);
+  border-radius: 20px;
+  background: rgba(255, 250, 242, 0.055);
+}
+
+body[data-page="practice"] .copilot-runtime-notes span,
 body[data-page="practice"] .practice-copilot-metrics span,
 body[data-page="practice"] .practice-window-nodes span {
   display: block;
   color: var(--text-muted);
   font-size: 0.78rem;
   font-weight: 760;
+}
+
+body[data-page="practice"] .copilot-runtime-notes span {
+  color: #d8b275;
+}
+
+body[data-page="practice"] .copilot-runtime-notes strong {
+  display: block;
+  margin-top: 8px;
+  color: #fff8eb;
+  font-size: 1rem;
+}
+
+body[data-page="practice"] .copilot-runtime-notes p {
+  margin: 8px 0 0;
+  color: #c8b9a8;
+  font-size: 0.9rem;
+  line-height: 1.68;
+}
+
+body[data-page="practice"] .copilot-side-panel {
+  display: grid;
+  align-content: start;
+  gap: 16px;
+}
+
+body[data-page="practice"] .takeover-card.is-primary-confirm {
+  padding: clamp(22px, 2.5vw, 30px);
+  background: #fffaf2;
+  color: var(--text-main);
+  box-shadow: 0 22px 58px rgba(0, 0, 0, 0.22);
+}
+
+body[data-page="practice"] .takeover-card.is-primary-confirm .eyebrow {
+  color: var(--accent-dark);
+}
+
+body[data-page="practice"] .takeover-card.is-primary-confirm h2 {
+  margin: 0;
+  color: var(--text-main);
+  font-size: clamp(1.55rem, 2.6vw, 2.28rem);
+  font-weight: 780;
+  line-height: 1.2;
+  letter-spacing: 0;
+  text-wrap: balance;
+}
+
+body[data-page="practice"] .takeover-card.is-primary-confirm p:not(.eyebrow) {
+  margin: 16px 0 0;
+  color: var(--text-soft);
+  font-size: 0.98rem;
+  line-height: 1.76;
+}
+
+body[data-page="practice"] .copilot-confirm-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 24px;
+}
+
+body[data-page="practice"] .copilot-confirm-actions .primary-action,
+body[data-page="practice"] .copilot-confirm-actions .secondary-action {
+  width: 100%;
+  min-height: 48px;
+  border-radius: 16px;
+}
+
+body[data-page="practice"] .copilot-confirm-actions .primary-action:disabled {
+  cursor: default;
+  border-color: rgba(104, 124, 89, 0.25);
+  background: var(--success);
+  color: #fffaf2;
+  box-shadow: none;
+  transform: none;
+}
+
+body[data-page="practice"] .copilot-secondary-confirm-card {
+  padding: 18px;
+  background: rgba(255, 250, 242, 0.055);
+  color: #d6c9b8;
+}
+
+body[data-page="practice"] .copilot-secondary-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #d8b275;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+body[data-page="practice"] .copilot-secondary-head strong {
+  color: #9f917e;
+  font-size: 0.78rem;
+}
+
+body[data-page="practice"] .copilot-secondary-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+body[data-page="practice"] .copilot-secondary-list p {
+  margin: 0;
+  padding: 11px 12px;
+  border: 1px solid rgba(255, 250, 242, 0.08);
+  border-radius: 14px;
+  background: rgba(255, 250, 242, 0.04);
+  color: #b9aa99;
+  font-size: 0.9rem;
+  line-height: 1.5;
 }
 
 body[data-page="practice"] .practice-copilot-metrics {
@@ -20767,6 +21017,25 @@ body[data-page="practice"] .practice-legacy-tools {
   background: rgba(255, 250, 242, 0.58);
 }
 
+@keyframes copilotCurrentPulse {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(0.96);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-page="practice"] .copilot-runtime-track .is-current::after {
+    animation: none;
+  }
+}
+
 @media (max-width: 960px) {
   body[data-page="practice"] main {
     width: 100%;
@@ -20782,9 +21051,11 @@ body[data-page="practice"] .practice-legacy-tools {
     min-width: 0;
   }
 
+  body[data-page="practice"] .practice-copilot-grid,
   body[data-page="practice"] .copilot-status-strip,
   body[data-page="practice"] .practice-copilot-metrics,
-  body[data-page="practice"] .practice-route-interventions {
+  body[data-page="practice"] .practice-route-interventions,
+  body[data-page="practice"] .copilot-runtime-notes {
     grid-template-columns: 1fr;
   }
 
@@ -20797,7 +21068,9 @@ body[data-page="practice"] .practice-legacy-tools {
   }
 
   body[data-page="practice"] .practice-copilot-hero .lede,
-  body[data-page="practice"] .practice-route-head p:not(.eyebrow) {
+  body[data-page="practice"] .practice-route-head p:not(.eyebrow),
+  body[data-page="practice"] .copilot-runtime-head p:not(.eyebrow),
+  body[data-page="practice"] .takeover-card.is-primary-confirm p:not(.eyebrow) {
     width: 100%;
     max-width: 100%;
     white-space: normal;
@@ -20833,9 +21106,19 @@ body[data-page="practice"] .practice-legacy-tools {
   }
 
   body[data-page="practice"] .practice-copilot-hero .lede,
-  body[data-page="practice"] .practice-route-head p:not(.eyebrow) {
+  body[data-page="practice"] .practice-route-head p:not(.eyebrow),
+  body[data-page="practice"] .copilot-runtime-head p:not(.eyebrow),
+  body[data-page="practice"] .takeover-card.is-primary-confirm p:not(.eyebrow) {
     width: 100%;
     max-width: min(100%, calc(100vw - 28px));
+  }
+
+  body[data-page="practice"] .practice-copilot-grid {
+    width: 100%;
+    max-width: 100%;
+    padding: 22px;
+    border-radius: 24px;
+    overflow: hidden;
   }
 
   body[data-page="practice"] .copilot-status-strip,
@@ -20848,6 +21131,8 @@ body[data-page="practice"] .practice-legacy-tools {
     min-width: 0;
   }
 
+  body[data-page="practice"] .copilot-runtime-card,
+  body[data-page="practice"] .copilot-info-card,
   body[data-page="practice"] .copilot-status-card,
   body[data-page="practice"] .practice-copilot-metrics article,
   body[data-page="practice"] .practice-route-nodes article,
@@ -20858,17 +21143,32 @@ body[data-page="practice"] .practice-legacy-tools {
     min-width: 0;
   }
 
+  body[data-page="practice"] .copilot-runtime-head h2 {
+    font-size: clamp(1.85rem, 9vw, 2.4rem);
+  }
+
+  body[data-page="practice"] .takeover-card.is-primary-confirm h2 {
+    font-size: clamp(1.35rem, 7.4vw, 1.85rem);
+  }
+
   body[data-page="practice"] .practice-copilot-hero h1,
   body[data-page="practice"] .practice-copilot-hero .lede,
   body[data-page="practice"] .practice-route-head h2,
   body[data-page="practice"] .practice-route-head p,
-  body[data-page="practice"] .practice-route-nodes strong {
+  body[data-page="practice"] .practice-route-nodes strong,
+  body[data-page="practice"] .copilot-runtime-head h2,
+  body[data-page="practice"] .copilot-runtime-head p,
+  body[data-page="practice"] .takeover-card.is-primary-confirm h2,
+  body[data-page="practice"] .takeover-card.is-primary-confirm p {
     overflow-wrap: anywhere;
     word-break: break-word;
     white-space: normal;
   }
 
-  body[data-page="practice"] .practice-route-nodes {
+  body[data-page="practice"] .copilot-confirm-actions,
+  body[data-page="practice"] .practice-route-nodes,
+  body[data-page="practice"] .copilot-runtime-labels,
+  body[data-page="practice"] .copilot-runtime-track {
     grid-template-columns: 1fr;
   }
 
@@ -20894,5 +21194,18 @@ body[data-page="practice"] .practice-legacy-tools {
   body[data-page="practice"] .copilot-status-card,
   body[data-page="practice"] .practice-route-nodes article {
     min-height: auto;
+  }
+
+  body[data-page="practice"] .copilot-runtime-track {
+    gap: 12px;
+  }
+
+  body[data-page="practice"] .copilot-runtime-track::before {
+    top: 4px;
+    bottom: 4px;
+    left: 9px;
+    width: 2px;
+    height: auto;
+    transform: none;
   }
 }
