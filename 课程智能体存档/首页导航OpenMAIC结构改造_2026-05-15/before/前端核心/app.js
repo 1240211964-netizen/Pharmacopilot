@@ -2065,13 +2065,8 @@ function showToast(message) {
 }
 
 function initGlobalNav() {
-  const header = $(".site-header");
   const button = $("#navMenuToggle");
   const nav = $("#primaryNav");
-  const closeNav = () => {
-    document.body.classList.remove("nav-open");
-    button?.setAttribute("aria-expanded", "false");
-  };
   if (button && nav) {
     button.addEventListener("click", () => {
       const isOpen = document.body.classList.toggle("nav-open");
@@ -2079,18 +2074,11 @@ function initGlobalNav() {
     });
 
     $$(".nav-link", nav).forEach((link) => {
-      link.addEventListener("click", closeNav);
+      link.addEventListener("click", () => {
+        document.body.classList.remove("nav-open");
+        button.setAttribute("aria-expanded", "false");
+      });
     });
-  }
-  if (button && header) {
-    $$(".top-actions a", header).forEach((link) => link.addEventListener("click", closeNav));
-  }
-  if (header) {
-    const syncHeaderScrollState = () => {
-      header.classList.toggle("is-scrolled", window.scrollY > 8);
-    };
-    syncHeaderScrollState();
-    window.addEventListener("scroll", syncHeaderScrollState, { passive: true });
   }
   setActiveNav();
   renderGlobalAccountActions();

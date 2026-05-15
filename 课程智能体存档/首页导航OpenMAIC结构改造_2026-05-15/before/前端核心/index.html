@@ -15,11 +15,11 @@
   <body data-page="home" class="anthropic-inspired-home">
     <header class="site-header">
       <div class="topbar">
-        <a class="brand" href="./index.html" aria-label="PharmacoPilot 课程智能体首页">
+        <a class="brand" href="./index.html" aria-label="Pharmacopilot 首页">
           <span class="brand-mark" aria-hidden="true"><span class="brand-monogram">P</span></span>
           <span class="brand-lockup">
-            <span class="brand-wordmark">PharmacoPilot</span>
-            <span class="brand-submark">课程智能体</span>
+            <span class="brand-wordmark">Pharmacopilot</span>
+            <span class="brand-submark">药学教学智能体</span>
           </span>
         </a>
         <button
@@ -27,23 +27,20 @@
           id="navMenuToggle"
           type="button"
           aria-label="打开导航菜单"
-          aria-controls="homeNavGroup"
+          aria-controls="primaryNav"
           aria-expanded="false"
         >
           <span aria-hidden="true"></span>
         </button>
-        <div class="home-nav-group" id="homeNavGroup">
-          <nav class="topnav" id="primaryNav" aria-label="页面导航">
-            <a class="nav-link active" data-nav="home" href="./index.html">首页</a>
-            <a class="nav-link" data-nav="teaching-navigation" href="./teaching-navigation.html">教学导航</a>
-            <a class="nav-link" data-nav="practice" href="./practice.html">教学实践</a>
-            <a class="nav-link" data-nav="assets" href="./assets.html">教学资产</a>
-            <a class="nav-link" data-nav="evidence" href="./assets.html#managementCourseGraph">评价证据链</a>
-          </nav>
-          <div class="top-actions" aria-label="首页操作入口">
-            <a class="nav-outline-action" href="#homeCoworkStage">查看示例</a>
-            <a class="nav-primary-action" href="./teaching-navigation.html">进入工作台</a>
-          </div>
+        <nav class="topnav" id="primaryNav" aria-label="页面导航">
+          <a class="nav-link active" data-nav="home" href="./index.html">首页</a>
+          <a class="nav-link" data-nav="teaching-navigation" href="./teaching-navigation.html">教学导航</a>
+          <a class="nav-link" data-nav="practice" href="./practice.html">教学实践</a>
+          <a class="nav-link" data-nav="assets" href="./assets.html">教学资产</a>
+        </nav>
+        <div class="top-actions" data-account-actions>
+          <a class="nav-outline-action" href="./auth.html?mode=login">登录</a>
+          <a class="nav-primary-action" href="./auth.html?mode=register">注册</a>
         </div>
       </div>
     </header>
