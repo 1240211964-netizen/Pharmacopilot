@@ -2110,7 +2110,7 @@ function initTheoryAnchorToggles() {
 
 function setActiveNav() {
   const page = document.body.dataset.page;
-  const activePage = page === "navigation" ? "teaching-navigation" : page;
+  const activePage = page === "navigation" || page === "home" ? "teaching-navigation" : page;
   $$(".nav-link").forEach((link) => link.classList.toggle("active", link.dataset.nav === activePage));
 }
 
@@ -2176,18 +2176,18 @@ const HOME_FEATURE_DEMOS = {
       "确认泛雅模拟授权与数据边界",
       "导入课程资源、班级学情和作业记录",
       "沿用 20 环节进行数据增强判断",
-      "生成方案并支持复制到泛雅、沉淀到教学数据",
+      "生成方案并支持复制到泛雅、保存到教学资产",
     ],
     outputTitle: "真实课程教学实践方案",
     outputSubtitle: "把 20 环节判断转化为课堂任务、评价量规、复盘建议和平台复制文本",
   },
   assets: {
-    label: "教学数据",
-    short: "数据中枢",
-    kicker: "从证据沉淀到复用行动",
-    summary: "真实页面聚合新手教程记录、教学实践生成材料、教师上传材料和泛雅模拟记录，并用课程图谱、来源筛选和数据说明书支持复用。",
+    label: "教学资产",
+    short: "资产中枢",
+    kicker: "从材料沉淀到复用行动",
+    summary: "真实页面聚合新手教程记录、教学实践生成材料、教师上传材料和泛雅模拟记录，并用粒子图谱、来源筛选和资产说明书支持复用。",
     prompt:
-      "请整理本课程的新手教程记录、教学实践生成材料、教师上传材料和泛雅模拟记录，形成带来源边界的可复用教学数据。",
+      "请整理本课程的新手教程记录、教学实践生成材料、教师上传材料和泛雅模拟记录，形成带来源边界的可复用教学资产。",
     attachments: [
       { title: "四类来源", meta: "新手教程 / 教学实践 / 教师上传 / 泛雅模拟", accent: "amber" },
       { title: "来源边界", meta: "课程资料 · 授权范围 · 使用限制", accent: "teal" },
@@ -2195,12 +2195,12 @@ const HOME_FEATURE_DEMOS = {
     ],
     activity: [
       "汇总四类资产来源",
-      "生成课程图谱、来源筛选和标签",
-      "写入数据说明书与风险提醒",
+      "生成粒子图谱、来源筛选和标签",
+      "写入资产说明书与风险提醒",
       "提供下一次课设计、活动、任务单、评价量规和复盘复用",
     ],
-    outputTitle: "教学数据中枢",
-    outputSubtitle: "用来源边界和数据说明书连接图谱筛选与复用动作",
+    outputTitle: "教学资产中枢",
+    outputSubtitle: "用来源边界和资产说明书连接图谱筛选与复用动作",
   },
 };
 
@@ -2212,9 +2212,9 @@ const HOME_TASK_TARGETS = {
     href: "./practice.html",
   },
   assets: {
-    label: "教学数据",
+    label: "教学资产",
     page: "assets",
-    href: "./teaching-data.html",
+    href: "./assets.html",
   },
 };
 
@@ -2224,7 +2224,7 @@ function getHomeFeatureDemo(featureKey) {
 
 function inferHomeTaskTarget(text = "") {
   const content = String(text).trim();
-  if (/数据|资产|沉淀|复用|归档|资源库|模板库|案例库|历史|整理/.test(content)) return "assets";
+  if (/资产|沉淀|复用|归档|资源库|模板库|案例库|历史|整理/.test(content)) return "assets";
   return "practice";
 }
 
@@ -2419,7 +2419,7 @@ function renderHomePracticePreview(activeAttachment) {
   const rubric = [
     ["生成方案", "82%"],
     ["复制到泛雅", "68%"],
-    ["沉淀到教学数据", "74%"],
+    ["保存到教学资产", "74%"],
     ["教师二次核验", "91%"],
   ];
   return `
@@ -2713,7 +2713,7 @@ function renderAccountSession(session = loadAccountSession()) {
     panel.innerHTML = `
       <p class="eyebrow">Session</p>
       <h2>尚未登录</h2>
-      <p>完成登录或注册后，可从这里继续进入首页、教学导航、教学实践和教学数据。</p>
+      <p>完成登录或注册后，可从这里继续进入教学导航、教学实践和教学资产。</p>
       <div class="auth-session-actions">
         <button class="secondary-action" type="button" data-auth-mode="login">切换到登录</button>
         <button class="primary-action" type="button" data-auth-mode="register">创建账号</button>
@@ -2738,7 +2738,7 @@ function renderAccountSession(session = loadAccountSession()) {
     <div class="auth-session-actions">
       <a class="primary-action" href="./teaching-navigation.html">进入教学导航</a>
       <a class="secondary-action" href="./practice.html">进入教学实践</a>
-      <a class="secondary-action" href="./teaching-data.html">查看教学数据</a>
+      <a class="secondary-action" href="./assets.html">查看教学资产</a>
       <button class="small-action" type="button" data-auth-logout>退出登录</button>
     </div>
   `;
@@ -3372,7 +3372,7 @@ function renderGameMapAssets() {
   container.innerHTML = assets
     .map(
       (asset) => `
-        <a class="map-asset-item ${asset.unlocked ? "is-unlocked" : "is-locked"}" href="./teaching-data.html">
+        <a class="map-asset-item ${asset.unlocked ? "is-unlocked" : "is-locked"}" href="./assets.html">
           <span>${asset.unlocked ? "✓" : "⌁"}</span>
           <div>
             <strong>${escapeHtml(asset.title)}</strong>
