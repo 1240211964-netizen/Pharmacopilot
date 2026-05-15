@@ -165,7 +165,6 @@ async function handleApi(req: IncomingMessage, res: ServerResponse, pathname: st
       mode: "course-outline",
       outline: result.outline,
       orchestration: result.orchestration,
-      summary: result.summary,
     });
   }
 
@@ -179,7 +178,6 @@ async function handleApi(req: IncomingMessage, res: ServerResponse, pathname: st
       runtime: result.runtime,
       actions: result.actions,
       renderers: result.renderers,
-      summary: result.summary,
     });
   }
 
@@ -190,7 +188,6 @@ async function handleApi(req: IncomingMessage, res: ServerResponse, pathname: st
       mode: "evidence-rule",
       evidenceRules: result.evidenceRules,
       actions: result.actions,
-      summary: result.summary,
     });
   }
 
@@ -201,7 +198,6 @@ async function handleApi(req: IncomingMessage, res: ServerResponse, pathname: st
       mode: "asset-pack",
       assetPack: result.assetPack,
       exports: result.exports,
-      summary: result.summary,
     });
   }
 

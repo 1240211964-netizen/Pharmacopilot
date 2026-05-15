@@ -2303,114 +2303,15 @@ function buildHomePipelinePayload(prompt, target) {
   };
 }
 
-async function callTeachingPipeline(payload) {
+async function requestHomeGenerationPipeline(prompt, target) {
   if (window.location.protocol === "file:") return null;
   const response = await fetch("/api/generate/pipeline", {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(buildHomePipelinePayload(prompt, target)),
   });
   if (!response.ok) throw new Error(`pipeline api failed: ${response.status}`);
   return response.json();
-}
-
-function savePipelineResult(result) {
-  saveToLocalStorage(HOME_PIPELINE_RESULT_KEY, result);
-  return result;
-}
-
-function getPipelineResult() {
-  return loadFromLocalStorage(HOME_PIPELINE_RESULT_KEY, null);
-}
-
-function renderPipelineRuntimePreview(container) {
-  const result = getPipelineResult();
-  const runtime = result?.runtime || {};
-  const scenes = Array.isArray(result?.scenes) ? result.scenes : [];
-  const actions = Array.isArray(result?.actions) ? result.actions : [];
-  const formats = Array.isArray(result?.exports?.formats) ? result.exports.formats : [];
-  const takeoverPoints = Array.isArray(runtime.takeoverPoints) ? runtime.takeoverPoints : [];
-  const currentSceneId = runtime.currentSceneId || result?.summary?.currentSceneId || "暂无";
-  const totalScenes = runtime.progress?.totalScenes || result?.summary?.totalScenes || scenes.length || 0;
-  const previewPayload = {
-    currentSceneId,
-    totalScenes,
-    takeoverPoints,
-    scenes,
-    actions,
-    exportFormats: formats,
-  };
-  if (window.console?.info) console.info("PharmacoPilot pipeline runtime preview", previewPayload);
-  if (!container) return previewPayload;
-  if (!result?.ok) {
-    container.innerHTML = `
-      <div class="pipeline-runtime-empty">
-        <p class="eyebrow">Runtime preview</p>
-        <h2>尚未读取到 pipeline runtime</h2>
-        <p>从首页触发一次生成任务后，这里会显示 currentSceneId、scenes、接管点和导出格式。</p>
-      </div>
-    `;
-    return previewPayload;
-  }
-  container.innerHTML = `
-    <div class="pipeline-runtime-head">
-      <div>
-        <p class="eyebrow">Runtime preview</p>
-        <h2>Pipeline scene runtime</h2>
-        <p>当前运行场景：<strong>${escapeHtml(currentSceneId)}</strong> · 场景总数：<strong>${escapeHtml(totalScenes)}</strong></p>
-      </div>
-      <div class="pipeline-runtime-stat">
-        <span>Takeover</span>
-        <strong>${escapeHtml(takeoverPoints.length)}</strong>
-      </div>
-    </div>
-    <div class="pipeline-runtime-grid">
-      <article>
-        <h3>接管点</h3>
-        <ul>
-          ${takeoverPoints
-            .map((point) => `<li><strong>${escapeHtml(point.sceneId)}</strong><span>${escapeHtml(point.checkpoint || point.title)}</span></li>`)
-            .join("") || "<li><span>暂无教师接管点</span></li>"}
-        </ul>
-      </article>
-      <article>
-        <h3>Scenes</h3>
-        <ol>
-          ${scenes
-            .map(
-              (scene) => `
-                <li>
-                  <strong>${escapeHtml(scene.id)}</strong>
-                  <span>${escapeHtml(scene.title)} · ${escapeHtml(scene.runtimeState || scene.state || "")}</span>
-                </li>
-              `,
-            )
-            .join("")}
-        </ol>
-      </article>
-      <article>
-        <h3>Actions</h3>
-        <ul>
-          ${actions
-            .map((action) => `<li><strong>${escapeHtml(action.id)}</strong><span>${escapeHtml(action.status || "")}</span></li>`)
-            .join("")}
-        </ul>
-      </article>
-      <article>
-        <h3>Export formats</h3>
-        <ul>
-          ${formats
-            .map((format) => `<li><strong>${escapeHtml(format.type)}</strong><span>${escapeHtml(format.recommendedFormat || "")}</span></li>`)
-            .join("")}
-        </ul>
-      </article>
-    </div>
-  `;
-  return previewPayload;
-}
-
-async function requestHomeGenerationPipeline(prompt, target) {
-  return callTeachingPipeline(buildHomePipelinePayload(prompt, target));
 }
 
 function readHomeTaskEntry() {
@@ -2464,9 +2365,9 @@ function initHomeTaskEntry() {
     }
     try {
       const pipelineResult = await requestHomeGenerationPipeline(prompt, entry.target);
-      if (pipelineResult) savePipelineResult(pipelineResult);
+      if (pipelineResult) saveToLocalStorage(HOME_PIPELINE_RESULT_KEY, pipelineResult);
     } catch (error) {
-      savePipelineResult({
+      saveToLocalStorage(HOME_PIPELINE_RESULT_KEY, {
         ok: false,
         fallback: true,
         message: "本地生成接口暂不可用，已保留任务并进入对应工作台。",
@@ -6969,7 +6870,6 @@ function initPracticePage() {
   renderFanyaLogin();
   renderAuthorizedCourses();
   renderPracticeWorkspace();
-  renderPipelineRuntimePreview($("#pipelineRuntimePreview"));
 
   $("#fanyaAuthForm")?.addEventListener("submit", simulateFanyaAuth);
   $("#useMockFanyaAccount")?.addEventListener("click", useMockFanyaAccount);
@@ -10453,10 +10353,6 @@ window.copyText = copyText;
 window.downloadMarkdown = downloadMarkdown;
 window.saveToLocalStorage = saveToLocalStorage;
 window.loadFromLocalStorage = loadFromLocalStorage;
-window.callTeachingPipeline = callTeachingPipeline;
-window.savePipelineResult = savePipelineResult;
-window.getPipelineResult = getPipelineResult;
-window.renderPipelineRuntimePreview = renderPipelineRuntimePreview;
 window.renderHorizontalBarChart = renderHorizontalBarChart;
 window.renderStepHeatmap = renderStepHeatmap;
 window.renderBulletChart = renderBulletChart;

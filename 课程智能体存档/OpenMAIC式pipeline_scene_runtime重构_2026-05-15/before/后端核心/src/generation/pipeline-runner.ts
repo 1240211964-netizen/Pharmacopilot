@@ -6,15 +6,7 @@ import { buildTeachingSceneRuntime } from "../playback/teaching-scene-runtime";
 import { generateAssetPack } from "./asset-pack-generator";
 import { generateCourseOutline } from "./course-outline-generator";
 import { generateEvidenceRules } from "./evidence-rule-generator";
-import type {
-  AssetPack,
-  CourseGenerationInput,
-  CourseOutline,
-  EvidenceRule,
-  PipelineRunResult,
-  TeachingScene,
-  TeachingSceneType,
-} from "./pipeline-types";
+import type { CourseGenerationInput, PipelineRunResult, TeachingSceneType } from "./pipeline-types";
 import { generateTeachingScenes } from "./teaching-scene-generator";
 
 const SCENE_RENDERERS: Array<{ sceneType: TeachingSceneType; renderer: string }> = [
@@ -33,7 +25,7 @@ export function normalizeCourseGenerationInput(body: JsonRecord): CourseGenerati
     prompt: text(body.prompt || body.query),
     mode: modeValue(body.mode),
     courseName: text(body.courseName || body.course_name) || "管理学原理",
-    studentProfile: text(body.studentProfile || body.student_profile) || "药事管理本科生",
+    studentProfile: text(body.studentProfile || body.student_profile) || "药事管理专业本科生",
     constraints: list(body.constraints),
     sourceBoundary: text(body.sourceBoundary || body.source_boundary),
     metadata: objectValue(body.metadata),
@@ -46,9 +38,6 @@ export function runCourseGenerationPipeline(body: JsonRecord): PipelineRunResult
   const scenes = generateTeachingScenes(outline);
   const evidenceRules = generateEvidenceRules(outline, scenes);
   const assetPack = generateAssetPack(outline, scenes, evidenceRules);
-  const runtime = buildTeachingSceneRuntime(scenes);
-  const actions = buildTeachingActions(scenes);
-  const exportManifest = buildTeachingExportManifest(assetPack);
   return {
     ok: true,
     pipeline: "pharmacopilot-course-generation",
@@ -58,33 +47,10 @@ export function runCourseGenerationPipeline(body: JsonRecord): PipelineRunResult
     evidenceRules,
     assetPack,
     orchestration: buildTeachingAgentOrchestration(),
-    runtime,
-    actions,
+    runtime: buildTeachingSceneRuntime(scenes),
+    actions: buildTeachingActions(scenes),
     renderers: SCENE_RENDERERS,
-    exports: exportManifest,
-    summary: buildPipelineSummary(input, outline, scenes, evidenceRules, assetPack),
-  };
-}
-
-function buildPipelineSummary(
-  input: CourseGenerationInput,
-  outline: CourseOutline,
-  scenes: TeachingScene[],
-  evidenceRules: EvidenceRule[],
-  assetPack: AssetPack,
-): JsonRecord {
-  const currentScene = scenes.find((scene) => scene.runtimeState === "running") || scenes[0];
-  return {
-    courseName: input.courseName || outline.courseName,
-    topic: input.topic || outline.topic,
-    studentProfile: input.studentProfile || outline.studentProfile,
-    totalSteps: outline.steps.length,
-    totalScenes: scenes.length,
-    totalEvidenceRules: evidenceRules.length,
-    totalAssets: assetPack.items.length,
-    currentSceneId: currentScene?.id || null,
-    teacherTakeoverCount: scenes.filter((scene) => scene.teacherIntervention.required).length,
-    exportableAssetCount: assetPack.items.length,
+    exports: buildTeachingExportManifest(assetPack),
   };
 }
 
