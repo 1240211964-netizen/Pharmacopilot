@@ -1,0 +1,123 @@
+[
+  {
+    "label": "desktop-nav",
+    "base": {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "navTexts": [
+        "课程设计",
+        "教学实践",
+        "教学资产",
+        "评价证据"
+      ],
+      "actions": [
+        "查看示例",
+        "进入工作台"
+      ],
+      "headerPosition": "sticky",
+      "headerPaddingTop": "14px",
+      "topbarWidth": 1240,
+      "topbarHeight": 68,
+      "topbarTop": 14,
+      "topbarPaddingInline": "24px / 24px",
+      "topbarRadius": "16px",
+      "topbarBackground": "rgba(255, 253, 248, 0.78)",
+      "topbarBackdropFilter": "blur(18px)",
+      "topbarShadow": "rgba(43, 33, 24, 0.06) 0px 12px 40px 0px",
+      "navWidth": 364,
+      "actionsWidth": 395,
+      "groupDisplay": "contents",
+      "toggleDisplay": "none",
+      "activeBackground": "rgba(201, 138, 58, 0.14)",
+      "activeColor": "rgb(111, 63, 29)",
+      "activeBorder": "rgba(201, 138, 58, 0.22)",
+      "primaryBackground": "rgb(138, 79, 36)",
+      "primaryHeight": 38,
+      "outlineBackground": "rgba(255, 253, 248, 0.2)",
+      "outlineBorder": "rgba(230, 216, 200, 0.86)",
+      "bodyNavOpen": false
+    },
+    "scrolled": {
+      "scrollY": 347,
+      "isScrolled": true,
+      "topbarBackground": "rgba(255, 253, 248, 0.9)",
+      "topbarShadow": "rgba(43, 33, 24, 0.09) 0px 15.9615px 45.9423px 0px",
+      "topbarBorder": "rgba(220, 202, 182, 0.82)",
+      "topbarBackdropFilter": "blur(18px)"
+    },
+    "menu": null,
+    "logEvents": []
+  },
+  {
+    "label": "mobile-nav-open",
+    "base": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "navTexts": [
+        "课程设计",
+        "教学实践",
+        "教学资产",
+        "评价证据"
+      ],
+      "actions": [
+        "查看示例",
+        "进入工作台"
+      ],
+      "headerPosition": "sticky",
+      "headerPaddingTop": "12px",
+      "topbarWidth": 362,
+      "topbarHeight": 64,
+      "topbarTop": 12,
+      "topbarPaddingInline": "12px / 12px",
+      "topbarRadius": "16px",
+      "topbarBackground": "rgba(255, 253, 248, 0.78)",
+      "topbarBackdropFilter": "blur(18px)",
+      "topbarShadow": "rgba(43, 33, 24, 0.06) 0px 12px 40px 0px",
+      "navWidth": 0,
+      "actionsWidth": 0,
+      "groupDisplay": "none",
+      "toggleDisplay": "block",
+      "activeBackground": "rgba(201, 138, 58, 0.14)",
+      "activeColor": "rgb(111, 63, 29)",
+      "activeBorder": "rgba(201, 138, 58, 0.22)",
+      "primaryBackground": "rgb(138, 79, 36)",
+      "primaryHeight": 0,
+      "outlineBackground": "rgba(255, 253, 248, 0.2)",
+      "outlineBorder": "rgba(230, 216, 200, 0.86)",
+      "bodyNavOpen": false
+    },
+    "scrolled": {
+      "scrollY": 354,
+      "isScrolled": true,
+      "topbarBackground": "rgba(255, 253, 248, 0.9)",
+      "topbarShadow": "rgba(43, 33, 24, 0.09) 0px 16px 46px 0px",
+      "topbarBorder": "rgba(220, 202, 182, 0.82)",
+      "topbarBackdropFilter": "blur(18px)"
+    },
+    "menu": {
+      "navOpen": true,
+      "ariaExpanded": "true",
+      "groupDisplay": "grid",
+      "groupBackdropFilter": "blur(18px)",
+      "groupRect": {
+        "x": 27,
+        "y": 97,
+        "width": 336,
+        "height": 319
+      },
+      "visibleTexts": [
+        "课程设计",
+        "教学实践",
+        "教学资产",
+        "评价证据",
+        "查看示例",
+        "进入工作台"
+      ]
+    },
+    "logEvents": []
+  }
+]
