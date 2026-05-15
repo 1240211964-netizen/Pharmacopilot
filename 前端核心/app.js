@@ -5,7 +5,6 @@ const PRACTICE_WORKFLOW_KEY = "pharmacopilot-practice-workflow-state";
 const ASSETS_KEY = "pharmacopilot-assets";
 const ACCOUNT_SESSION_KEY = "pharmacopilot-account-session";
 const HOME_TASK_ENTRY_KEY = "pharmacopilot-home-task-entry";
-const HOME_PIPELINE_RESULT_KEY = "pharmacopilot-home-pipeline-result";
 const FANYA_MOCK_ACCOUNT = {
   account: "teacher.demo@pharmacopilot.test",
   token: "mock-fanya-token-2026",
@@ -2094,7 +2093,6 @@ function initGlobalNav() {
     window.addEventListener("scroll", syncHeaderScrollState, { passive: true });
   }
   setActiveNav();
-  window.addEventListener("hashchange", setActiveNav);
   renderGlobalAccountActions();
 }
 
@@ -2112,11 +2110,7 @@ function initTheoryAnchorToggles() {
 
 function setActiveNav() {
   const page = document.body.dataset.page;
-  const hash = window.location.hash || "";
-  let activePage = page;
-  if (page === "home" || page === "teaching-navigation" || page === "navigation") activePage = "course-generation";
-  if (page === "practice") activePage = "practice-runtime";
-  if (page === "assets" && /evidence|managementCourseGraph|rubric/i.test(hash)) activePage = "evidence";
+  const activePage = page === "navigation" || page === "home" ? "teaching-navigation" : page;
   $$(".nav-link").forEach((link) => link.classList.toggle("active", link.dataset.nav === activePage));
 }
 
@@ -2145,101 +2139,75 @@ function renderGlobalAccountActions(session = loadAccountSession()) {
 }
 
 const HOME_FEATURE_DEMOS = {
-  generation: {
-    label: "课程生成",
-    short: "任务解析与教学骨架",
-    kicker: "从课程任务到教学骨架",
-    summary: "首页直接接收课程目标、学情材料和课堂约束，先生成课程大纲和教学骨架，再把结果交给场景运行、评价证据和导出资产包。",
+  navigation: {
+    label: "教学导航",
+    short: "20环节训练地图",
+    kicker: "从课程任务到节点训练",
+    summary: "真实页面对应 20 环节教学训练地图：新教师围绕一节课查看节点解释、产出物、评价依据和复盘区。",
     prompt:
-      "我是一名新教师，请基于药事管理本科《管理学原理》SWOT 分析课，生成本次课的教学骨架、教学环节、评价证据链和导出材料清单。",
+      "我是一名新教师，请基于药事管理本科《管理学原理》SWOT 分析课，打开 20 环节教学训练地图，逐步解释每个节点的任务、产出物和评价依据。",
     attachments: [
       { title: "课程任务", meta: "管理学原理 · SWOT 分析课", accent: "amber" },
-      { title: "生成模式", meta: "任务解析 / 教学骨架 / 证据规则", accent: "stone" },
-      { title: "运行目标", meta: "20 环节 teaching scene runtime", accent: "teal" },
+      { title: "教师起点", meta: "新教师首次独立备课", accent: "stone" },
+      { title: "训练框架", meta: "课前 / 课中 / 课后 · 20 环节", accent: "teal" },
     ],
     activity: [
-      "解析课程任务、学生对象和材料边界",
-      "生成课程大纲与三阶段教学骨架",
-      "拆分 20 环节场景、评价规则和导出包",
-      "提交教师工作台等待审校与运行",
+      "读取课程任务与教师起点",
+      "展开 20 环节教学训练地图",
+      "生成节点解释、产出物和评价依据",
+      "汇总复盘区与下一步建议",
     ],
-    outputTitle: "课程生成管线",
-    outputSubtitle: "课程任务解析、教学骨架、教学环节、评价证据和导出资产同步排队",
+    outputTitle: "20 环节教学训练地图",
+    outputSubtitle: "节点解释、任务产出、评价依据与复盘建议同步呈现",
   },
   practice: {
-    label: "实践运行",
-    short: "20环节 runtime",
-    kicker: "从教学骨架到运行状态机",
-    summary: "实践运行页承接生成结果，把 20 个教学环节推进为可运行、可暂停、可接管的 teaching scene runtime。",
+    label: "教学实践",
+    short: "泛雅模拟实践",
+    kicker: "从模拟授权到真实方案",
+    summary: "真实页面先完成泛雅模拟授权和课程选择，再基于课程资源、班级学情、作业记录和学习过程数据生成真实课程教学实践方案。",
     prompt:
-      "把 SWOT 分析课推进为 20 环节 teaching scene runtime，并标出课堂提问、学生模拟回应、形成性评价和教师接管点。",
+      "我已完成泛雅模拟授权，请基于导入的课程资源、班级学情、作业记录和学习过程数据，生成 SWOT 分析课的真实课程教学实践方案。",
     attachments: [
-      { title: "运行状态", meta: "idle / running / takeover / reflected", accent: "stone" },
+      { title: "泛雅模拟授权", meta: "测试账号 / 课程选择 / 数据边界", accent: "blue" },
       { title: "课程上下文", meta: "课程资源 · 班级学情 · 作业记录", accent: "amber" },
-      { title: "接管节点", meta: "追问确认 · rubric 校准 · 证据入库", accent: "teal" },
+      { title: "实践产出", meta: "真实课程方案 · 复制到泛雅 · 保存资产", accent: "teal" },
     ],
     activity: [
-      "载入课程骨架和 20 环节状态",
-      "模拟学生回应、课堂提问和即时反馈",
-      "在关键节点请求教师接管确认",
-      "把运行结果写入资产包和评价证据链",
+      "确认泛雅模拟授权与数据边界",
+      "导入课程资源、班级学情和作业记录",
+      "沿用 20 环节进行数据增强判断",
+      "生成方案并支持复制到泛雅、保存到教学资产",
     ],
-    outputTitle: "Teaching scene runtime",
-    outputSubtitle: "课堂运行状态、教师接管点、模拟学生回应和环节日志同步推进",
+    outputTitle: "真实课程教学实践方案",
+    outputSubtitle: "把 20 环节判断转化为课堂任务、评价量规、复盘建议和平台复制文本",
   },
   assets: {
     label: "教学资产",
-    short: "导出资产包",
-    kicker: "从运行结果到课程资产",
-    summary: "教学资产页聚合教案、PPT、课堂活动单、rubric、评价证据链和教学反思报告，并保留来源边界和复用动作。",
+    short: "资产中枢",
+    kicker: "从材料沉淀到复用行动",
+    summary: "真实页面聚合新手教程记录、教学实践生成材料、教师上传材料和泛雅模拟记录，并用粒子图谱、来源筛选和资产说明书支持复用。",
     prompt:
-      "请整理本课程生成与运行后的教案、案例、课堂活动单、评价量规、证据链和反思报告，形成可复用资产包。",
+      "请整理本课程的新手教程记录、教学实践生成材料、教师上传材料和泛雅模拟记录，形成带来源边界的可复用教学资产。",
     attachments: [
-      { title: "六类产物", meta: "教案 / PPT / 活动单 / rubric / 证据链 / 反思", accent: "amber" },
+      { title: "四类来源", meta: "新手教程 / 教学实践 / 教师上传 / 泛雅模拟", accent: "amber" },
       { title: "来源边界", meta: "课程资料 · 授权范围 · 使用限制", accent: "teal" },
-      { title: "复用动作", meta: "教学设计 · 课堂活动 · 学生任务单", accent: "stone" },
+      { title: "复用动作", meta: "教学设计 · 课堂活动 · 学生任务单", accent: "blue" },
     ],
     activity: [
-      "汇总课程生成、实践运行和教师上传材料",
-      "生成资产图谱、来源筛选和标签",
+      "汇总四类资产来源",
+      "生成粒子图谱、来源筛选和标签",
       "写入资产说明书与风险提醒",
-      "输出下一次课设计、活动单、量规和反思复用入口",
+      "提供下一次课设计、活动、任务单、评价量规和复盘复用",
     ],
-    outputTitle: "教学资产包",
-    outputSubtitle: "把课程生成与实践运行沉淀为可检索、可导出、可复用的教学材料",
-  },
-  evidence: {
-    label: "评价证据",
-    short: "rubric 与证据链",
-    kicker: "从评价规则到证据闭环",
-    summary: "评价证据页把 rubric、任务表现、学生产出、课堂观察和教师反馈绑定到证据链，避免无依据评分。",
-    prompt:
-      "为 SWOT 分析课堂任务生成评价规则、证据采集点、学生表现样例和教师反馈模板。",
-    attachments: [
-      { title: "评价规则", meta: "rubric 维度 · 权重 · 等级描述", accent: "amber" },
-      { title: "证据采集", meta: "课堂观察 · 学生产出 · 反馈记录", accent: "teal" },
-      { title: "复盘报告", meta: "证据链 · 风险提示 · 改进动作", accent: "stone" },
-    ],
-    activity: [
-      "生成 evidence-rule 并绑定课程目标",
-      "标注每个评价维度的 evidenceRefs",
-      "模拟学生回应并收集课堂证据",
-      "导出评价证据链与教学反思报告",
-    ],
-    outputTitle: "评价证据链",
-    outputSubtitle: "每个评分维度都绑定可观察证据、来源边界和教师复核动作",
+    outputTitle: "教学资产中枢",
+    outputSubtitle: "用来源边界和资产说明书连接图谱筛选与复用动作",
   },
 };
 
-const HOME_FEATURE_KEYS = ["generation", "practice", "assets", "evidence"];
+const HOME_FEATURE_KEYS = ["navigation", "practice", "assets"];
 const HOME_TASK_TARGETS = {
-  generation: {
-    label: "课程生成",
-    page: "teaching-navigation",
-    href: "./teaching-navigation.html",
-  },
   practice: {
-    label: "实践运行",
+    label: "教学实践",
     page: "practice",
     href: "./practice.html",
   },
@@ -2248,169 +2216,32 @@ const HOME_TASK_TARGETS = {
     page: "assets",
     href: "./assets.html",
   },
-  evidence: {
-    label: "评价证据",
-    page: "assets",
-    href: "./assets.html#managementCourseGraph",
-  },
 };
 
 function getHomeFeatureDemo(featureKey) {
-  return HOME_FEATURE_DEMOS[featureKey] || HOME_FEATURE_DEMOS.generation;
+  return HOME_FEATURE_DEMOS[featureKey] || HOME_FEATURE_DEMOS.navigation;
 }
 
 function inferHomeTaskTarget(text = "") {
   const content = String(text).trim();
-  if (/评价|量规|rubric|评分|证据|evidence|反馈/.test(content)) return "evidence";
   if (/资产|沉淀|复用|归档|资源库|模板库|案例库|历史|整理/.test(content)) return "assets";
-  if (/实践|运行|课堂|泛雅|学生回应|接管|互动|活动/.test(content)) return "practice";
-  return "generation";
+  return "practice";
 }
 
 function getHomeTaskTarget(target) {
-  return HOME_TASK_TARGETS[target] || HOME_TASK_TARGETS.generation;
+  return HOME_TASK_TARGETS[target] || HOME_TASK_TARGETS.practice;
 }
 
 function saveHomeTaskEntry(prompt, target) {
   const targetConfig = getHomeTaskTarget(target);
   const entry = {
     prompt,
-    target: Object.keys(HOME_TASK_TARGETS).includes(target) ? target : "generation",
+    target: Object.keys(HOME_TASK_TARGETS).includes(target) ? target : "practice",
     targetLabel: targetConfig.label,
     createdAt: new Date().toISOString(),
   };
   saveToLocalStorage(HOME_TASK_ENTRY_KEY, entry);
   return entry;
-}
-
-function buildHomePipelinePayload(prompt, target) {
-  const modeMap = {
-    generation: "outline",
-    practice: "scene",
-    evidence: "evidence",
-    assets: "asset_pack",
-  };
-  return {
-    userId: "local-teacher",
-    courseId: "management-principles-swot",
-    topic: "SWOT 分析",
-    prompt,
-    mode: modeMap[target] || "full",
-    courseName: "管理学原理",
-    studentProfile: "药事管理专业本科生",
-    sourceBoundary: "仅使用教师确认的课程材料、课堂记录、泛雅授权数据和本地教学资产。",
-    constraints: ["2 学时", "新教师可审校", "每个评价维度必须包含 evidenceRefs"],
-  };
-}
-
-async function callTeachingPipeline(payload) {
-  if (window.location.protocol === "file:") return null;
-  const response = await fetch("/api/generate/pipeline", {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify(payload),
-  });
-  if (!response.ok) throw new Error(`pipeline api failed: ${response.status}`);
-  return response.json();
-}
-
-function savePipelineResult(result) {
-  saveToLocalStorage(HOME_PIPELINE_RESULT_KEY, result);
-  return result;
-}
-
-function getPipelineResult() {
-  return loadFromLocalStorage(HOME_PIPELINE_RESULT_KEY, null);
-}
-
-function renderPipelineRuntimePreview(container) {
-  const result = getPipelineResult();
-  const runtime = result?.runtime || {};
-  const scenes = Array.isArray(result?.scenes) ? result.scenes : [];
-  const actions = Array.isArray(result?.actions) ? result.actions : [];
-  const formats = Array.isArray(result?.exports?.formats) ? result.exports.formats : [];
-  const takeoverPoints = Array.isArray(runtime.takeoverPoints) ? runtime.takeoverPoints : [];
-  const currentSceneId = runtime.currentSceneId || result?.summary?.currentSceneId || "暂无";
-  const totalScenes = runtime.progress?.totalScenes || result?.summary?.totalScenes || scenes.length || 0;
-  const previewPayload = {
-    currentSceneId,
-    totalScenes,
-    takeoverPoints,
-    scenes,
-    actions,
-    exportFormats: formats,
-  };
-  if (window.console?.info) console.info("PharmacoPilot pipeline runtime preview", previewPayload);
-  if (!container) return previewPayload;
-  if (!result?.ok) {
-    container.innerHTML = `
-      <div class="pipeline-runtime-empty">
-        <p class="eyebrow">Runtime preview</p>
-        <h2>尚未读取到 pipeline runtime</h2>
-        <p>从首页触发一次生成任务后，这里会显示 currentSceneId、scenes、接管点和导出格式。</p>
-      </div>
-    `;
-    return previewPayload;
-  }
-  container.innerHTML = `
-    <div class="pipeline-runtime-head">
-      <div>
-        <p class="eyebrow">Runtime preview</p>
-        <h2>Pipeline scene runtime</h2>
-        <p>当前运行场景：<strong>${escapeHtml(currentSceneId)}</strong> · 场景总数：<strong>${escapeHtml(totalScenes)}</strong></p>
-      </div>
-      <div class="pipeline-runtime-stat">
-        <span>Takeover</span>
-        <strong>${escapeHtml(takeoverPoints.length)}</strong>
-      </div>
-    </div>
-    <div class="pipeline-runtime-grid">
-      <article>
-        <h3>接管点</h3>
-        <ul>
-          ${takeoverPoints
-            .map((point) => `<li><strong>${escapeHtml(point.sceneId)}</strong><span>${escapeHtml(point.checkpoint || point.title)}</span></li>`)
-            .join("") || "<li><span>暂无教师接管点</span></li>"}
-        </ul>
-      </article>
-      <article>
-        <h3>Scenes</h3>
-        <ol>
-          ${scenes
-            .map(
-              (scene) => `
-                <li>
-                  <strong>${escapeHtml(scene.id)}</strong>
-                  <span>${escapeHtml(scene.title)} · ${escapeHtml(scene.runtimeState || scene.state || "")}</span>
-                </li>
-              `,
-            )
-            .join("")}
-        </ol>
-      </article>
-      <article>
-        <h3>Actions</h3>
-        <ul>
-          ${actions
-            .map((action) => `<li><strong>${escapeHtml(action.id)}</strong><span>${escapeHtml(action.status || "")}</span></li>`)
-            .join("")}
-        </ul>
-      </article>
-      <article>
-        <h3>Export formats</h3>
-        <ul>
-          ${formats
-            .map((format) => `<li><strong>${escapeHtml(format.type)}</strong><span>${escapeHtml(format.recommendedFormat || "")}</span></li>`)
-            .join("")}
-        </ul>
-      </article>
-    </div>
-  `;
-  return previewPayload;
-}
-
-async function requestHomeGenerationPipeline(prompt, target) {
-  return callTeachingPipeline(buildHomePipelinePayload(prompt, target));
 }
 
 function readHomeTaskEntry() {
@@ -2423,12 +2254,12 @@ function initHomeTaskEntry() {
   const form = $("#homeTaskEntryForm");
   const input = $("#homeTaskInput");
   if (!form || !input) return;
-  form.dataset.homeTaskTarget = "generation";
+  form.dataset.homeTaskTarget = "practice";
 
   const presetButtons = $$("[data-home-task-preset]", form);
   function activatePreset(button) {
     presetButtons.forEach((item) => item.classList.toggle("is-active", item === button));
-    form.dataset.homeTaskTarget = button.dataset.homeTaskTarget || "generation";
+    form.dataset.homeTaskTarget = button.dataset.homeTaskTarget || "navigation";
     if (button.dataset.homeTaskText) input.value = button.dataset.homeTaskText;
   }
 
@@ -2445,7 +2276,7 @@ function initHomeTaskEntry() {
     delete form.dataset.homeTaskTarget;
   });
 
-  form.addEventListener("submit", async (event) => {
+  form.addEventListener("submit", (event) => {
     event.preventDefault();
     const prompt = input.value.trim();
     if (!prompt) {
@@ -2456,31 +2287,6 @@ function initHomeTaskEntry() {
     const target = form.dataset.homeTaskTarget || inferHomeTaskTarget(prompt);
     const entry = saveHomeTaskEntry(prompt, target);
     const targetConfig = getHomeTaskTarget(entry.target);
-    const submitButton = form.querySelector('button[type="submit"]');
-    const originalButtonText = submitButton?.textContent || "触发生成";
-    if (submitButton) {
-      submitButton.textContent = "生成中";
-      submitButton.disabled = true;
-    }
-    try {
-      const pipelineResult = await requestHomeGenerationPipeline(prompt, entry.target);
-      if (pipelineResult) savePipelineResult(pipelineResult);
-    } catch (error) {
-      savePipelineResult({
-        ok: false,
-        fallback: true,
-        message: "本地生成接口暂不可用，已保留任务并进入对应工作台。",
-        error: (error && typeof error === "object" && "message" in error) ? String(error.message) : String(error),
-        payload: buildHomePipelinePayload(prompt, entry.target),
-        createdAt: new Date().toISOString(),
-      });
-      showToast("生成接口暂不可用，已进入本地工作台");
-    } finally {
-      if (submitButton) {
-        submitButton.textContent = originalButtonText;
-        submitButton.disabled = false;
-      }
-    }
     const url = new URL(targetConfig.href, window.location.href);
     url.searchParams.set("from", "home-task");
     window.location.href = url.href;
@@ -2488,13 +2294,11 @@ function initHomeTaskEntry() {
 }
 
 function surfaceHomeTaskEntry(page) {
-  if (!["teaching-navigation", "practice", "assets"].includes(page)) return;
+  if (!["practice", "assets"].includes(page)) return;
   const params = new URLSearchParams(window.location.search);
   if (params.get("from") !== "home-task") return;
   const entry = readHomeTaskEntry();
-  if (!entry) return;
-  const targetConfig = getHomeTaskTarget(entry.target);
-  if (targetConfig.page !== page) return;
+  if (!entry || getHomeTaskTarget(entry.target).page !== page) return;
   const preview = entry.prompt.length > 28 ? `${entry.prompt.slice(0, 28)}...` : entry.prompt;
   window.setTimeout(() => {
     showToast(`已接收首页任务：${preview}`);
@@ -2547,19 +2351,20 @@ function homeOutputHighlight(index, activeAttachment) {
   return activeAttachment === index ? "is-highlighted" : "";
 }
 
-function renderHomeGenerationPreview(activeAttachment) {
-  const phases = ["任务", "骨架", "场景", "导出"];
+function renderHomeNavigationPreview(activeAttachment) {
+  const phases = ["课前", "课中", "课后", "复盘"];
   const stages = [
-    ["课程任务解析", "识别课程目标、学生对象、材料边界和教师约束。"],
-    ["教学骨架生成", "把课前、课中、课后拆成可审校的大纲与环节结构。"],
-    ["场景与证据排队", "为教学环节、评价规则和导出材料生成运行任务。"],
+    ["20 环节教学训练地图", "把课前、课中、课后拆成可点击节点，先看解释再进入训练。"],
+    ["节点产出与评价依据", "每个节点显示任务、产出物、优秀模板、评价依据和改进建议。"],
+    ["复盘区与下一步建议", "汇总已完成节点、当前风险、训练报告和后续教学实践准备。"],
   ];
   const steps = [
-    ["01", "course-outline-generator"],
-    ["02", "teaching-scene-generator"],
-    ["03", "evidence-rule-generator"],
-    ["04", "asset-pack-generator"],
-    ["05", "pipeline-runner"],
+    ["01", "教学情境与课程任务分析"],
+    ["02", "学情分析与学习起点诊断"],
+    ["08", "活动序列与评价量规设计"],
+    ["12", "课堂追问与互动调控"],
+    ["17", "学习成果收集与表现性评价"],
+    ["20", "教学反思、资源沉淀与持续改进"],
   ];
   const activePhase = activeAttachment === null ? 0 : activeAttachment;
   return `
@@ -2660,14 +2465,14 @@ function renderHomePracticePreview(activeAttachment) {
 
 function renderHomeAssetsPreview(activeAttachment) {
   const assets = [
-    ["教案", "1"],
-    ["PPT", "1"],
-    ["课堂活动单", "2"],
-    ["rubric", "1"],
-    ["评价证据链", "6"],
-    ["教学反思报告", "1"],
+    ["新手教程记录", "1"],
+    ["教学实践生成材料", "2"],
+    ["教师上传材料", "4"],
+    ["泛雅模拟记录", "3"],
+    ["来源边界", "6"],
+    ["资产说明书", "1"],
   ];
-  const reuse = ["下一次课教学设计", "课堂活动说明", "学生任务单", "评价量规", "教学反思报告"];
+  const reuse = ["下一次课教学设计", "课堂活动说明", "学生任务单", "评价量规", "教学复盘报告"];
   return `
     <div class="home-output-asset-grid">
       ${assets
@@ -2698,59 +2503,14 @@ function renderHomeAssetsPreview(activeAttachment) {
   `;
 }
 
-function renderHomeEvidencePreview(activeAttachment) {
-  const evidenceRules = [
-    ["目标一致性", "evidenceRefs: R1 / R2"],
-    ["案例证据质量", "evidenceRefs: R4 / R7"],
-    ["学生表现采集", "evidenceRefs: C1 / C3"],
-    ["教师反馈记录", "evidenceRefs: F2 / F5"],
-  ];
-  const chain = [
-    ["generate_rubric", "按课程目标生成量规"],
-    ["collect_evidence", "收集课堂观察和学生产出"],
-    ["evaluate_task", "形成可复核评分记录"],
-    ["export_asset", "导出证据链和反思报告"],
-  ];
-  return `
-    <div class="home-output-stage-grid">
-      ${evidenceRules
-        .map(
-          ([title, copy], index) => `
-            <article class="home-output-item ${homeOutputHighlight(index % 3, activeAttachment)}">
-              <span>${String(index + 1).padStart(2, "0")}</span>
-              <strong>${escapeHtml(title)}</strong>
-              <p>${escapeHtml(copy)}</p>
-            </article>
-          `,
-        )
-        .join("")}
-    </div>
-    <div class="home-output-route">
-      ${chain
-        .map(
-          ([action, copy], index) => `
-            <div class="home-output-route-node ${homeOutputHighlight(index % 3, activeAttachment)}">
-              <span>${String(index + 1).padStart(2, "0")}</span>
-              <strong>${escapeHtml(action)}</strong>
-              <small>${escapeHtml(copy)}</small>
-            </div>
-          `,
-        )
-        .join("")}
-    </div>
-  `;
-}
-
 function renderHomeCoworkOutput(featureKey, activeAttachment) {
   const feature = getHomeFeatureDemo(featureKey);
   const body =
     featureKey === "practice"
       ? renderHomePracticePreview(activeAttachment)
-      : featureKey === "evidence"
-        ? renderHomeEvidencePreview(activeAttachment)
       : featureKey === "assets"
         ? renderHomeAssetsPreview(activeAttachment)
-        : renderHomeGenerationPreview(activeAttachment);
+        : renderHomeNavigationPreview(activeAttachment);
   return `
     <div class="home-output-head">
       <div>
@@ -2779,7 +2539,7 @@ function initHomeCoworkDemo() {
   const output = $("#homeCoworkOutput");
   if (!tabs || !stage || !kicker || !title || !summary || !prompt || !attachments || !activity || !output) return;
 
-  let activeKey = "generation";
+  let activeKey = "navigation";
   let activeAttachment = null;
 
   function renderOutputOnly() {
@@ -2814,7 +2574,7 @@ function initHomeCoworkDemo() {
   }
 
   function renderFeature(featureKey) {
-    activeKey = HOME_FEATURE_DEMOS[featureKey] ? featureKey : "generation";
+    activeKey = HOME_FEATURE_DEMOS[featureKey] ? featureKey : "navigation";
     activeAttachment = null;
     const feature = getHomeFeatureDemo(activeKey);
     stage.dataset.homeFeature = activeKey;
@@ -6969,7 +6729,6 @@ function initPracticePage() {
   renderFanyaLogin();
   renderAuthorizedCourses();
   renderPracticeWorkspace();
-  renderPipelineRuntimePreview($("#pipelineRuntimePreview"));
 
   $("#fanyaAuthForm")?.addEventListener("submit", simulateFanyaAuth);
   $("#useMockFanyaAccount")?.addEventListener("click", useMockFanyaAccount);
@@ -10453,10 +10212,6 @@ window.copyText = copyText;
 window.downloadMarkdown = downloadMarkdown;
 window.saveToLocalStorage = saveToLocalStorage;
 window.loadFromLocalStorage = loadFromLocalStorage;
-window.callTeachingPipeline = callTeachingPipeline;
-window.savePipelineResult = savePipelineResult;
-window.getPipelineResult = getPipelineResult;
-window.renderPipelineRuntimePreview = renderPipelineRuntimePreview;
 window.renderHorizontalBarChart = renderHorizontalBarChart;
 window.renderStepHeatmap = renderStepHeatmap;
 window.renderBulletChart = renderBulletChart;

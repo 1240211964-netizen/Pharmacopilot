@@ -6,7 +6,6 @@ import { callFanya, renderFanyaStatus } from "./fanya";
 import { httpError, json, readJsonBody, readMultipartBody, serveStatic } from "./http-utils";
 import type { AppConfig, GenerateRequestPayload, HttpError, JsonRecord } from "./types";
 import { generateAssetSummary, generateLessonPlan } from "./generation";
-import { runCourseGenerationPipeline } from "./generation/pipeline-runner";
 import { citationsFromChunks, ingestKnowledgeFiles, retrieveKnowledge, saveSourceBoundary } from "./rag";
 import { parseSourceBoundary, sourceBoundarySummary } from "./source-boundary";
 
@@ -156,57 +155,6 @@ async function handleApi(req: IncomingMessage, res: ServerResponse, pathname: st
     const body = (await readJsonBody(req)) as GenerateRequestPayload;
     const result = await generateLessonPlan(config, body, "lesson-plan");
     return json(res, 200, result);
-  }
-
-  if (req.method === "POST" && pathname === "/api/generate/course-outline") {
-    const result = runCourseGenerationPipeline(await readJsonBody(req));
-    return json(res, 200, {
-      ok: true,
-      mode: "course-outline",
-      outline: result.outline,
-      orchestration: result.orchestration,
-      summary: result.summary,
-    });
-  }
-
-  if (req.method === "POST" && pathname === "/api/generate/teaching-scene") {
-    const result = runCourseGenerationPipeline(await readJsonBody(req));
-    return json(res, 200, {
-      ok: true,
-      mode: "teaching-scene",
-      outline: result.outline,
-      scenes: result.scenes,
-      runtime: result.runtime,
-      actions: result.actions,
-      renderers: result.renderers,
-      summary: result.summary,
-    });
-  }
-
-  if (req.method === "POST" && pathname === "/api/generate/evidence-rule") {
-    const result = runCourseGenerationPipeline(await readJsonBody(req));
-    return json(res, 200, {
-      ok: true,
-      mode: "evidence-rule",
-      evidenceRules: result.evidenceRules,
-      actions: result.actions,
-      summary: result.summary,
-    });
-  }
-
-  if (req.method === "POST" && pathname === "/api/generate/asset-pack") {
-    const result = runCourseGenerationPipeline(await readJsonBody(req));
-    return json(res, 200, {
-      ok: true,
-      mode: "asset-pack",
-      assetPack: result.assetPack,
-      exports: result.exports,
-      summary: result.summary,
-    });
-  }
-
-  if (req.method === "POST" && (pathname === "/api/generate/pipeline" || pathname === "/api/generate-classroom")) {
-    return json(res, 200, runCourseGenerationPipeline(await readJsonBody(req)));
   }
 
   if (req.method === "POST" && pathname === "/api/generate/rubric") {
