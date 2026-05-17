@@ -11,10 +11,6 @@
     <link rel="icon" href="data:," />
     <link rel="stylesheet" href="./styles.css" />
     <script defer src="./app.js"></script>
-    <script defer src="./agent-runtime/events.js"></script>
-    <script defer src="./agent-runtime/state-store.js"></script>
-    <script defer src="./agent-runtime/action-engine.js"></script>
-    <script defer src="./agent-runtime/agent-client.js"></script>
   </head>
   <body data-page="practice">
     <header class="site-header">
@@ -65,54 +61,6 @@
         <article class="copilot-status-card"><span>班级</span><strong>药事管理 2024-1</strong></article>
         <article class="copilot-status-card"><span>当前节点</span><strong>STEP 12 案例探究</strong></article>
         <article class="copilot-status-card is-alert"><span>教师介入</span><strong>STEP 14 待确认</strong></article>
-      </section>
-
-      <section class="practice-agent-runtime" aria-labelledby="practice-agent-runtime-title">
-        <div class="practice-agent-runtime-head">
-          <div>
-            <p class="eyebrow">Multi-agent runtime</p>
-            <h2 id="practice-agent-runtime-title">教学实践 Copilot 运行台</h2>
-            <p>Director 会按当前状态调度 practice、rubric、evidence 与 asset agent，并把结构化 Teaching Action 写回页面。</p>
-          </div>
-          <button class="primary-action" id="startPracticeCopilot" type="button">启动教学实践 Copilot</button>
-        </div>
-
-        <div class="practice-agent-runtime-grid">
-          <aside id="agent-status-panel" class="runtime-panel runtime-status-panel" aria-live="polite">
-            <div class="runtime-panel-heading">
-              <span>Status</span>
-              <h3>Copilot 状态</h3>
-              <p>等待 Director 选择下一位 agent。</p>
-            </div>
-          </aside>
-          <section id="agent-message-panel" class="runtime-panel runtime-message-panel" aria-live="polite">
-            <div class="runtime-panel-heading">
-              <span>Agent message</span>
-              <h3>运行消息</h3>
-            </div>
-          </section>
-          <section id="practice-flow-runtime" class="runtime-panel runtime-flow-panel" aria-live="polite">
-            <div class="runtime-panel-heading">
-              <span>Practice flow</span>
-              <h3>教学实践流程</h3>
-              <p>启动后由 practice-agent 写入。</p>
-            </div>
-          </section>
-          <section id="rubric-preview-panel" class="runtime-panel runtime-rubric-panel" aria-live="polite">
-            <div class="runtime-panel-heading">
-              <span>Rubric</span>
-              <h3>评价量规摘要</h3>
-              <p>启动后由 rubric-agent 写入。</p>
-            </div>
-          </section>
-          <section id="evidence-gap-panel" class="runtime-panel runtime-evidence-panel" aria-live="polite">
-            <div class="runtime-panel-heading">
-              <span>Evidence gaps</span>
-              <h3>证据缺口</h3>
-              <p>证据校验结果会显示在这里。</p>
-            </div>
-          </section>
-        </div>
       </section>
 
       <section class="practice-route-overview" aria-labelledby="practice-route-title">

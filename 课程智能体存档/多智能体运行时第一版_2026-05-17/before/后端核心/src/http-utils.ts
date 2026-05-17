@@ -46,14 +46,6 @@ const publicFiles = new Map<string, string>([
   ["/launch/styles.css", "styles.css"],
   ["/app.js", "app.js"],
   ["/launch/app.js", "app.js"],
-  ["/agent-runtime/events.js", "agent-runtime/events.js"],
-  ["/agent-runtime/state-store.js", "agent-runtime/state-store.js"],
-  ["/agent-runtime/action-engine.js", "agent-runtime/action-engine.js"],
-  ["/agent-runtime/agent-client.js", "agent-runtime/agent-client.js"],
-  ["/launch/agent-runtime/events.js", "agent-runtime/events.js"],
-  ["/launch/agent-runtime/state-store.js", "agent-runtime/state-store.js"],
-  ["/launch/agent-runtime/action-engine.js", "agent-runtime/action-engine.js"],
-  ["/launch/agent-runtime/agent-client.js", "agent-runtime/agent-client.js"],
 ]);
 
 export function httpError(message: string, status = 500, data?: unknown): HttpError {

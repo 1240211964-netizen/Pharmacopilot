@@ -8,16 +8,10 @@ import type { AppConfig, GenerateRequestPayload, HttpError, JsonRecord } from ".
 import { generateAssetSummary, generateLessonPlan } from "./generation";
 import { citationsFromChunks, ingestKnowledgeFiles, retrieveKnowledge, saveSourceBoundary } from "./rag";
 import { parseSourceBoundary, sourceBoundarySummary } from "./source-boundary";
-import { runAgentSession } from "./agent/stream";
-import type { AgentRunRequest, AgentStreamEvent } from "./agent/types";
 
 const rootDir = path.resolve(__dirname, "../..");
 
 async function handleApi(req: IncomingMessage, res: ServerResponse, pathname: string, config: AppConfig): Promise<void> {
-  if (req.method === "POST" && pathname === "/api/agent/run") {
-    return handleAgentRun(req, res, config);
-  }
-
   if (req.method === "GET" && pathname === "/api/fanya/status") {
     const missing = getMissingFanyaConfig(config);
     return json(res, 200, renderFanyaStatus("configured", config, {
@@ -176,39 +170,6 @@ async function handleApi(req: IncomingMessage, res: ServerResponse, pathname: st
   }
 
   return json(res, 404, { ok: false, message: "API route not found." });
-}
-
-async function handleAgentRun(req: IncomingMessage, res: ServerResponse, config: AppConfig): Promise<void> {
-  res.writeHead(200, {
-    "Content-Type": "text/event-stream; charset=utf-8",
-    "Cache-Control": "no-cache",
-    Connection: "keep-alive",
-  });
-  res.flushHeaders?.();
-
-  const abortController = new AbortController();
-  res.on("close", () => {
-    if (!res.writableEnded) abortController.abort();
-  });
-
-  try {
-    const body = (await readJsonBody(req)) as AgentRunRequest;
-    for await (const event of runAgentSession(body, config, abortController.signal)) {
-      writeSseEvent(res, event);
-    }
-  } catch (error) {
-    writeSseEvent(res, {
-      type: "error",
-      message: (error as Error).message,
-      data: (error as HttpError).data as JsonRecord | undefined,
-    });
-  } finally {
-    if (!res.writableEnded) res.end();
-  }
-}
-
-function writeSseEvent(res: ServerResponse, event: AgentStreamEvent): void {
-  res.write(`data: ${JSON.stringify(event)}\n\n`);
 }
 
 async function main(): Promise<void> {
