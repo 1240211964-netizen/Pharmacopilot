@@ -1479,7 +1479,6 @@ let pendingUploadFiles = [];
 let assetGraphState = null;
 let assetGraphRenderFrame = null;
 let assetGraphRenderTimer = null;
-let fanyaKnowledgeEmbedTimer = null;
 let selectedAssetId = "";
 const assetFilterState = {
   source: "全部",
@@ -8098,8 +8097,6 @@ const MANAGEMENT_COURSE_GRAPH_NODES = [
 const FANYA_KNOWLEDGE_GRAPH_URL =
   "https://mooc2-ans.chaoxing.com/topic-ans/knowgraph/index.html#/knowledgeMapTempPage?courseid=251769346&clazzid=131807556&courseId=251769346&classId=131807556&clazzId=131807556&cpi=18085305&enc=0964f33670458f4a51857fc2a34e708b&openc=fa9f34ffaedc53b0a54335cd85a002ac&t=1778943474137&ut=t";
 
-const FANYA_KNOWLEDGE_GRAPH_TIMEOUT_MS = 5500;
-
 const MANAGEMENT_COURSE_GRAPH_LINKS = [
   ["course-core", "management-foundation"],
   ["course-core", "planning-decision"],
@@ -8327,64 +8324,6 @@ function renderManagementCoursePanels() {
   }
 }
 
-function setFanyaKnowledgeEmbedState(state, message) {
-  const panel = $("#fanyaKnowledgeGraphPanel");
-  const status = $("#fanyaKnowledgeStatusText");
-  const loadButton = $("#loadFanyaKnowledgeGraph");
-  if (panel) panel.dataset.embedState = state;
-  if (status) status.textContent = message;
-  if (loadButton) {
-    loadButton.textContent =
-      state === "loaded" ? "重新加载泛雅面板" : state === "fallback" ? "再次尝试嵌入" : "尝试嵌入泛雅面板";
-  }
-}
-
-function isFanyaKnowledgeFrameBlank(frame) {
-  try {
-    const href = frame.contentWindow?.location?.href || "";
-    return !href || href === "about:blank";
-  } catch {
-    return false;
-  }
-}
-
-function initFanyaKnowledgeGraphPanel() {
-  const panel = $("#fanyaKnowledgeGraphPanel");
-  if (!panel) return;
-  const frame = $("#fanyaKnowledgeFrame");
-  const loadButton = $("#loadFanyaKnowledgeGraph");
-  $$("[data-fanya-knowledge-link]").forEach((link) => {
-    link.setAttribute("href", FANYA_KNOWLEDGE_GRAPH_URL);
-  });
-  if (!frame || !loadButton || loadButton.dataset.fanyaEmbedReady === "true") return;
-  loadButton.dataset.fanyaEmbedReady = "true";
-  frame.addEventListener("load", () => {
-    if (!frame.src || frame.src === "about:blank") return;
-    if (fanyaKnowledgeEmbedTimer) {
-      window.clearTimeout(fanyaKnowledgeEmbedTimer);
-      fanyaKnowledgeEmbedTimer = null;
-    }
-    fanyaKnowledgeEmbedTimer = window.setTimeout(() => {
-      if (isFanyaKnowledgeFrameBlank(frame)) {
-        setFanyaKnowledgeEmbedState("fallback", "泛雅可能限制内嵌，请在原站打开");
-      } else {
-        setFanyaKnowledgeEmbedState("loaded", "已尝试加载泛雅面板");
-      }
-      fanyaKnowledgeEmbedTimer = null;
-    }, 500);
-  });
-  loadButton.addEventListener("click", () => {
-    if (fanyaKnowledgeEmbedTimer) window.clearTimeout(fanyaKnowledgeEmbedTimer);
-    setFanyaKnowledgeEmbedState("loading", "正在请求泛雅图谱");
-    frame.src = FANYA_KNOWLEDGE_GRAPH_URL;
-    fanyaKnowledgeEmbedTimer = window.setTimeout(() => {
-      if (panel.dataset.embedState === "loading") {
-        setFanyaKnowledgeEmbedState("fallback", "泛雅可能限制内嵌，请在原站打开");
-      }
-    }, FANYA_KNOWLEDGE_GRAPH_TIMEOUT_MS);
-  });
-}
-
 function renderManagementCourseGraph() {
   if (!$("#managementCourseGraph")) return;
   renderManagementCourseToolbar();
@@ -8397,7 +8336,6 @@ function initManagementCourseGraphPage() {
   if (!$("#managementCourseGraph")) return false;
   loadAssets();
   importTrainingAndPracticeAssets();
-  initFanyaKnowledgeGraphPanel();
   renderManagementCourseGraph();
   return true;
 }
@@ -10250,10 +10188,6 @@ function getWorkflowDownstreamEdgeIds(rootId) {
 function cleanupPageResources() {
   disposeAssetGraphState();
   cancelWorkflowEdgesRender();
-  if (fanyaKnowledgeEmbedTimer) {
-    window.clearTimeout(fanyaKnowledgeEmbedTimer);
-    fanyaKnowledgeEmbedTimer = null;
-  }
   if (workflowState.demoTimer) {
     window.clearInterval(workflowState.demoTimer);
     workflowState.demoTimer = null;
