@@ -278,10 +278,7 @@ function getSupabase(config: AppConfig): SupabaseClient {
 
 function getOpenAI(config: AppConfig): OpenAI {
   if (!openaiClient) {
-    openaiClient = new OpenAI({
-      apiKey: config.openai.embeddingApiKey,
-      baseURL: config.openai.embeddingBaseURL || undefined,
-    });
+    openaiClient = new OpenAI({ apiKey: config.openai.apiKey });
   }
   return openaiClient;
 }

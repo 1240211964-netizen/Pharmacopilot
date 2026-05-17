@@ -16,7 +16,6 @@ export async function runAgent(
     {
       model: config.openai.model,
       temperature: 0.2,
-      max_tokens: 4096,
       response_format: { type: "json_object" },
       messages: [
         {
@@ -58,7 +57,7 @@ function buildSystemPrompt(agent: AgentConfig): string {
     `当前 agent 名称：${agent.name}`,
     `允许的 actions：${agent.allowedActions.join(", ")}`,
     "",
-    "必须严格输出 JSON/json 对象：",
+    "必须严格输出 JSON 对象：",
     "{",
     '  "text": "面向教师的一段简短运行说明",',
     '  "actions": [',
@@ -163,12 +162,7 @@ function toStringArray(value: unknown): string[] | undefined {
 }
 
 function getOpenAI(config: AppConfig): OpenAI {
-  if (!config.openai.apiKey) throw new Error("OPENAI_API_KEY or DEEPSEEK_API_KEY is required for /api/agent/run.");
-  if (!openaiClient) {
-    openaiClient = new OpenAI({
-      apiKey: config.openai.apiKey,
-      baseURL: config.openai.baseURL || undefined,
-    });
-  }
+  if (!config.openai.apiKey) throw new Error("OPENAI_API_KEY is required for /api/agent/run.");
+  if (!openaiClient) openaiClient = new OpenAI({ apiKey: config.openai.apiKey });
   return openaiClient;
 }

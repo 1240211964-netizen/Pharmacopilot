@@ -33,9 +33,6 @@ function numberEnv(key: string, fallback: number): number {
 }
 
 export function getConfig(rootDir: string): AppConfig {
-  const deepseekApiKey = env("DEEPSEEK_API_KEY");
-  const openaiApiKey = env("OPENAI_API_KEY");
-  const openaiBaseURL = env("OPENAI_BASE_URL");
   return {
     port: numberEnv("PORT", 5173),
     rootDir,
@@ -45,11 +42,8 @@ export function getConfig(rootDir: string): AppConfig {
       serviceRoleKey: env("SUPABASE_SERVICE_ROLE_KEY") || env("SUPABASE_SERVICE_KEY"),
     },
     openai: {
-      apiKey: openaiApiKey || deepseekApiKey,
-      baseURL: openaiBaseURL || env("DEEPSEEK_BASE_URL") || (deepseekApiKey ? "https://api.deepseek.com" : ""),
-      model: env("OPENAI_MODEL") || env("DEEPSEEK_MODEL") || (deepseekApiKey ? "deepseek-chat" : "gpt-4.1-mini"),
-      embeddingApiKey: env("OPENAI_EMBEDDING_API_KEY") || openaiApiKey,
-      embeddingBaseURL: env("OPENAI_EMBEDDING_BASE_URL") || openaiBaseURL,
+      apiKey: env("OPENAI_API_KEY"),
+      model: env("OPENAI_MODEL", "gpt-4.1-mini"),
       embeddingModel: env("OPENAI_EMBEDDING_MODEL", "text-embedding-3-small"),
       embeddingDimensions: numberEnv("OPENAI_EMBEDDING_DIMENSIONS", 1536),
     },
@@ -109,6 +103,6 @@ export function getMissingRagConfig(config: AppConfig): string[] {
   const missing: string[] = [];
   if (!config.supabase.url) missing.push("SUPABASE_URL");
   if (!config.supabase.serviceRoleKey) missing.push("SUPABASE_SERVICE_ROLE_KEY");
-  if (!config.openai.embeddingApiKey) missing.push("OPENAI_API_KEY");
+  if (!config.openai.apiKey) missing.push("OPENAI_API_KEY");
   return missing;
 }

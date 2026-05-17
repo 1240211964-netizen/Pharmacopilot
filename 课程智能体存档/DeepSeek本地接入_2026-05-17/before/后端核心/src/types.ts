@@ -39,10 +39,7 @@ export interface SupabaseConfig {
 
 export interface OpenAiConfig {
   apiKey: string;
-  baseURL: string;
   model: string;
-  embeddingApiKey: string;
-  embeddingBaseURL: string;
   embeddingModel: string;
   embeddingDimensions: number;
 }

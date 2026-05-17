@@ -47,14 +47,6 @@ export function decideNextAgent(input: DirectorInput): DirectorDecision {
     };
   }
 
-  if (input.directorState.lastAgentId === "rubric-agent" && hasEvidenceGap(input.storeState, artifacts, input.evidenceLedger)) {
-    return {
-      nextAgentId: "evidence-agent",
-      shouldEnd: false,
-      reason: "评价量规 agent 已标记证据缺口，需要转交 evidence-agent 处理。",
-    };
-  }
-
   if (!hasRubric(artifacts)) {
     return {
       nextAgentId: "rubric-agent",
