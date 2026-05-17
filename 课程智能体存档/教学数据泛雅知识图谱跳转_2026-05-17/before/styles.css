@@ -17996,9 +17996,6 @@ body[data-page="assets"] .course-action-stack {
 
 body[data-page="assets"] .course-action-stack button,
 body[data-page="assets"] .course-action-primary {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   width: 100%;
   min-height: 40px;
   border: 1px solid rgba(77, 63, 49, 0.12);
@@ -18010,7 +18007,6 @@ body[data-page="assets"] .course-action-primary {
   text-align: left;
   font-size: 0.88rem;
   font-weight: 780;
-  text-decoration: none;
 }
 
 body[data-page="assets"] .course-action-stack button:hover,
@@ -18025,12 +18021,6 @@ body[data-page="assets"] .course-action-primary {
   background: #2e3a33;
   color: #fffaf2;
   text-align: center;
-}
-
-body[data-page="assets"] .course-action-copy {
-  margin-top: 8px;
-  background: rgba(255, 252, 246, 0.82);
-  color: var(--text-main);
 }
 
 body[data-page="assets"] .course-graph-statusbar {

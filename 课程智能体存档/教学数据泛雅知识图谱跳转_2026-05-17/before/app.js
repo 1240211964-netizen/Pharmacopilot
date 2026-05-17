@@ -8094,9 +8094,6 @@ const MANAGEMENT_COURSE_GRAPH_NODES = [
   },
 ];
 
-const FANYA_KNOWLEDGE_GRAPH_URL =
-  "https://mooc2-ans.chaoxing.com/topic-ans/knowgraph/index.html#/knowledgeMapTempPage?courseid=251769346&clazzid=131807556&courseId=251769346&classId=131807556&clazzId=131807556&cpi=18085305&enc=0964f33670458f4a51857fc2a34e708b&openc=fa9f34ffaedc53b0a54335cd85a002ac&t=1778943474137&ut=t";
-
 const MANAGEMENT_COURSE_GRAPH_LINKS = [
   ["course-core", "management-foundation"],
   ["course-core", "planning-decision"],
@@ -8293,10 +8290,7 @@ function renderManagementCoursePanels() {
       <div class="course-action-stack">
         ${(node.actions || []).map((action) => `<button type="button" data-course-node-action="${escapeHtml(action)}">${escapeHtml(action)}</button>`).join("")}
       </div>
-      <a class="course-action-primary course-action-external" href="${escapeHtml(FANYA_KNOWLEDGE_GRAPH_URL)}" aria-label="打开泛雅知识图谱">
-        打开泛雅知识图谱
-      </a>
-      <button class="course-action-primary course-action-copy" type="button" data-course-node-action="复制节点上下文">复制节点上下文</button>
+      <button class="course-action-primary" type="button" data-course-node-action="复制节点上下文">复制节点上下文</button>
     `;
     $$("[data-course-node-action]", actions).forEach((button) => {
       button.addEventListener("click", () => {
