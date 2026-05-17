@@ -18,8 +18,8 @@
         <a class="brand" href="./index.html" aria-label="Pharmacopilot 首页">
           <span class="brand-mark" aria-hidden="true"><span class="brand-monogram">P</span></span>
           <span class="brand-lockup">
-            <span class="brand-wordmark">PharmacoPilot</span>
-            <span class="brand-submark">课程智能体</span>
+            <span class="brand-wordmark">Pharmacopilot</span>
+            <span class="brand-submark">药学教学智能体</span>
           </span>
         </a>
         <button
@@ -49,7 +49,7 @@
       <section class="course-asset-hero" aria-labelledby="assets-title">
         <div>
           <p class="eyebrow">Teaching data graph</p>
-          <h1 id="assets-title">教学数据工作台</h1>
+          <h1 id="assets-title">管理学原理教学数据图谱</h1>
           <p class="lede">
             以课程模块为主干组织教学资产、学习证据、边界说明和复用动作。SWOT 只作为“计划与决策”模块下的一个案例节点，不再作为教学数据页的默认主题。
           </p>
@@ -65,7 +65,7 @@
         <div class="course-asset-workbench-head">
           <div>
             <p class="eyebrow">Graph workspace</p>
-            <h2 id="course-graph-title">教学数据图谱</h2>
+            <h2 id="course-graph-title">用课程图谱管理教学数据。</h2>
           </div>
           <p>
             点击中心图谱中的课程模块、示例节点或数据节点，四周面板会同步显示节点概览、模块边界、资产统计、学习证据、质量诊断和建议动作。
@@ -117,7 +117,7 @@
         class="fanya-knowledge-embed"
         id="fanyaKnowledgeGraphPanel"
         aria-labelledby="fanya-knowledge-title"
-        data-embed-state="checking"
+        data-embed-state="external"
       >
         <div class="fanya-knowledge-head">
           <div>
@@ -125,35 +125,27 @@
             <h2 id="fanya-knowledge-title">泛雅知识图谱面板</h2>
           </div>
           <p>
-            如需在本页内预览，必须启用后端服务端预览通道，由服务器侧授权请求泛雅并代理图谱资源；前端不保存泛雅账号、密码、cookie 或授权码。
+            泛雅知识图谱依赖当前浏览器的登录态和课程权限，已确认不支持在本页 iframe 预览。请在已登录泛雅的 Chrome 中使用新窗口打开。
           </p>
         </div>
 
         <div class="fanya-knowledge-layout">
-          <div class="fanya-iframe-shell">
-            <iframe
-              id="fanyaKnowledgeFrame"
-              title="泛雅知识图谱服务端预览"
-              src="about:blank"
-              loading="lazy"
-              referrerpolicy="no-referrer"
-            ></iframe>
+          <div class="fanya-iframe-shell fanya-embed-unavailable">
             <div class="fanya-iframe-placeholder" id="fanyaKnowledgePlaceholder" aria-live="polite">
-              <span>服务端预览待检测</span>
-              <strong>正在检查本地后端是否已启用泛雅知识图谱预览通道。</strong>
-              <p>如果未配置服务器侧授权，仍可使用右侧“新窗口打开泛雅图谱”。</p>
+              <span>内嵌预览受限</span>
+              <strong>泛雅当前不允许在第三方页面中预览知识图谱。</strong>
+              <p>请保持当前浏览器已登录泛雅，并使用右侧“新窗口打开泛雅图谱”。</p>
             </div>
           </div>
 
           <aside class="fanya-knowledge-control" aria-label="泛雅知识图谱接入控制">
             <div class="fanya-status-card">
-              <span>接入状态</span>
-              <strong id="fanyaKnowledgeStatusText">检测中</strong>
-              <p id="fanyaKnowledgeStatusDescription">正在读取后端 Connector 的泛雅知识图谱预览配置。</p>
+              <span>访问方式</span>
+              <strong id="fanyaKnowledgeStatusText">新窗口打开</strong>
+              <p>账号登录、课程权限和图谱展示由泛雅原站处理；本页不保存账号、密码、cookie 或授权码。</p>
             </div>
 
             <div class="fanya-control-actions">
-              <button class="fanya-action-secondary" id="loadFanyaKnowledgeGraph" type="button" disabled>加载本页预览</button>
               <a
                 class="fanya-action-primary"
                 id="openFanyaKnowledgeGraph"

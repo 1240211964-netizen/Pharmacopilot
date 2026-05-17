@@ -1,0 +1,286 @@
+/*
+  PharmacoPilot index design tokens
+  用途：给后续页面复用首页的字体、色彩、圆角、阴影与关键组件基准。
+  说明：这是设计规范附录，不会自动影响现有页面；如需使用，请按页面需要手动引入或迁移到全局样式。
+*/
+
+:root {
+  color-scheme: light;
+
+  /* Typography */
+  --pp-font-sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  --pp-font-serif: ui-serif, "Iowan Old Style", "Songti SC", "STSong", "Noto Serif SC", Georgia, serif;
+  --pp-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --pp-font-editorial: var(--pp-font-serif);
+
+  /* Warm paper surfaces */
+  --pp-bg: #fbf7ee;
+  --pp-bg-soft: #f7efe3;
+  --pp-bg-muted: #f1e5d5;
+  --pp-surface: #fffaf2;
+  --pp-surface-glass: rgba(255, 253, 248, 0.78);
+  --pp-surface-muted: #f6eadc;
+  --pp-surface-white: #fffdf8;
+
+  /* Text */
+  --pp-text-main: #2f2923;
+  --pp-text-home: #2b2118;
+  --pp-text-soft: #5f554c;
+  --pp-text-muted: #887b6c;
+  --pp-text-nav-muted: #7a6b5a;
+
+  /* Brand and action colors */
+  --pp-accent: #c86434;
+  --pp-accent-dark: #9d4f2f;
+  --pp-accent-soft: #f0c8ad;
+  --pp-accent-brown: #8a4f24;
+  --pp-accent-brown-dark: #6f3f1d;
+  --pp-accent-amber: #c98a3a;
+
+  /* Workflow colors */
+  --pp-sage: #73816b;
+  --pp-sage-soft: #dde6d3;
+  --pp-blue-muted: #526a87;
+  --pp-blue-soft: #dbe4ec;
+  --pp-warning: #b8792d;
+  --pp-warning-soft: #f3dfbf;
+  --pp-success: #687c59;
+  --pp-success-soft: #dde8d2;
+  --pp-danger: #a84e3f;
+  --pp-danger-soft: #f1d3c9;
+
+  /* Lines */
+  --pp-line: rgba(77, 63, 49, 0.14);
+  --pp-line-soft: rgba(77, 63, 49, 0.09);
+  --pp-line-strong: rgba(77, 63, 49, 0.24);
+  --pp-border-home: rgba(230, 216, 200, 0.72);
+
+  /* Radius */
+  --pp-radius-xl: 34px;
+  --pp-radius-lg: 24px;
+  --pp-radius-md: 18px;
+  --pp-radius-sm: 12px;
+  --pp-radius-xs: 10px;
+  --pp-radius-topbar: 16px;
+  --pp-radius-nav-button: 13px;
+  --pp-radius-task-entry: 28px;
+  --pp-radius-task-row: 22px;
+  --pp-radius-stage: 36px;
+  --pp-radius-output: 29px;
+  --pp-radius-pill: 999px;
+
+  /* Shadows */
+  --pp-shadow-soft: 0 22px 70px rgba(93, 70, 46, 0.1);
+  --pp-shadow-card: 0 12px 38px rgba(70, 51, 34, 0.08);
+  --pp-shadow-topbar: 0 12px 40px rgba(43, 33, 24, 0.06);
+  --pp-shadow-stage: 0 34px 84px rgba(57, 42, 25, 0.16);
+  --pp-shadow-output: 0 30px 70px rgba(17, 13, 10, 0.22);
+
+  /* Layout */
+  --pp-width-page: 1440px;
+  --pp-width-topbar: 1240px;
+  --pp-width-workbench: 1240px;
+  --pp-width-hero-copy: 980px;
+  --pp-width-hero-title: 900px;
+  --pp-width-lede: 780px;
+  --pp-width-task-entry: 780px;
+
+  /* Motion */
+  --pp-transition-fast: 180ms ease-out;
+}
+
+.pp-index-page-shell {
+  min-width: 320px;
+  overflow-x: clip;
+  background:
+    radial-gradient(circle at 12% 4%, rgba(211, 146, 96, 0.22), transparent 28%),
+    radial-gradient(circle at 88% 8%, rgba(115, 129, 107, 0.18), transparent 30%),
+    linear-gradient(180deg, var(--pp-bg) 0%, #f8f0e5 45%, var(--pp-bg) 100%);
+  color: var(--pp-text-main);
+  font-family: var(--pp-font-sans);
+  letter-spacing: 0;
+}
+
+.pp-index-topbar {
+  display: grid;
+  grid-template-columns: minmax(210px, 1fr) auto minmax(210px, 1fr);
+  align-items: center;
+  gap: 18px;
+  width: min(calc(100% - 48px), var(--pp-width-topbar));
+  min-height: 68px;
+  margin: 0 auto;
+  padding: 0 24px;
+  border: 1px solid var(--pp-border-home);
+  border-radius: var(--pp-radius-topbar);
+  background: var(--pp-surface-glass);
+  box-shadow: var(--pp-shadow-topbar);
+  backdrop-filter: blur(18px);
+}
+
+.pp-index-nav-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 0 13px;
+  border: 1px solid transparent;
+  border-radius: var(--pp-radius-nav-button);
+  color: var(--pp-text-nav-muted);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  transition:
+    background-color var(--pp-transition-fast),
+    border-color var(--pp-transition-fast),
+    color var(--pp-transition-fast);
+}
+
+.pp-index-nav-link.is-active {
+  border-color: rgba(201, 138, 58, 0.22);
+  background: rgba(201, 138, 58, 0.14);
+  color: var(--pp-accent-brown-dark);
+}
+
+.pp-index-primary-action,
+.pp-index-outline-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 0 15px;
+  border-radius: var(--pp-radius-nav-button);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.pp-index-outline-action {
+  border: 1px solid rgba(230, 216, 200, 0.86);
+  background: rgba(255, 253, 248, 0.2);
+  color: var(--pp-accent-brown-dark);
+}
+
+.pp-index-primary-action {
+  border: 1px solid var(--pp-accent-brown);
+  background: var(--pp-accent-brown);
+  color: var(--pp-surface);
+  box-shadow: 0 8px 18px rgba(138, 79, 36, 0.14);
+}
+
+.pp-index-hero-title {
+  max-width: var(--pp-width-hero-title);
+  margin: 0 auto;
+  color: var(--pp-text-home);
+  font-family: var(--pp-font-serif);
+  font-size: 5.05rem;
+  font-weight: 560;
+  line-height: 1.02;
+  letter-spacing: 0;
+  text-align: center;
+}
+
+.pp-index-lede {
+  max-width: var(--pp-width-lede);
+  margin: 24px auto 0;
+  color: var(--pp-text-soft);
+  font-size: 18px;
+  line-height: 1.82;
+  text-align: center;
+}
+
+.pp-index-task-entry {
+  display: grid;
+  gap: 12px;
+  width: min(100%, var(--pp-width-task-entry));
+  margin-top: 30px;
+  padding: 12px;
+  border: 1px solid color-mix(in srgb, var(--pp-sage) 22%, var(--pp-line));
+  border-radius: var(--pp-radius-task-entry);
+  background:
+    linear-gradient(135deg, rgba(255, 250, 242, 0.88), rgba(255, 253, 248, 0.74)),
+    var(--pp-surface-white);
+  box-shadow:
+    0 22px 58px rgba(70, 51, 34, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.78);
+}
+
+.pp-index-task-submit {
+  min-height: 46px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: var(--pp-radius-pill);
+  background: linear-gradient(135deg, var(--pp-sage), color-mix(in srgb, var(--pp-blue-muted) 78%, var(--pp-sage)));
+  color: #fff;
+  cursor: pointer;
+  font-weight: 840;
+  white-space: nowrap;
+  box-shadow: 0 14px 30px rgba(47, 107, 86, 0.17);
+}
+
+.pp-index-feature-tabs {
+  width: min(100%, 980px);
+  margin: 0 auto;
+  gap: 6px;
+  padding: 7px;
+  border: 1px solid rgba(77, 63, 49, 0.1);
+  border-radius: 24px;
+  background: rgba(238, 235, 228, 0.86);
+  box-shadow: 0 16px 38px rgba(57, 42, 25, 0.08);
+}
+
+.pp-index-cowork-stage {
+  position: relative;
+  overflow: hidden;
+  min-height: 680px;
+  padding: 42px;
+  border-radius: var(--pp-radius-stage);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.17), transparent 38%),
+    linear-gradient(135deg, #d97453 0%, #d8805e 47%, #c66748 100%);
+  box-shadow: var(--pp-shadow-stage);
+}
+
+.pp-index-agent-card {
+  padding: 20px;
+  border: 1px solid rgba(255, 250, 242, 0.1);
+  border-radius: 22px;
+  background: #151311;
+  box-shadow: 0 20px 42px rgba(17, 13, 10, 0.18);
+}
+
+.pp-index-artifact-output {
+  min-height: 560px;
+  padding: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.86);
+  border-radius: var(--pp-radius-output);
+  background: var(--pp-surface-white);
+  box-shadow: var(--pp-shadow-output);
+}
+
+@media (max-width: 760px) {
+  .pp-index-hero-title {
+    margin-right: 0;
+    margin-left: 0;
+    font-size: 2.42rem;
+    text-align: left;
+  }
+
+  .pp-index-lede {
+    margin-right: 0;
+    margin-left: 0;
+    text-align: left;
+  }
+
+  .pp-index-cowork-stage {
+    min-height: 0;
+    padding: 18px;
+    border-radius: 28px;
+  }
+
+  .pp-index-artifact-output {
+    min-height: 0;
+    padding: 18px;
+  }
+}
