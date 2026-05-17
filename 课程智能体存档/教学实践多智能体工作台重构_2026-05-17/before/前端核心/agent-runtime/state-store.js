@@ -9,7 +9,6 @@
     evidenceGaps: [],
     currentModule: "practice",
     runningStatus: "idle",
-    directorState: {},
     completedStages: [],
   };
 

@@ -20358,457 +20358,338 @@ body[data-page="home"] .site-header .nav-outline-action:hover {
   }
 }
 
-/* Practice page: multi-agent teaching practice workbench */
+/* Practice page: Copilot classroom execution surface */
 body[data-page="practice"] main {
-  width: min(calc(100% - 48px), 1280px);
+  width: min(calc(100% - 48px), var(--max));
   margin: 0 auto;
-  padding: 56px 0 88px;
+  padding: 70px 0 96px;
 }
 
-body[data-page="practice"] .practice-kicker,
-body[data-page="practice"] .workbench-panel-heading span,
-body[data-page="practice"] .phase-track-head span,
-body[data-page="practice"] .current-step-head span {
-  display: block;
+body[data-page="practice"] .practice-copilot-hero {
+  max-width: 920px;
+  padding: 26px 0 34px;
+}
+
+body[data-page="practice"] .practice-copilot-hero .eyebrow,
+body[data-page="practice"] .practice-route-overview .eyebrow,
+body[data-page="practice"] .practice-progress-window .eyebrow {
+  margin: 0 0 12px;
   color: var(--accent-dark);
-  font-size: 0.76rem;
-  font-weight: 820;
-  letter-spacing: 0.04em;
-}
-
-body[data-page="practice"] .practice-workbench-hero {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(330px, 420px);
-  gap: 20px;
-  align-items: stretch;
-  margin-bottom: 18px;
-}
-
-body[data-page="practice"] .practice-workbench-hero-copy,
-body[data-page="practice"] .practice-workbench-hero-card,
-body[data-page="practice"] .agent-orchestration-panel,
-body[data-page="practice"] .practice-stage-canvas,
-body[data-page="practice"] .practice-review-panel,
-body[data-page="practice"] .practice-artifact-output,
-body[data-page="practice"] .practice-legacy-tools {
-  border: 1px solid rgba(77, 63, 49, 0.12);
-  border-radius: 16px;
-  background: rgba(255, 250, 242, 0.82);
-  box-shadow: 0 12px 34px rgba(70, 51, 34, 0.055);
-}
-
-body[data-page="practice"] .practice-workbench-hero-copy {
-  padding: clamp(24px, 3vw, 34px);
-}
-
-body[data-page="practice"] .practice-workbench-hero-copy h1 {
-  max-width: 760px;
-  margin: 10px 0 0;
-  color: var(--text-main);
-  font-size: clamp(2.25rem, 4.2vw, 3.8rem);
-  font-weight: 780;
-  line-height: 1.08;
-  letter-spacing: 0;
-}
-
-body[data-page="practice"] .practice-workbench-subtitle {
-  max-width: 660px;
-  margin: 16px 0 0;
-  color: var(--text-soft);
-  font-size: 1.04rem;
-  line-height: 1.72;
-}
-
-body[data-page="practice"] .practice-workbench-hero-card {
-  display: grid;
-  gap: 18px;
-  padding: 22px;
-  align-content: start;
-}
-
-body[data-page="practice"] .practice-runtime-state-line {
-  display: grid;
-  gap: 10px;
-}
-
-body[data-page="practice"] #practice-runtime-status {
-  width: max-content;
-  padding: 7px 10px;
-  border: 1px solid rgba(77, 63, 49, 0.14);
-  border-radius: 999px;
-  background: rgba(255, 253, 248, 0.72);
-  color: var(--text-main);
   font-size: 0.78rem;
-  font-weight: 820;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
-body[data-page="practice"] #practice-runtime-status[data-runtime-status="running"] {
-  border-color: rgba(104, 124, 89, 0.3);
-  background: rgba(221, 232, 210, 0.72);
-  color: #46583e;
+body[data-page="practice"] .practice-copilot-hero h1 {
+  max-width: 900px;
+  margin: 0;
+  color: var(--text-main);
+  font-size: clamp(2.7rem, 4.6vw, 4.6rem);
+  font-weight: 760;
+  line-height: 1.06;
+  letter-spacing: 0;
+  text-wrap: balance;
 }
 
-body[data-page="practice"] #practice-runtime-status[data-runtime-status="ready_for_review"] {
+body[data-page="practice"] .practice-copilot-hero .lede {
+  width: 100%;
+  max-width: 780px;
+  margin: 22px 0 0;
+  color: var(--text-soft);
+  font-size: 1.08rem;
+  font-weight: 560;
+  line-height: 1.78;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+body[data-page="practice"] .copilot-status-strip {
+  display: grid;
+  grid-template-columns: 1.1fr repeat(4, minmax(0, 1fr)) 1.05fr;
+  gap: 12px;
+  margin: 10px 0 20px;
+}
+
+body[data-page="practice"] .copilot-status-card {
+  min-height: 86px;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(255, 250, 242, 0.78);
+  box-shadow: 0 12px 32px rgba(70, 51, 34, 0.055);
+}
+
+body[data-page="practice"] .copilot-status-card span {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.76rem;
+  font-weight: 760;
+}
+
+body[data-page="practice"] .copilot-status-card strong {
+  display: block;
+  margin-top: 12px;
+  color: var(--text-main);
+  font-size: 1rem;
+  line-height: 1.28;
+}
+
+body[data-page="practice"] .copilot-status-card.is-running {
+  border-color: rgba(47, 41, 35, 0.22);
+  background: #2b241d;
+}
+
+body[data-page="practice"] .copilot-status-card.is-running span {
+  color: #d8b275;
+}
+
+body[data-page="practice"] .copilot-status-card.is-running strong {
+  color: #fff8eb;
+}
+
+body[data-page="practice"] .copilot-status-card.is-alert {
   border-color: rgba(184, 121, 45, 0.34);
-  background: rgba(246, 221, 184, 0.74);
+  background: #f6ddb8;
+}
+
+body[data-page="practice"] .copilot-status-card.is-alert span,
+body[data-page="practice"] .copilot-status-card.is-alert strong {
   color: #6e4214;
 }
 
-body[data-page="practice"] #practice-runtime-status[data-runtime-status="error"],
-body[data-page="practice"] #practice-runtime-status[data-runtime-status="blocked"] {
-  border-color: rgba(143, 55, 42, 0.3);
-  background: rgba(255, 234, 224, 0.72);
-  color: #783125;
+body[data-page="practice"] .practice-route-overview {
+  margin: 20px 0 24px;
+  padding: clamp(20px, 2.6vw, 30px);
+  border: 1px solid var(--line);
+  border-radius: 30px;
+  background: rgba(255, 250, 242, 0.84);
+  box-shadow: 0 18px 52px rgba(70, 51, 34, 0.07);
 }
 
-body[data-page="practice"] .practice-runtime-state-line p,
-body[data-page="practice"] .practice-context-grid dd,
-body[data-page="practice"] .workbench-panel-heading p,
-body[data-page="practice"] .review-empty-copy,
-body[data-page="practice"] .agent-runtime-event-log p,
-body[data-page="practice"] .artifact-output-card p {
+body[data-page="practice"] .practice-agent-runtime {
+  margin: 20px 0 24px;
+  padding: clamp(20px, 2.6vw, 30px);
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background: rgba(255, 250, 242, 0.86);
+  box-shadow: 0 16px 44px rgba(70, 51, 34, 0.065);
+}
+
+body[data-page="practice"] .practice-agent-runtime-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+body[data-page="practice"] .practice-agent-runtime-head h2 {
+  margin: 0;
+  color: var(--text-main);
+  font-size: clamp(1.58rem, 2.4vw, 2.25rem);
+  font-weight: 780;
+  line-height: 1.16;
+  letter-spacing: 0;
+}
+
+body[data-page="practice"] .practice-agent-runtime-head p:not(.eyebrow) {
+  max-width: 720px;
+  margin: 10px 0 0;
+  color: var(--text-soft);
+  font-size: 0.96rem;
+  line-height: 1.72;
+}
+
+body[data-page="practice"] .practice-agent-runtime-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.35fr);
+  grid-template-areas:
+    "status message"
+    "flow flow"
+    "rubric evidence";
+  gap: 14px;
+  margin-top: 20px;
+}
+
+body[data-page="practice"] .runtime-panel {
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid rgba(77, 63, 49, 0.12);
+  border-radius: 18px;
+  background: rgba(255, 253, 248, 0.72);
+}
+
+body[data-page="practice"] .runtime-status-panel {
+  grid-area: status;
+}
+
+body[data-page="practice"] .runtime-message-panel {
+  grid-area: message;
+  max-height: 320px;
+  overflow: auto;
+}
+
+body[data-page="practice"] .runtime-flow-panel {
+  grid-area: flow;
+}
+
+body[data-page="practice"] .runtime-rubric-panel {
+  grid-area: rubric;
+}
+
+body[data-page="practice"] .runtime-evidence-panel {
+  grid-area: evidence;
+}
+
+body[data-page="practice"] .runtime-panel-heading span,
+body[data-page="practice"] .runtime-step-card span {
+  display: block;
+  color: var(--accent-dark);
+  font-size: 0.74rem;
+  font-weight: 820;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+body[data-page="practice"] .runtime-panel-heading h3 {
+  margin: 8px 0 0;
+  color: var(--text-main);
+  font-size: 1.12rem;
+  font-weight: 780;
+  line-height: 1.26;
+  letter-spacing: 0;
+}
+
+body[data-page="practice"] .runtime-panel-heading p,
+body[data-page="practice"] .runtime-muted {
+  margin: 8px 0 0;
+  color: var(--text-soft);
+  font-size: 0.9rem;
+  line-height: 1.62;
+}
+
+body[data-page="practice"] .agent-runtime-status-line {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(77, 63, 49, 0.1);
+}
+
+body[data-page="practice"] .agent-runtime-status-line span {
+  flex: 0 0 auto;
+  padding: 7px 9px;
+  border-radius: 9px;
+  background: #2b241d;
+  color: #fff8eb;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 840;
+  text-transform: uppercase;
+}
+
+body[data-page="practice"] .agent-runtime-status-line span[data-state="error"] {
+  background: #8f372a;
+}
+
+body[data-page="practice"] .agent-runtime-status-line span[data-state="complete"] {
+  background: #687c59;
+}
+
+body[data-page="practice"] .agent-runtime-status-line p {
   margin: 0;
   color: var(--text-soft);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+body[data-page="practice"] .runtime-message {
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  border: 1px solid rgba(77, 63, 49, 0.1);
+  border-radius: 12px;
+  background: rgba(246, 234, 220, 0.58);
+  color: var(--text-main);
   font-size: 0.9rem;
   line-height: 1.58;
 }
 
-body[data-page="practice"] .practice-context-grid {
-  display: grid;
-  gap: 10px;
-  margin: 0;
+body[data-page="practice"] .runtime-message.is-system {
+  border-color: rgba(143, 55, 42, 0.2);
+  background: rgba(255, 234, 224, 0.62);
+  color: #783125;
 }
 
-body[data-page="practice"] .practice-context-grid div {
-  display: grid;
-  grid-template-columns: 76px minmax(0, 1fr);
-  gap: 12px;
-  padding: 12px 0;
-  border-top: 1px solid rgba(77, 63, 49, 0.09);
-}
-
-body[data-page="practice"] .practice-context-grid dt {
-  color: var(--text-muted);
-  font-size: 0.78rem;
-  font-weight: 760;
-}
-
-body[data-page="practice"] .practice-context-grid dd {
-  color: var(--text-main);
-  font-weight: 680;
-}
-
-body[data-page="practice"] .practice-agent-workbench {
-  display: grid;
-  grid-template-columns: 240px minmax(0, 1fr) 320px;
-  gap: 16px;
-  align-items: start;
-}
-
-body[data-page="practice"] .agent-orchestration-panel,
-body[data-page="practice"] .practice-stage-canvas,
-body[data-page="practice"] .practice-review-panel,
-body[data-page="practice"] .practice-artifact-output {
-  padding: 18px;
-}
-
-body[data-page="practice"] .practice-review-panel {
-  position: sticky;
-  top: 96px;
-  display: grid;
-  gap: 12px;
-  background: rgba(255, 253, 248, 0.82);
-}
-
-body[data-page="practice"] .workbench-panel-heading h2,
-body[data-page="practice"] .workbench-panel-heading h3 {
-  margin: 6px 0 0;
-  color: var(--text-main);
-  font-size: 1.05rem;
-  font-weight: 780;
-  line-height: 1.28;
-  letter-spacing: 0;
-}
-
-body[data-page="practice"] .canvas-heading h2 {
-  font-size: clamp(1.45rem, 2.2vw, 2rem);
-}
-
-body[data-page="practice"] .canvas-heading p {
-  max-width: 720px;
-  margin-top: 8px;
-}
-
-body[data-page="practice"] .agent-card-list {
-  display: grid;
-  gap: 10px;
-  margin-top: 14px;
-}
-
-body[data-page="practice"] .agent-orchestration-card {
-  display: grid;
-  grid-template-columns: 10px minmax(0, 1fr) auto;
-  gap: 10px;
-  align-items: start;
-  padding: 12px;
-  border: 1px solid rgba(77, 63, 49, 0.11);
-  border-radius: 16px;
-  background: rgba(255, 253, 248, 0.68);
-}
-
-body[data-page="practice"] .agent-status-dot {
-  width: 9px;
-  height: 9px;
-  margin-top: 5px;
-  border-radius: 999px;
-  background: #cfc3b4;
-}
-
-body[data-page="practice"] .agent-orchestration-card strong {
-  display: block;
-  color: var(--text-main);
-  font-size: 0.92rem;
-  line-height: 1.25;
-}
-
-body[data-page="practice"] .agent-orchestration-card p {
-  margin: 5px 0 0;
-  color: var(--text-soft);
-  font-size: 0.78rem;
-  line-height: 1.4;
-}
-
-body[data-page="practice"] .agent-orchestration-card small {
-  color: var(--text-muted);
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  font-weight: 820;
-}
-
-body[data-page="practice"] .agent-orchestration-card[data-agent-status="running"] {
-  border-color: rgba(47, 41, 35, 0.24);
-  background: rgba(246, 234, 220, 0.74);
-}
-
-body[data-page="practice"] .agent-orchestration-card[data-agent-status="running"] .agent-status-dot {
-  background: #2b241d;
-}
-
-body[data-page="practice"] .agent-orchestration-card[data-agent-status="done"] {
-  border-color: rgba(104, 124, 89, 0.32);
-  background: rgba(221, 232, 210, 0.54);
-}
-
-body[data-page="practice"] .agent-orchestration-card[data-agent-status="done"] .agent-status-dot {
-  background: #687c59;
-}
-
-body[data-page="practice"] .agent-orchestration-card[data-agent-status="blocked"] {
-  border-color: rgba(143, 55, 42, 0.24);
-  background: rgba(255, 234, 224, 0.58);
-}
-
-body[data-page="practice"] .agent-orchestration-card[data-agent-status="blocked"] .agent-status-dot {
-  background: #8f372a;
-}
-
-body[data-page="practice"] .agent-runtime-event-log {
-  max-height: 190px;
-  margin-top: 14px;
-  padding-top: 12px;
-  overflow: auto;
-  border-top: 1px solid rgba(77, 63, 49, 0.1);
-}
-
-body[data-page="practice"] .agent-runtime-event-log p + p {
-  margin-top: 8px;
-}
-
-body[data-page="practice"] .practice-phase-tracks {
-  display: grid;
-  gap: 14px;
-  margin-top: 18px;
-}
-
-body[data-page="practice"] .practice-phase-track {
-  padding: 14px;
-  border: 1px solid rgba(77, 63, 49, 0.11);
-  border-radius: 16px;
-  background: rgba(255, 253, 248, 0.62);
-}
-
-body[data-page="practice"] .phase-track-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-
-body[data-page="practice"] .phase-track-head h3 {
-  margin: 0;
-  color: var(--text-main);
-  font-size: 1rem;
-  font-weight: 780;
-}
-
-body[data-page="practice"] .phase-node-grid {
+body[data-page="practice"] .runtime-flow-list,
+body[data-page="practice"] .runtime-rubric-list {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
-}
-
-body[data-page="practice"] .practice-phase-track[data-phase="classroom"] .phase-node-grid {
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-}
-
-body[data-page="practice"] .practice-stage-node {
-  min-height: 104px;
-  padding: 12px;
-  border: 1px solid rgba(77, 63, 49, 0.1);
-  border-radius: 16px;
-  background: rgba(246, 234, 220, 0.42);
-}
-
-body[data-page="practice"] .practice-stage-node span {
-  display: block;
-  color: var(--text-muted);
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  font-weight: 820;
-}
-
-body[data-page="practice"] .practice-stage-node strong {
-  display: block;
-  margin-top: 7px;
-  color: var(--text-main);
-  font-size: 0.85rem;
-  line-height: 1.34;
-}
-
-body[data-page="practice"] .practice-stage-node small {
-  display: block;
-  margin-top: 8px;
-  color: var(--text-muted);
-  font-size: 0.72rem;
-}
-
-body[data-page="practice"] .practice-stage-node[data-node-status="running"] {
-  border-color: rgba(47, 41, 35, 0.36);
-  background: #2b241d;
-}
-
-body[data-page="practice"] .practice-stage-node[data-node-status="running"] span,
-body[data-page="practice"] .practice-stage-node[data-node-status="running"] small {
-  color: #d8b275;
-}
-
-body[data-page="practice"] .practice-stage-node[data-node-status="running"] strong {
-  color: #fff8eb;
-}
-
-body[data-page="practice"] .practice-stage-node[data-node-status="done"] {
-  border-color: rgba(104, 124, 89, 0.34);
-  background: rgba(221, 232, 210, 0.66);
-}
-
-body[data-page="practice"] .practice-stage-node[data-node-status="needs_review"] {
-  border-color: rgba(184, 121, 45, 0.4);
-  background: rgba(246, 221, 184, 0.7);
-}
-
-body[data-page="practice"] .practice-stage-node[data-node-status="blocked"] {
-  border-color: rgba(143, 55, 42, 0.26);
-  background: rgba(255, 234, 224, 0.66);
-}
-
-body[data-page="practice"] .current-practice-step-detail {
-  margin-top: 16px;
-  padding: 18px;
-  border: 1px solid rgba(77, 63, 49, 0.12);
-  border-radius: 16px;
-  background: rgba(255, 250, 242, 0.78);
-}
-
-body[data-page="practice"] .empty-state-block span,
-body[data-page="practice"] .current-step-head span {
-  color: var(--accent-dark);
-  font-size: 0.78rem;
-  font-weight: 820;
-}
-
-body[data-page="practice"] .empty-state-block h3,
-body[data-page="practice"] .current-step-head h3 {
-  margin: 8px 0 0;
-  color: var(--text-main);
-  font-size: 1.18rem;
-  font-weight: 780;
-}
-
-body[data-page="practice"] .empty-state-block p,
-body[data-page="practice"] .current-step-head p {
-  max-width: 760px;
-  margin: 8px 0 0;
-  color: var(--text-soft);
-  font-size: 0.94rem;
-  line-height: 1.66;
-}
-
-body[data-page="practice"] .current-step-detail-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
   margin-top: 14px;
 }
 
-body[data-page="practice"] .current-step-detail-grid article,
-body[data-page="practice"] .review-item-card,
-body[data-page="practice"] .artifact-output-card {
-  padding: 13px;
-  border: 1px solid rgba(77, 63, 49, 0.1);
-  border-radius: 16px;
-  background: rgba(255, 253, 248, 0.68);
+body[data-page="practice"] .runtime-step-card,
+body[data-page="practice"] .runtime-rubric-card,
+body[data-page="practice"] .runtime-gap-card,
+body[data-page="practice"] .runtime-asset-card,
+body[data-page="practice"] .runtime-question-card {
+  padding: 14px;
+  border: 1px solid rgba(77, 63, 49, 0.12);
+  border-radius: 14px;
+  background: rgba(246, 234, 220, 0.54);
 }
 
-body[data-page="practice"] .current-step-detail-grid strong,
-body[data-page="practice"] .review-item-card strong,
-body[data-page="practice"] .artifact-output-card strong {
+body[data-page="practice"] .runtime-step-card.is-update {
+  margin-top: 12px;
+  border-color: rgba(104, 124, 89, 0.34);
+  background: rgba(221, 232, 210, 0.6);
+}
+
+body[data-page="practice"] .runtime-step-card strong,
+body[data-page="practice"] .runtime-rubric-card strong,
+body[data-page="practice"] .runtime-gap-card strong,
+body[data-page="practice"] .runtime-asset-card strong,
+body[data-page="practice"] .runtime-question-card strong {
   display: block;
+  margin-top: 8px;
   color: var(--text-main);
-  font-size: 0.9rem;
-  line-height: 1.32;
+  font-size: 0.98rem;
+  line-height: 1.34;
 }
 
-body[data-page="practice"] .current-step-detail-grid p,
-body[data-page="practice"] .review-item-card p {
-  margin: 7px 0 0;
+body[data-page="practice"] .runtime-step-card p,
+body[data-page="practice"] .runtime-rubric-card p,
+body[data-page="practice"] .runtime-gap-card p,
+body[data-page="practice"] .runtime-asset-card p,
+body[data-page="practice"] .runtime-question-card p,
+body[data-page="practice"] .runtime-edge-note,
+body[data-page="practice"] .runtime-status-note {
+  margin: 8px 0 0;
   color: var(--text-soft);
-  font-size: 0.84rem;
-  line-height: 1.55;
+  font-size: 0.86rem;
+  line-height: 1.58;
   overflow-wrap: anywhere;
 }
 
-body[data-page="practice"] .review-panel-section {
-  padding: 14px;
-  border: 1px solid rgba(77, 63, 49, 0.1);
-  border-radius: 16px;
-  background: rgba(255, 250, 242, 0.62);
-}
-
-body[data-page="practice"] .review-card-list {
-  display: grid;
-  gap: 9px;
+body[data-page="practice"] .runtime-gap-card {
   margin-top: 12px;
-}
-
-body[data-page="practice"] .review-item-card.is-gap {
   border-color: rgba(184, 121, 45, 0.34);
-  background: rgba(246, 221, 184, 0.56);
+  background: rgba(246, 221, 184, 0.58);
 }
 
-body[data-page="practice"] .review-item-card.is-confirmation {
-  border-color: rgba(47, 41, 35, 0.16);
-  background: rgba(246, 234, 220, 0.58);
+body[data-page="practice"] .runtime-status-subpanel {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(77, 63, 49, 0.1);
+}
+
+body[data-page="practice"] .runtime-status-subpanel h4 {
+  margin: 0;
+  color: var(--text-main);
+  font-size: 0.92rem;
+  font-weight: 780;
 }
 
 body[data-page="practice"] .runtime-question-actions {
@@ -20821,22 +20702,11 @@ body[data-page="practice"] .runtime-question-actions {
 body[data-page="practice"] .runtime-question-actions button {
   min-height: 34px;
   padding: 0 12px;
-  border: 1px solid rgba(77, 63, 49, 0.14);
+  border: 1px solid rgba(77, 63, 49, 0.16);
   border-radius: 10px;
   background: rgba(255, 253, 248, 0.84);
   color: var(--text-main);
   font-weight: 720;
-}
-
-body[data-page="practice"] .practice-artifact-output {
-  margin-top: 18px;
-}
-
-body[data-page="practice"] .artifact-output-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
-  margin-top: 14px;
 }
 
 body[data-page="practice"] .agent-runtime-focus {
@@ -20844,52 +20714,580 @@ body[data-page="practice"] .agent-runtime-focus {
   outline-offset: 4px;
 }
 
-body[data-page="practice"] .practice-legacy-tools {
-  margin: 18px 0 0;
-  padding: 0;
-  background: rgba(255, 250, 242, 0.48);
-  box-shadow: none;
+body[data-page="practice"] .practice-route-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
 }
 
-body[data-page="practice"] .practice-legacy-tools > summary {
-  display: grid;
-  gap: 4px;
-  padding: 16px 18px;
-  cursor: pointer;
+body[data-page="practice"] .practice-route-head h2 {
+  margin: 0;
   color: var(--text-main);
+  font-size: clamp(1.72rem, 2.7vw, 2.55rem);
+  font-weight: 780;
+  line-height: 1.16;
+  letter-spacing: 0;
 }
 
-body[data-page="practice"] .practice-legacy-tools > summary span {
+body[data-page="practice"] .practice-route-head p:not(.eyebrow) {
+  max-width: 760px;
+  margin: 10px 0 0;
+  color: var(--text-soft);
+  font-size: 0.97rem;
+  line-height: 1.72;
+}
+
+body[data-page="practice"] .practice-route-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  margin-top: 18px;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+body[data-page="practice"] .practice-route-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+body[data-page="practice"] .practice-route-legend i {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #d6ccc0;
+}
+
+body[data-page="practice"] .practice-route-legend .done {
+  background: var(--sage);
+}
+
+body[data-page="practice"] .practice-route-legend .current {
+  background: #2b241d;
+}
+
+body[data-page="practice"] .practice-route-legend .confirm {
+  background: var(--warning);
+}
+
+body[data-page="practice"] .practice-route-legend .later {
+  background: #d8b275;
+}
+
+body[data-page="practice"] .practice-route-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(310px, 360px);
+  gap: 18px;
+  align-items: start;
+  margin-top: 18px;
+}
+
+body[data-page="practice"] .practice-route-main {
+  min-width: 0;
+}
+
+body[data-page="practice"] .practice-route-nodes {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+body[data-page="practice"] .practice-route-nodes article {
+  min-height: 104px;
+  padding: 13px 14px;
+  border: 1px solid rgba(77, 63, 49, 0.12);
+  border-radius: 15px;
+  background: rgba(246, 234, 220, 0.52);
+}
+
+body[data-page="practice"] .practice-route-nodes span {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+body[data-page="practice"] .practice-route-nodes strong {
+  display: block;
+  margin-top: 8px;
+  color: var(--text-main);
+  font-size: 0.9rem;
+  line-height: 1.34;
+}
+
+body[data-page="practice"] .practice-route-nodes small {
+  display: block;
+  margin-top: 9px;
+  color: var(--text-muted);
+  font-size: 0.76rem;
+}
+
+body[data-page="practice"] .practice-route-nodes .is-done {
+  border-color: rgba(104, 124, 89, 0.35);
+  background: rgba(221, 232, 210, 0.72);
+}
+
+body[data-page="practice"] .practice-route-nodes .is-current {
+  border-color: rgba(47, 41, 35, 0.44);
+  background: #2b241d;
+  box-shadow: 0 18px 40px rgba(47, 36, 29, 0.16);
+}
+
+body[data-page="practice"] .practice-route-nodes .is-current span,
+body[data-page="practice"] .practice-route-nodes .is-current small {
+  color: #d8b275;
+}
+
+body[data-page="practice"] .practice-route-nodes .is-current strong {
+  color: #fff8eb;
+}
+
+body[data-page="practice"] .practice-route-nodes .needs-confirm {
+  border-color: rgba(184, 121, 45, 0.42);
+  background: #f5d8a8;
+  box-shadow: 0 14px 34px rgba(184, 121, 45, 0.13);
+}
+
+body[data-page="practice"] .practice-route-nodes .needs-confirm span,
+body[data-page="practice"] .practice-route-nodes .needs-confirm small,
+body[data-page="practice"] .practice-route-nodes .needs-confirm strong {
+  color: #6e4214;
+}
+
+body[data-page="practice"] .practice-route-nodes .is-later-confirm {
+  border-color: rgba(216, 178, 117, 0.5);
+  background: rgba(246, 221, 184, 0.5);
+}
+
+body[data-page="practice"] .practice-route-nodes .is-pending {
+  opacity: 0.74;
+}
+
+body[data-page="practice"] .practice-route-interventions {
+  display: grid;
+  grid-template-columns: 1.1fr repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+body[data-page="practice"] .practice-route-interventions article {
+  padding: 16px;
+  border: 1px solid rgba(77, 63, 49, 0.12);
+  border-radius: 18px;
+  background: rgba(255, 250, 242, 0.7);
+}
+
+body[data-page="practice"] .practice-route-interventions article.is-primary {
+  border-color: rgba(184, 121, 45, 0.36);
+  background: rgba(246, 221, 184, 0.66);
+}
+
+body[data-page="practice"] .practice-route-interventions span {
+  display: block;
   color: var(--accent-dark);
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 820;
 }
 
-body[data-page="practice"] .practice-legacy-tools > summary strong {
+body[data-page="practice"] .practice-route-interventions strong {
+  display: block;
+  margin-top: 8px;
+  color: var(--text-main);
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+body[data-page="practice"] .practice-route-interventions p {
+  margin: 8px 0 0;
   color: var(--text-soft);
+  font-size: 0.88rem;
+  line-height: 1.62;
+}
+
+body[data-page="practice"] .agent-state-panel {
+  position: sticky;
+  top: 112px;
+  min-width: 0;
+}
+
+body[data-page="practice"] .agent-state-copy {
+  margin-bottom: 14px;
+}
+
+body[data-page="practice"] .agent-state-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 12px;
+  color: #9a8067;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+body[data-page="practice"] .agent-state-kicker span {
+  display: block;
+  width: 42px;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--accent-dark);
+}
+
+body[data-page="practice"] .agent-state-copy h3 {
+  margin: 0;
+  color: var(--text-main);
+  font-size: clamp(1.5rem, 2.6vw, 2.3rem);
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: 0;
+}
+
+body[data-page="practice"] .agent-state-copy p:not(.agent-state-kicker) {
+  margin: 10px 0 0;
+  color: var(--text-soft);
+  font-size: 0.94rem;
+  font-weight: 680;
+  line-height: 1.58;
+}
+
+body[data-page="practice"] .agent-log-card {
+  overflow: hidden;
+  border: 1px solid rgba(216, 178, 117, 0.46);
+  border-radius: 24px;
+  background: linear-gradient(180deg, #15100c 0%, #231910 100%);
+  color: #f7eddd;
+  box-shadow: 0 20px 52px rgba(47, 36, 29, 0.2);
+}
+
+body[data-page="practice"] .agent-log-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 20px;
+  border-bottom: 1px solid rgba(216, 178, 117, 0.16);
+}
+
+body[data-page="practice"] .agent-log-head div {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  gap: 12px;
+}
+
+body[data-page="practice"] .agent-log-dot {
+  width: 14px;
+  height: 14px;
+  border: 3px solid #d8a947;
+  border-radius: 999px;
+  box-shadow: 0 0 0 5px rgba(216, 169, 71, 0.12);
+}
+
+body[data-page="practice"] .agent-log-head strong {
+  color: #f5eee2;
+  font-size: 1rem;
+  font-weight: 780;
+  line-height: 1.3;
+}
+
+body[data-page="practice"] .agent-log-status {
+  flex: 0 0 auto;
+  padding: 8px 10px;
+  border: 1px solid rgba(216, 169, 71, 0.45);
+  border-radius: 9px;
+  background: rgba(216, 169, 71, 0.11);
+  color: #e2b85f;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 840;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+body[data-page="practice"] .agent-log-list {
+  display: grid;
+  gap: 13px;
+  margin: 0;
+  padding: 22px 20px 20px;
+  list-style: none;
+}
+
+body[data-page="practice"] .agent-log-list li {
+  display: grid;
+  grid-template-columns: 68px 18px minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+  color: #c8b9a8;
+  font-family: var(--font-mono);
   font-size: 0.9rem;
-  font-weight: 620;
+  line-height: 1.58;
+}
+
+body[data-page="practice"] .agent-log-list time {
+  color: #9b7b45;
+  font-weight: 780;
+  letter-spacing: 0.01em;
+}
+
+body[data-page="practice"] .agent-log-list span {
+  color: #bba98f;
+  font-weight: 900;
+}
+
+body[data-page="practice"] .agent-log-list p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+body[data-page="practice"] .agent-log-list .is-done p,
+body[data-page="practice"] .agent-log-list .is-done span {
+  color: #5ed0a4;
+}
+
+body[data-page="practice"] .agent-log-list .is-active p,
+body[data-page="practice"] .agent-log-list .is-active span {
+  color: #e3b957;
+}
+
+body[data-page="practice"] .agent-log-list .is-muted {
+  opacity: 0.54;
+}
+
+body[data-page="practice"] .agent-log-progress {
+  margin: 0 20px 20px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(216, 178, 117, 0.16);
+}
+
+body[data-page="practice"] .agent-log-progress div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #b99453;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 840;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+body[data-page="practice"] .agent-log-progress strong {
+  color: #c99d45;
+  font-size: 0.9rem;
+}
+
+body[data-page="practice"] .agent-log-progress progress {
+  display: block;
+  width: 100%;
+  height: 6px;
+  margin-top: 16px;
+  overflow: hidden;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(216, 178, 117, 0.12);
+}
+
+body[data-page="practice"] .agent-log-progress progress::-webkit-progress-bar {
+  background: rgba(216, 178, 117, 0.12);
+}
+
+body[data-page="practice"] .agent-log-progress progress::-webkit-progress-value {
+  border-radius: 999px;
+  background: linear-gradient(90deg, #dfb863, #b8792d);
+}
+
+body[data-page="practice"] .agent-log-progress progress::-moz-progress-bar {
+  border-radius: 999px;
+  background: linear-gradient(90deg, #dfb863, #b8792d);
+}
+
+body[data-page="practice"] .practice-copilot-metrics span,
+body[data-page="practice"] .practice-window-nodes span {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 760;
+}
+
+body[data-page="practice"] .practice-copilot-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 22px;
+}
+
+body[data-page="practice"] .practice-copilot-metrics article {
+  min-height: 132px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: rgba(255, 250, 242, 0.82);
+  box-shadow: 0 12px 34px rgba(70, 51, 34, 0.055);
+}
+
+body[data-page="practice"] .practice-copilot-metrics strong {
+  display: block;
+  margin-top: 18px;
+  color: var(--text-main);
+  font-size: clamp(1.55rem, 2.2vw, 2.2rem);
+  font-weight: 780;
+  line-height: 1;
+}
+
+body[data-page="practice"] .practice-copilot-metrics small {
+  display: block;
+  margin-top: 10px;
+  color: var(--text-muted);
+  font-size: 0.82rem;
   line-height: 1.5;
 }
 
-body[data-page="practice"] .practice-legacy-tools-body {
-  padding: 0 18px 18px;
+body[data-page="practice"] .practice-progress-window {
+  margin-top: 18px;
+  padding: clamp(20px, 2.6vw, 30px);
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background: rgba(255, 250, 242, 0.82);
+  box-shadow: 0 12px 34px rgba(70, 51, 34, 0.055);
 }
 
-@media (max-width: 1120px) {
-  body[data-page="practice"] .practice-agent-workbench,
-  body[data-page="practice"] .practice-workbench-hero {
+body[data-page="practice"] .practice-progress-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+body[data-page="practice"] .practice-progress-head h2 {
+  margin: 0;
+  color: var(--text-main);
+  font-size: clamp(1.55rem, 2.4vw, 2.3rem);
+  font-weight: 780;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+body[data-page="practice"] .practice-progress-head p:not(.eyebrow) {
+  max-width: 660px;
+  margin: 10px 0 0;
+  color: var(--text-soft);
+  font-size: 0.96rem;
+  line-height: 1.72;
+}
+
+body[data-page="practice"] .practice-window-nodes {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 22px;
+}
+
+body[data-page="practice"] .practice-window-nodes article {
+  min-height: 130px;
+  padding: 16px;
+  border: 1px solid rgba(77, 63, 49, 0.12);
+  border-radius: 18px;
+  background: rgba(246, 234, 220, 0.58);
+}
+
+body[data-page="practice"] .practice-window-nodes article.is-current {
+  border-color: rgba(200, 100, 52, 0.34);
+  background: #f7dfcb;
+  box-shadow: 0 14px 36px rgba(200, 100, 52, 0.14);
+}
+
+body[data-page="practice"] .practice-window-nodes strong {
+  display: block;
+  margin-top: 12px;
+  color: var(--text-main);
+  font-size: 1rem;
+  line-height: 1.38;
+}
+
+body[data-page="practice"] .practice-window-nodes small {
+  display: block;
+  margin-top: 14px;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
+body[data-page="practice"] .practice-legacy-tools {
+  margin: 28px 0 0;
+  border-color: rgba(77, 63, 49, 0.11);
+  background: rgba(255, 250, 242, 0.58);
+}
+
+@media (max-width: 960px) {
+  body[data-page="practice"] main {
+    width: 100%;
+    max-width: 100%;
+    padding: 54px 16px 96px;
+    overflow-x: clip;
+  }
+
+  body[data-page="practice"] .practice-copilot-hero,
+  body[data-page="practice"] main > section {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  body[data-page="practice"] .copilot-status-strip,
+  body[data-page="practice"] .practice-route-layout,
+  body[data-page="practice"] .practice-copilot-metrics,
+  body[data-page="practice"] .practice-route-interventions,
+  body[data-page="practice"] .practice-agent-runtime-grid {
     grid-template-columns: 1fr;
   }
 
-  body[data-page="practice"] .practice-review-panel {
+  body[data-page="practice"] .practice-agent-runtime-grid {
+    grid-template-areas:
+      "status"
+      "message"
+      "flow"
+      "rubric"
+      "evidence";
+  }
+
+  body[data-page="practice"] .practice-agent-runtime-head {
+    display: grid;
+  }
+
+  body[data-page="practice"] .runtime-flow-list,
+  body[data-page="practice"] .runtime-rubric-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  body[data-page="practice"] .agent-state-panel {
     position: static;
   }
 
-  body[data-page="practice"] .phase-node-grid,
-  body[data-page="practice"] .practice-phase-track[data-phase="classroom"] .phase-node-grid,
-  body[data-page="practice"] .artifact-output-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  body[data-page="practice"] .practice-route-nodes {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  body[data-page="practice"] .practice-route-head {
+    display: grid;
+  }
+
+  body[data-page="practice"] .practice-copilot-hero .lede,
+  body[data-page="practice"] .practice-route-head p:not(.eyebrow) {
+    width: 100%;
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  body[data-page="practice"] .practice-progress-head {
+    display: grid;
   }
 }
 
@@ -20901,33 +21299,107 @@ body[data-page="practice"] .practice-legacy-tools-body {
     overflow-x: clip;
   }
 
-  body[data-page="practice"] main > section,
-  body[data-page="practice"] .practice-workbench-hero-copy,
-  body[data-page="practice"] .practice-workbench-hero-card,
-  body[data-page="practice"] .agent-orchestration-panel,
-  body[data-page="practice"] .practice-stage-canvas,
-  body[data-page="practice"] .practice-review-panel,
-  body[data-page="practice"] .practice-artifact-output,
-  body[data-page="practice"] .practice-legacy-tools {
-    width: 100%;
+  body[data-page="practice"] .practice-copilot-hero {
+    width: calc(100vw - 28px);
     max-width: calc(100vw - 28px);
+    padding: 24px 0 28px;
+  }
+
+  body[data-page="practice"] main > section {
+    max-width: calc(100vw - 28px);
+  }
+
+  body[data-page="practice"] .practice-copilot-hero h1 {
+    font-size: clamp(2.1rem, 10.5vw, 2.72rem);
+  }
+
+  body[data-page="practice"] .practice-copilot-hero .lede,
+  body[data-page="practice"] .practice-route-head p:not(.eyebrow) {
+    width: 100%;
+    max-width: min(100%, calc(100vw - 28px));
+  }
+
+  body[data-page="practice"] .copilot-status-strip,
+  body[data-page="practice"] .practice-route-overview,
+  body[data-page="practice"] .practice-agent-runtime,
+  body[data-page="practice"] .practice-agent-runtime-grid,
+  body[data-page="practice"] .runtime-panel,
+  body[data-page="practice"] .practice-route-head,
+  body[data-page="practice"] .practice-route-layout,
+  body[data-page="practice"] .practice-route-main,
+  body[data-page="practice"] .practice-route-nodes,
+  body[data-page="practice"] .practice-route-interventions,
+  body[data-page="practice"] .agent-state-panel {
+    width: 100%;
+    max-width: 100%;
     min-width: 0;
   }
 
-  body[data-page="practice"] .practice-workbench-hero-copy h1 {
-    font-size: clamp(2rem, 10vw, 2.65rem);
+  body[data-page="practice"] .copilot-status-card,
+  body[data-page="practice"] .practice-copilot-metrics article,
+  body[data-page="practice"] .practice-route-nodes article,
+  body[data-page="practice"] .practice-route-interventions article,
+  body[data-page="practice"] .agent-log-card,
+  body[data-page="practice"] .practice-window-nodes article {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
   }
 
-  body[data-page="practice"] .phase-node-grid,
-  body[data-page="practice"] .practice-phase-track[data-phase="classroom"] .phase-node-grid,
-  body[data-page="practice"] .current-step-detail-grid,
-  body[data-page="practice"] .artifact-output-grid {
+  body[data-page="practice"] .practice-copilot-hero h1,
+  body[data-page="practice"] .practice-copilot-hero .lede,
+  body[data-page="practice"] .practice-route-head h2,
+  body[data-page="practice"] .practice-route-head p,
+  body[data-page="practice"] .practice-route-nodes strong {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    white-space: normal;
+  }
+
+  body[data-page="practice"] .practice-route-nodes {
     grid-template-columns: 1fr;
   }
 
-  body[data-page="practice"] .practice-context-grid div {
+  body[data-page="practice"] .practice-route-head .secondary-action {
+    width: 100%;
+  }
+
+  body[data-page="practice"] .practice-agent-runtime-head .primary-action {
+    width: 100%;
+  }
+
+  body[data-page="practice"] .runtime-flow-list,
+  body[data-page="practice"] .runtime-rubric-list {
     grid-template-columns: 1fr;
-    gap: 4px;
+  }
+
+  body[data-page="practice"] .practice-route-legend {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  body[data-page="practice"] .practice-route-legend span {
+    flex: 0 0 auto;
+  }
+
+  body[data-page="practice"] .practice-route-overview {
+    padding: 20px;
+    border-radius: 24px;
+  }
+
+  body[data-page="practice"] .agent-log-head {
+    display: grid;
+  }
+
+  body[data-page="practice"] .agent-log-list li {
+    grid-template-columns: 62px 16px minmax(0, 1fr);
+    font-size: 0.82rem;
+  }
+
+  body[data-page="practice"] .copilot-status-card,
+  body[data-page="practice"] .practice-route-nodes article {
+    min-height: auto;
   }
 }
 
