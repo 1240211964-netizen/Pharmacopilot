@@ -8296,14 +8296,8 @@ function renderManagementCoursePanels() {
       <div class="course-action-stack">
         ${(node.actions || []).map((action) => `<button type="button" data-course-node-action="${escapeHtml(action)}">${escapeHtml(action)}</button>`).join("")}
       </div>
-      <a
-        class="course-action-primary course-action-external"
-        href="${escapeHtml(FANYA_KNOWLEDGE_GRAPH_URL)}"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="在新窗口打开泛雅知识图谱"
-      >
-        新窗口打开泛雅知识图谱
+      <a class="course-action-primary course-action-external" href="${escapeHtml(FANYA_KNOWLEDGE_GRAPH_URL)}" aria-label="打开泛雅知识图谱">
+        打开泛雅知识图谱
       </a>
       <button class="course-action-primary course-action-copy" type="button" data-course-node-action="复制节点上下文">复制节点上下文</button>
     `;
@@ -8341,7 +8335,7 @@ function setFanyaKnowledgeEmbedState(state, message) {
   if (status) status.textContent = message;
   if (loadButton) {
     loadButton.textContent =
-      state === "loaded" ? "重新预览泛雅面板" : state === "fallback" ? "再次尝试本页预览" : "尝试在本页预览";
+      state === "loaded" ? "重新加载泛雅面板" : state === "fallback" ? "再次尝试嵌入" : "尝试嵌入泛雅面板";
   }
 }
 
@@ -8361,8 +8355,6 @@ function initFanyaKnowledgeGraphPanel() {
   const loadButton = $("#loadFanyaKnowledgeGraph");
   $$("[data-fanya-knowledge-link]").forEach((link) => {
     link.setAttribute("href", FANYA_KNOWLEDGE_GRAPH_URL);
-    link.setAttribute("target", "_blank");
-    link.setAttribute("rel", "noopener noreferrer");
   });
   if (!frame || !loadButton || loadButton.dataset.fanyaEmbedReady === "true") return;
   loadButton.dataset.fanyaEmbedReady = "true";
@@ -8374,7 +8366,7 @@ function initFanyaKnowledgeGraphPanel() {
     }
     fanyaKnowledgeEmbedTimer = window.setTimeout(() => {
       if (isFanyaKnowledgeFrameBlank(frame)) {
-        setFanyaKnowledgeEmbedState("fallback", "泛雅限制内嵌，请新窗口打开");
+        setFanyaKnowledgeEmbedState("fallback", "泛雅可能限制内嵌，请在原站打开");
       } else {
         setFanyaKnowledgeEmbedState("loaded", "已尝试加载泛雅面板");
       }
@@ -8387,7 +8379,7 @@ function initFanyaKnowledgeGraphPanel() {
     frame.src = FANYA_KNOWLEDGE_GRAPH_URL;
     fanyaKnowledgeEmbedTimer = window.setTimeout(() => {
       if (panel.dataset.embedState === "loading") {
-        setFanyaKnowledgeEmbedState("fallback", "泛雅限制内嵌，请新窗口打开");
+        setFanyaKnowledgeEmbedState("fallback", "泛雅可能限制内嵌，请在原站打开");
       }
     }, FANYA_KNOWLEDGE_GRAPH_TIMEOUT_MS);
   });
