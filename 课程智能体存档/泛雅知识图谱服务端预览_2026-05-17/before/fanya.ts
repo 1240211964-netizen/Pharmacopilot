@@ -17,8 +17,6 @@ export function publicFanyaConfig(config: AppConfig): JsonRecord {
     authMode: config.fanya.authMode,
     schoolId: config.fanya.schoolId || "",
     defaultCourseId: config.fanya.defaultCourseId || "",
-    knowledgeProxyEnabled: config.fanya.knowledgeProxyEnabled,
-    knowledgeGraphConfigured: Boolean(config.fanya.knowledgeGraphUrl),
     endpoints: Object.fromEntries(
       Object.entries(config.fanya.endpoints).map(([key, value]) => [key, Boolean(value)]),
     ),

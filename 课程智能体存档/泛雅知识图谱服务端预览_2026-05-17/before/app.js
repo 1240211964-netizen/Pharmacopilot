@@ -8096,7 +8096,6 @@ const MANAGEMENT_COURSE_GRAPH_NODES = [
 
 const FANYA_KNOWLEDGE_GRAPH_URL =
   "https://mooc2-ans.chaoxing.com/topic-ans/knowgraph/index.html#/knowledgeMap/frameDiagramTeacher?courseid=251769346&clazzid=131807646&courseId=251769346&classId=131807646&clazzId=131807646&cpi=18085305&enc=399a5e53fc07ceeee1367420f088ffd5&openc=fa9f34ffaedc53b0a54335cd85a002ac&t=1778920097391&ut=t&modeType=2&topicModelId=0";
-const FANYA_KNOWLEDGE_GRAPH_STATUS_URL = "/api/fanya/knowledge-graph/status";
 
 const MANAGEMENT_COURSE_GRAPH_LINKS = [
   ["course-core", "management-foundation"],
@@ -8296,7 +8295,6 @@ function renderManagementCoursePanels() {
       </div>
       <a
         class="course-action-primary course-action-external"
-        data-fanya-knowledge-link
         href="${escapeHtml(FANYA_KNOWLEDGE_GRAPH_URL)}"
         target="_blank"
         rel="noopener noreferrer"
@@ -8332,105 +8330,15 @@ function renderManagementCoursePanels() {
   }
 }
 
-function setFanyaKnowledgeEmbedState(state, title, description) {
-  const panel = $("#fanyaKnowledgeGraphPanel");
-  const placeholder = $("#fanyaKnowledgePlaceholder");
-  const status = $("#fanyaKnowledgeStatusText");
-  const statusDescription = $("#fanyaKnowledgeStatusDescription");
-  if (panel) panel.dataset.embedState = state;
-  if (placeholder) {
-    const label = placeholder.querySelector("span");
-    const strong = placeholder.querySelector("strong");
-    const copy = placeholder.querySelector("p");
-    if (label) label.textContent = state === "loaded" ? "服务端预览已加载" : state === "loading" ? "服务端预览加载中" : "服务端预览待配置";
-    if (strong) strong.textContent = title;
-    if (copy) copy.textContent = description;
-  }
-  if (status) status.textContent = title;
-  if (statusDescription) statusDescription.textContent = description;
-}
-
-async function getFanyaKnowledgeStatus() {
-  const response = await fetch(FANYA_KNOWLEDGE_GRAPH_STATUS_URL, {
-    headers: { accept: "application/json" },
-    cache: "no-store",
-  });
-  if (!response.ok) throw new Error(`泛雅知识图谱状态接口返回 ${response.status}`);
-  return response.json();
-}
-
-function applyFanyaKnowledgeLinks(status) {
-  const href = typeof status?.externalUrl === "string" && status.externalUrl ? status.externalUrl : FANYA_KNOWLEDGE_GRAPH_URL;
-  $$("[data-fanya-knowledge-link]").forEach((link) => {
-    link.setAttribute("href", href);
-    link.setAttribute("target", "_blank");
-    link.setAttribute("rel", "noopener noreferrer");
-  });
-}
-
-function updateFanyaKnowledgeControl(status) {
-  const loadButton = $("#loadFanyaKnowledgeGraph");
-  applyFanyaKnowledgeLinks(status);
-  if (loadButton) {
-    loadButton.disabled = !status?.canPreview || !status?.frameUrl;
-    loadButton.dataset.frameUrl = typeof status?.frameUrl === "string" ? status.frameUrl : "";
-  }
-
-  if (status?.canPreview) {
-    setFanyaKnowledgeEmbedState(
-      "ready",
-      "服务端预览可用",
-      "点击“加载本页预览”后，将由后端代理泛雅知识图谱资源，账号与 cookie 只保存在服务器侧。",
-    );
-    return;
-  }
-
-  const missing = Array.isArray(status?.missing) && status.missing.length ? `缺少：${status.missing.join("、")}` : "服务端预览通道尚未启用。";
-  setFanyaKnowledgeEmbedState(
-    "external",
-    "需配置后端通道",
-    `${missing} 当前仍可使用新窗口打开泛雅原站。`,
-  );
-}
-
 function initFanyaKnowledgeGraphPanel() {
   const panel = $("#fanyaKnowledgeGraphPanel");
   if (!panel) return;
-  const frame = $("#fanyaKnowledgeFrame");
-  const loadButton = $("#loadFanyaKnowledgeGraph");
-  let latestStatus = null;
-
-  applyFanyaKnowledgeLinks(null);
-
-  if (frame) {
-    frame.addEventListener("load", () => {
-      if (!frame.src || frame.src === "about:blank") return;
-      setFanyaKnowledgeEmbedState("loaded", "已加载服务端预览", "如果泛雅会话过期，请更新服务器侧授权后重新加载。");
-    });
-  }
-
-  if (loadButton && frame) {
-    loadButton.addEventListener("click", async () => {
-      try {
-        if (!latestStatus) latestStatus = await getFanyaKnowledgeStatus();
-        updateFanyaKnowledgeControl(latestStatus);
-        if (!latestStatus?.canPreview || !latestStatus?.frameUrl) return;
-        setFanyaKnowledgeEmbedState("loading", "正在加载服务端预览", "后端正在请求泛雅图谱页面和资源。");
-        frame.src = latestStatus.frameUrl;
-      } catch (error) {
-        setFanyaKnowledgeEmbedState("error", "预览状态读取失败", error instanceof Error ? error.message : "请检查本地后端服务。");
-      }
-    });
-  }
-
-  getFanyaKnowledgeStatus()
-    .then((status) => {
-      latestStatus = status;
-      updateFanyaKnowledgeControl(status);
-    })
-    .catch((error) => {
-      setFanyaKnowledgeEmbedState("error", "后端状态读取失败", error instanceof Error ? error.message : "请确认本地服务已启动。");
-    });
+  panel.dataset.embedState = "external";
+  $$("[data-fanya-knowledge-link]").forEach((link) => {
+    link.setAttribute("href", FANYA_KNOWLEDGE_GRAPH_URL);
+    link.setAttribute("target", "_blank");
+    link.setAttribute("rel", "noopener noreferrer");
+  });
 }
 
 function renderManagementCourseGraph() {
@@ -8445,8 +8353,8 @@ function initManagementCourseGraphPage() {
   if (!$("#managementCourseGraph")) return false;
   loadAssets();
   importTrainingAndPracticeAssets();
-  renderManagementCourseGraph();
   initFanyaKnowledgeGraphPanel();
+  renderManagementCourseGraph();
   return true;
 }
 

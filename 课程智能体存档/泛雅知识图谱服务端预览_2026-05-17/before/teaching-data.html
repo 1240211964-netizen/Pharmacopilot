@@ -117,7 +117,7 @@
         class="fanya-knowledge-embed"
         id="fanyaKnowledgeGraphPanel"
         aria-labelledby="fanya-knowledge-title"
-        data-embed-state="checking"
+        data-embed-state="external"
       >
         <div class="fanya-knowledge-head">
           <div>
@@ -125,35 +125,27 @@
             <h2 id="fanya-knowledge-title">泛雅知识图谱面板</h2>
           </div>
           <p>
-            如需在本页内预览，必须启用后端服务端预览通道，由服务器侧授权请求泛雅并代理图谱资源；前端不保存泛雅账号、密码、cookie 或授权码。
+            泛雅知识图谱依赖当前浏览器的登录态和课程权限，已确认不支持在本页 iframe 预览。请在已登录泛雅的 Chrome 中使用新窗口打开。
           </p>
         </div>
 
         <div class="fanya-knowledge-layout">
-          <div class="fanya-iframe-shell">
-            <iframe
-              id="fanyaKnowledgeFrame"
-              title="泛雅知识图谱服务端预览"
-              src="about:blank"
-              loading="lazy"
-              referrerpolicy="no-referrer"
-            ></iframe>
+          <div class="fanya-iframe-shell fanya-embed-unavailable">
             <div class="fanya-iframe-placeholder" id="fanyaKnowledgePlaceholder" aria-live="polite">
-              <span>服务端预览待检测</span>
-              <strong>正在检查本地后端是否已启用泛雅知识图谱预览通道。</strong>
-              <p>如果未配置服务器侧授权，仍可使用右侧“新窗口打开泛雅图谱”。</p>
+              <span>内嵌预览受限</span>
+              <strong>泛雅当前不允许在第三方页面中预览知识图谱。</strong>
+              <p>请保持当前浏览器已登录泛雅，并使用右侧“新窗口打开泛雅图谱”。</p>
             </div>
           </div>
 
           <aside class="fanya-knowledge-control" aria-label="泛雅知识图谱接入控制">
             <div class="fanya-status-card">
-              <span>接入状态</span>
-              <strong id="fanyaKnowledgeStatusText">检测中</strong>
-              <p id="fanyaKnowledgeStatusDescription">正在读取后端 Connector 的泛雅知识图谱预览配置。</p>
+              <span>访问方式</span>
+              <strong id="fanyaKnowledgeStatusText">新窗口打开</strong>
+              <p>账号登录、课程权限和图谱展示由泛雅原站处理；本页不保存账号、密码、cookie 或授权码。</p>
             </div>
 
             <div class="fanya-control-actions">
-              <button class="fanya-action-secondary" id="loadFanyaKnowledgeGraph" type="button" disabled>加载本页预览</button>
               <a
                 class="fanya-action-primary"
                 id="openFanyaKnowledgeGraph"

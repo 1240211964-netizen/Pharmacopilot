@@ -32,18 +32,6 @@ function numberEnv(key: string, fallback: number): number {
   return Number.isFinite(value) && value > 0 ? value : fallback;
 }
 
-function boolEnv(key: string, fallback = false): boolean {
-  const value = env(key, fallback ? "true" : "false").trim().toLowerCase();
-  return ["1", "true", "yes", "on"].includes(value);
-}
-
-function csvEnv(key: string, fallback: string): string[] {
-  return env(key, fallback)
-    .split(",")
-    .map((item) => item.trim())
-    .filter(Boolean);
-}
-
 export function getConfig(rootDir: string): AppConfig {
   const deepseekApiKey = env("DEEPSEEK_API_KEY");
   const openaiApiKey = env("OPENAI_API_KEY");
@@ -90,9 +78,6 @@ function getFanyaConfig(): FanyaConfig {
     defaultCourseId: env("FANYA_DEFAULT_COURSE_ID"),
     defaultClassId: env("FANYA_DEFAULT_CLASS_ID"),
     timeoutMs: numberEnv("FANYA_TIMEOUT_MS", 12000),
-    knowledgeGraphUrl: env("FANYA_KNOWLEDGE_GRAPH_URL"),
-    knowledgeProxyEnabled: boolEnv("FANYA_KNOWLEDGE_PROXY_ENABLED", false),
-    knowledgeProxyHosts: csvEnv("FANYA_KNOWLEDGE_PROXY_HOSTS", "mooc2-ans.chaoxing.com"),
     endpoints: {
       health: env("FANYA_ENDPOINT_HEALTH"),
       courses: env("FANYA_ENDPOINT_COURSES"),

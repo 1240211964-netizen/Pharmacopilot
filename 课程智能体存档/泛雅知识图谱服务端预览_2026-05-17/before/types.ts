@@ -29,9 +29,6 @@ export interface FanyaConfig {
   defaultCourseId: string;
   defaultClassId: string;
   timeoutMs: number;
-  knowledgeGraphUrl: string;
-  knowledgeProxyEnabled: boolean;
-  knowledgeProxyHosts: string[];
   endpoints: Record<"health" | "courses" | "roster" | "assignments" | "resources" | "analytics", string>;
 }
 

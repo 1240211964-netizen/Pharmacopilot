@@ -3,11 +3,6 @@ import path from "node:path";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { getConfig, getMissingFanyaConfig, getMissingRagConfig, loadEnv } from "./config";
 import { callFanya, renderFanyaStatus } from "./fanya";
-import {
-  renderFanyaKnowledgeStatus,
-  serveFanyaKnowledgeFrame,
-  serveFanyaKnowledgeProxy,
-} from "./fanya-knowledge";
 import { httpError, json, readJsonBody, readMultipartBody, serveStatic } from "./http-utils";
 import type { AppConfig, GenerateRequestPayload, HttpError, JsonRecord } from "./types";
 import { generateAssetSummary, generateLessonPlan } from "./generation";
@@ -30,18 +25,6 @@ async function handleApi(req: IncomingMessage, res: ServerResponse, pathname: st
         ? "Connector is not configured. Copy .env.example to .env and fill in the school-authorized values."
         : "Connector configuration is present. Use /api/fanya/connect to verify the upstream API.",
     }));
-  }
-
-  if (req.method === "GET" && pathname === "/api/fanya/knowledge-graph/status") {
-    return json(res, 200, renderFanyaKnowledgeStatus(config));
-  }
-
-  if (req.method === "GET" && pathname === "/api/fanya/knowledge-graph/frame") {
-    return serveFanyaKnowledgeFrame(req, res, config);
-  }
-
-  if (pathname.startsWith("/api/fanya/knowledge-graph/proxy/")) {
-    return serveFanyaKnowledgeProxy(req, res, config, pathname);
   }
 
   if (req.method === "POST" && pathname === "/api/fanya/connect") {
