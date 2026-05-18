@@ -6714,81 +6714,6 @@ function normalizeFanyaAuthState(state) {
   return state;
 }
 
-function setChaoxingEditorEmbedState(state, title, description) {
-  const panel = $("#chaoxingEditorEmbedPanel");
-  const placeholder = $("#chaoxingEditorPlaceholder");
-  const status = $("#chaoxingEditorStatusText");
-  const statusDescription = $("#chaoxingEditorStatusDescription");
-  const loadButton = $("#loadChaoxingEditorEmbed");
-  if (panel) panel.dataset.embedState = state;
-  if (placeholder) {
-    const label = placeholder.querySelector("span");
-    const strong = placeholder.querySelector("strong");
-    const copy = placeholder.querySelector("p");
-    if (label) {
-      label.textContent =
-        state === "loaded"
-          ? "内嵌已加载"
-          : state === "loading"
-            ? "内嵌加载中"
-            : state === "blocked"
-              ? "内嵌可能受限"
-              : state === "error"
-                ? "内嵌配置异常"
-                : "内嵌待加载";
-    }
-    if (strong) strong.textContent = title;
-    if (copy) copy.textContent = description;
-  }
-  if (status) status.textContent = title;
-  if (statusDescription) statusDescription.textContent = description;
-  if (loadButton) {
-    loadButton.disabled = state === "loading";
-    loadButton.textContent = state === "loaded" ? "重新加载内嵌编辑器" : state === "loading" ? "正在加载" : "加载内嵌编辑器";
-  }
-}
-
-function initChaoxingEditorEmbedPanel() {
-  const panel = $("#chaoxingEditorEmbedPanel");
-  if (!panel) return;
-  const frame = $("#chaoxingEditorFrame");
-  const loadButton = $("#loadChaoxingEditorEmbed");
-  const openLink = $("#openChaoxingEditor");
-  const url = panel.dataset.editorUrl || openLink?.href || "";
-  let loadingTimer = null;
-
-  if (openLink && url) openLink.href = url;
-
-  frame?.addEventListener("load", () => {
-    if (!frame.getAttribute("src") || frame.getAttribute("src") === "about:blank") return;
-    if (loadingTimer) window.clearTimeout(loadingTimer);
-    setChaoxingEditorEmbedState(
-      "loaded",
-      "已加载内嵌页面",
-      "如果登录后编辑器仍为空白，通常是超星登录态、浏览器第三方 Cookie 或 iframe 白名单限制。",
-    );
-  });
-
-  loadButton?.addEventListener("click", () => {
-    if (!frame || !url) {
-      setChaoxingEditorEmbedState("error", "缺少超星编辑器地址", "请检查页面上的 data-editor-url 配置。");
-      return;
-    }
-    if (loadingTimer) window.clearTimeout(loadingTimer);
-    setChaoxingEditorEmbedState("loading", "正在加载超星页面", "正在请求超星 AI 评价编辑器，未登录时会先出现超星登录页。");
-    frame.src = url;
-    loadingTimer = window.setTimeout(() => {
-      if (panel.dataset.embedState === "loading") {
-        setChaoxingEditorEmbedState(
-          "blocked",
-          "可能受到平台嵌入限制",
-          "若画面长时间空白，请用新窗口打开；这通常说明第三方页面限制了 iframe 或登录态。",
-        );
-      }
-    }, 8000);
-  });
-}
-
 function initPracticePage() {
   if (!$("#fanyaAuthForm")) return;
   fanyaAuthState = {
@@ -6803,7 +6728,6 @@ function initPracticePage() {
   renderFanyaLogin();
   renderAuthorizedCourses();
   renderPracticeWorkspace();
-  initChaoxingEditorEmbedPanel();
 
   $("#fanyaAuthForm")?.addEventListener("submit", simulateFanyaAuth);
   $("#useMockFanyaAccount")?.addEventListener("click", useMockFanyaAccount);
