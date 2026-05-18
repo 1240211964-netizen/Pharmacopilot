@@ -3995,10 +3995,10 @@ const routePathDefinitions = [
 ];
 
 const routeStatusLabels = {
-  completed: "已通关",
-  current: "挑战中",
-  available: "可挑战",
-  locked: "未解锁",
+  completed: "已完成",
+  current: "当前",
+  available: "可进入",
+  locked: "未开始",
 };
 
 const routeStatusTone = {
@@ -4013,60 +4013,6 @@ let routeRubricExpanded = false;
 let routeNodeCardOpen = true;
 let routeNodeCardMode = "explain";
 let routeNodeRecommendationMessage = "";
-
-const routeGameMissionConfig = {
-  1: { icon: "境", challenge: "锁定本课在课程目标、专业任务和案例边界中的入口。", reward: "情境罗盘", power: "课程定位" },
-  2: { icon: "诊", challenge: "识别学生先备知识、常见误区和进入本课的真实起点。", reward: "学情雷达", power: "起点诊断" },
-  3: { icon: "标", challenge: "把课程任务转译为可观察、可评价的学习成果。", reward: "目标准星", power: "成果对齐" },
-  4: { icon: "构", challenge: "重构核心概念、重点难点和问题链。", reward: "概念钥匙", power: "内容重构" },
-  5: { icon: "材", challenge: "准备能支撑证据分析的案例材料和学习资源。", reward: "资源背包", power: "案例支撑" },
-  6: { icon: "架", challenge: "设计课前预习任务和学习支架，让学生带着问题进入课堂。", reward: "支架引擎", power: "课前引导" },
-  7: { icon: "测", challenge: "用诊断题或问题收集表提前发现概念边界混淆。", reward: "诊断探针", power: "问题发现" },
-  8: { icon: "序", challenge: "把目标、活动、资源、评价和时间安排组织成可执行闭环。", reward: "流程齿轮", power: "活动编排" },
-  9: { icon: "引", challenge: "用真实问题和教师引导语激发学生进入管理判断。", reward: "动机火种", power: "情境导入" },
-  10: { icon: "联", challenge: "连接已有经验、先备知识和本节课核心任务。", reward: "经验桥梁", power: "知识连接" },
-  11: { icon: "讲", challenge: "讲清核心概念，并提供能降低认知负荷的支架。", reward: "概念灯塔", power: "认知支架" },
-  12: { icon: "证", challenge: "组织学生基于案例证据完成分析、判断和论证。", reward: "证据镜片", power: "探究分析" },
-  13: { icon: "协", challenge: "用角色任务和协作规则推动小组形成高质量产出。", reward: "协作徽章", power: "小组推进" },
-  14: { icon: "问", challenge: "通过展示、同伴提问和教师追问提升思维质量。", reward: "追问卡组", power: "课堂对话" },
-  15: { icon: "馈", challenge: "把形成性评价嵌入课堂过程，并及时调节教学。", reward: "反馈仪表", power: "即时调控" },
-  16: { icon: "迁", challenge: "完成课堂总结、方法迁移和课后任务衔接。", reward: "迁移通行证", power: "闭环收束" },
-  17: { icon: "评", challenge: "收集学习成果，并依据量规完成可解释评价。", reward: "评价印章", power: "成果判读" },
-  18: { icon: "数", challenge: "用平台数据和学生作品诊断共性困难与个别差异。", reward: "数据透镜", power: "学习诊断" },
-  19: { icon: "扶", challenge: "针对不同表现提供具体反馈、补救和拓展支持。", reward: "支持锦囊", power: "差异支持" },
-  20: { icon: "复", challenge: "把本次教学转化为可复用资源和下一轮改进方案。", reward: "反思档案", power: "持续改进" },
-};
-
-const routeGameStatusLabels = {
-  completed: "已通关",
-  current: "挑战中",
-  available: "可挑战",
-  locked: "未解锁",
-};
-
-function getRouteGameProgress(status, stepId) {
-  if (status === "completed") return 100;
-  if (status === "current") return 72;
-  if (status === "available") return 42 + (Number(stepId) % 3) * 8;
-  return 12;
-}
-
-function getRouteGameMission(node, status = getRouteNodeStatus(node?.id)) {
-  const config = routeGameMissionConfig[Number(node?.id)] || {
-    icon: "关",
-    challenge: node?.task || "完成本环节教学设计任务。",
-    reward: "教学徽章",
-    power: "教学推进",
-  };
-  const phaseId = getTeachingPhaseIdByNodeId(Number(node?.id || 1));
-  const phaseTone = routeStageDefinitions.find((stage) => Number(stage.id) === phaseId)?.tone || "sage";
-  return {
-    ...config,
-    statusLabel: routeGameStatusLabels[status] || routeStatusLabels[status] || status,
-    progress: getRouteGameProgress(status, node?.id),
-    phaseTone,
-  };
-}
 
 function getRouteNode(nodeId = selectedRouteNodeId) {
   return routeTrainingNodes.find((node) => node.id === Number(nodeId)) || routeTrainingNodes.find((node) => node.status === "current") || routeTrainingNodes[0];
@@ -4364,69 +4310,27 @@ function renderMapNode(node) {
   const status = getRouteNodeStatus(node.id);
   const statusLabel = routeStatusLabels[status] || status;
   const stepLabel = String(node.id).padStart(2, "0");
+  const stepText = status === "completed" ? "✓" : stepLabel;
   const position = getRouteCoordinate(node);
   const teachingPhaseId = getTeachingPhaseIdByNodeId(node.id);
-  const mission = getRouteGameMission(node, status);
-  const levelIcon = status === "completed" ? "✓" : mission.icon;
   return `
     <button
-      class="route-node route-level-card route-node-${status} route-node-phase-${teachingPhaseId} route-level-${status} route-level-tone-${mission.phaseTone} ${selected ? "is-selected route-node-selected" : ""}"
+      class="route-node route-node-${status} route-node-phase-${teachingPhaseId} ${selected ? "is-selected route-node-selected" : ""}"
       type="button"
-      style="--route-level-x:${position.x}%; --route-level-y:${position.y}%; --route-level-progress:${mission.progress}%;"
+      style="left:${position.x}%; top:${position.y}%"
       data-route-node="${node.id}"
       data-route-status="${status}"
       aria-pressed="${selected ? "true" : "false"}"
-      aria-label="关卡 ${stepLabel} ${escapeHtml(node.title)}：${escapeHtml(mission.statusLabel)}"
+      aria-label="${stepLabel} ${escapeHtml(node.title)}：${escapeHtml(statusLabel)}"
     >
-      <span class="route-level-shell">
-        <span class="route-level-top">
-          <span class="route-level-number">${stepLabel}</span>
-          <span class="route-level-state">${escapeHtml(mission.statusLabel)}</span>
-        </span>
-        <span class="route-node-orb route-level-token"><span>${escapeHtml(levelIcon)}</span></span>
-        <span class="route-node-title route-level-title">${escapeHtml(getStepShortName(node.id))}</span>
-        <span class="route-level-reward">${escapeHtml(mission.reward)}</span>
-        <span class="route-level-meter" aria-hidden="true"><span></span></span>
-      </span>
+      <span class="route-node-orb"><span>${stepText}</span></span>
+      <span class="route-node-title">${escapeHtml(getStepShortName(node.id))}</span>
+      ${status === "current" ? `<span class="route-node-current-tag">当前环节</span>` : ""}
       <span class="route-node-tooltip" role="tooltip">
         <strong>${stepLabel} ${escapeHtml(node.title)}</strong>
-        <em>${escapeHtml(statusLabel)} · ${escapeHtml(mission.reward)}</em>
+        <em>${escapeHtml(statusLabel)}</em>
       </span>
     </button>
-  `;
-}
-
-function renderRouteGameMission(node, stepId, status) {
-  const mission = getRouteGameMission(node, status);
-  const statusLabel = mission.statusLabel;
-  return `
-    <section class="route-game-mission" aria-label="本关挑战">
-      <div class="route-game-mission-head">
-        <span class="route-game-level">关卡 ${String(stepId).padStart(2, "0")}</span>
-        <div>
-          <p class="eyebrow">Mini challenge</p>
-          <h4>${escapeHtml(mission.reward)}</h4>
-        </div>
-        <strong>${escapeHtml(statusLabel)}</strong>
-      </div>
-      <div class="route-game-meter-large" aria-label="关卡进度 ${mission.progress}%">
-        <span style="width:${mission.progress}%"></span>
-      </div>
-      <div class="route-game-mission-grid">
-        <div>
-          <span>本关挑战</span>
-          <p>${escapeHtml(mission.challenge)}</p>
-        </div>
-        <div>
-          <span>通关条件</span>
-          <p>${escapeHtml(node.rubric)}</p>
-        </div>
-        <div>
-          <span>解锁能力</span>
-          <p>${escapeHtml(mission.power)} · ${escapeHtml(node.output)}</p>
-        </div>
-      </div>
-    </section>
   `;
 }
 
@@ -4493,7 +4397,7 @@ function renderNodeDetailPanel() {
   const analysis = preview.analysis;
   const status = getRouteNodeStatus(stepId);
   const statusLabel = routeStatusLabels[status] || status;
-  const detailStatusLabel = status === "current" ? "当前挑战" : statusLabel;
+  const detailStatusLabel = status === "current" ? "当前推荐" : statusLabel;
   const scoreMeta = getTrainingSidebarScoreMeta(stepId);
   const isConfirmed = Boolean(trainingState.stepResults?.[String(stepId)]);
   const isLocked = status === "locked";
@@ -4511,7 +4415,7 @@ function renderNodeDetailPanel() {
 
   const commonHeader = `
       <div class="route-detail-kicker">
-        <span>关卡说明</span>
+        <span>环节说明</span>
         <div class="route-popover-title-actions">
           <strong class="route-detail-status status-${status}">${escapeHtml(detailStatusLabel)}</strong>
           <button class="route-popover-close" data-route-action="close-card" type="button" aria-label="关闭环节说明卡">×</button>
@@ -4522,7 +4426,6 @@ function renderNodeDetailPanel() {
         <p>${escapeHtml(node.goal)}</p>
         <div class="route-workbench-meta">
           <span>${escapeHtml(teachingPhaseTitle)}</span>
-          <span>关卡 ${String(stepId).padStart(2, "0")}</span>
           <span>当前评分：${escapeHtml(scoreMeta.label)}</span>
           ${isConfirmed ? `<span>已确认结果</span>` : `<span>尚未确认</span>`}
         </div>
@@ -4540,23 +4443,22 @@ function renderNodeDetailPanel() {
         <section class="route-workbench-block route-explain-workbench" aria-labelledby="route-explain-title-${stepId}">
           <div class="route-block-head">
             <div>
-              <p class="eyebrow">关卡任务</p>
-              <h4 id="route-explain-title-${stepId}">开始前先读懂本关挑战</h4>
+              <p class="eyebrow">环节说明</p>
+              <h4 id="route-explain-title-${stepId}">开始前先理解这个环节</h4>
             </div>
           </div>
-          ${renderRouteGameMission(node, stepId, status)}
           <div class="route-story-list">
             ${renderRouteStoryRows(node, step, stepId)}
           </div>
           <div class="route-story-rubric">${renderRouteNodeQualification(node, stepId)}</div>
           <div class="route-detail-actions route-popover-summary-actions">
             <button class="primary-action" data-route-action="start-training" type="button" ${isLocked ? "disabled aria-disabled=\"true\"" : ""}>
-              ${isLocked ? "完成前序关卡后挑战本关" : "开始本关挑战"}
+              ${isLocked ? "完成前序环节后进入设计" : "进入本环节设计"}
             </button>
           </div>
           ${
             isLocked
-              ? `<p class="route-locked-hint">本关仍可预览说明，但需要先完成前序关卡，才能进入方案选择和智能生成流程。</p>`
+              ? `<p class="route-locked-hint">该环节仍可预览说明，但需要先完成前序环节，才能进入本环节设计流程。</p>`
               : ""
           }
         </section>
@@ -4613,7 +4515,7 @@ function renderNodeDetailPanel() {
           <div><span>产出物</span><p>${escapeHtml(node.output)}</p></div>
         </div>
         <div class="route-detail-actions">
-          <button class="primary-action" data-route-action="confirm" type="button" ${selectedOptionId ? "" : "disabled aria-disabled=\"true\""}>确认通关</button>
+          <button class="primary-action" data-route-action="confirm" type="button" ${selectedOptionId ? "" : "disabled aria-disabled=\"true\""}>确认本环节</button>
           <button class="secondary-action" data-route-action="collapse-card" type="button">返回环节说明</button>
         </div>
       </section>
@@ -4744,14 +4646,14 @@ function confirmRouteStep() {
   routeNodeCardMode = "explain";
   routeNodeRecommendationMessage =
     nextStep > stepId
-      ? `已通关 ${String(stepId).padStart(2, "0")}，推荐下一步挑战 ${String(nextStep).padStart(2, "0")}：${nextNode.title}。`
-      : "已通关全部环节，可进入下方复盘区查看整体完成情况。";
+      ? `已确认环节 ${String(stepId).padStart(2, "0")}，推荐下一步进入环节 ${String(nextStep).padStart(2, "0")}：${nextNode.title}。`
+      : "已确认全部环节，可进入下方复盘区查看整体完成情况。";
   trainingState.currentStepId = nextStep;
   trainingState.isTrainingCompleted = trainingState.completedStepIds.length >= trainingSteps.length;
 
   saveTrainingState();
   renderTeachingNavigationPage();
-  showToast("已确认通关，路线已更新");
+  showToast("已确认本环节，路线已更新");
   focusRouteNodeDetailPanel();
 }
 
@@ -4769,9 +4671,9 @@ function renderProgressSummary() {
   const afterClassNodes = getTeachingPhaseNodes(3);
   const afterClassReady = afterClassNodes.filter((node) => getRouteNodeStatus(node.id) !== "locked").length;
   const summaries = [
-    { label: "课前关卡完成度", value: `${Math.round((preClassReady / preClassNodes.length) * 100)}%`, copy: "检查课程理解、目标设定、资源支架和活动序列是否连成可执行方案。" },
-    { label: "课中关卡解锁度", value: `${Math.round((inClassReady / inClassNodes.length) * 100)}%`, copy: "关注案例任务、课堂协作、展示讨论和形成性评价是否具备真实证据。" },
-    { label: "课后关卡解锁度", value: `${Math.round((afterClassReady / afterClassNodes.length) * 100)}%`, copy: "后续需要完成学习成果评价、数据诊断、差异化反馈和教学反思沉淀。" },
+    { label: "课前设计完成度", value: `${Math.round((preClassReady / preClassNodes.length) * 100)}%`, copy: "检查课程理解、目标设定、资源支架和活动序列是否连成可执行方案。" },
+    { label: "课中实施准备度", value: `${Math.round((inClassReady / inClassNodes.length) * 100)}%`, copy: "关注案例任务、课堂协作、展示讨论和形成性评价是否具备真实证据。" },
+    { label: "课后改进准备度", value: `${Math.round((afterClassReady / afterClassNodes.length) * 100)}%`, copy: "后续需要完成学习成果评价、数据诊断、差异化反馈和教学反思沉淀。" },
   ];
   container.innerHTML = `
     ${summaries
@@ -4788,7 +4690,7 @@ function renderProgressSummary() {
     <article class="route-progress-card route-next-advice">
       <span>下一步建议</span>
       <strong>${String(current.id).padStart(2, "0")} ${escapeHtml(current.title)}</strong>
-      <p>建议继续挑战“${escapeHtml(current.title)}”，检查该环节是否同时回应 ${escapeHtml(getTeachingPhaseTitle(getTeachingPhaseIdByNodeId(current.id)))}、学习证据和药事管理真实情境。</p>
+      <p>建议继续完善“${escapeHtml(current.title)}”，检查该环节是否同时回应 ${escapeHtml(getTeachingPhaseTitle(getTeachingPhaseIdByNodeId(current.id)))}、学习证据和药事管理真实情境。</p>
     </article>
   `;
 }
