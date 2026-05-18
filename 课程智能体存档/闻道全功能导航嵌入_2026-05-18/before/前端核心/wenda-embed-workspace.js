@@ -17156,7 +17156,7 @@ exports.unstable_wrapCallback = function (callback) {
 "src/lib/wenda": function(require, module, exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.WENDA_HOUDAO_MODEL_ID = exports.WENDA_HOUDAO_AGENT_ID = exports.WENDA_DEEP_RESEARCH_SEARCH_TEXT = exports.WENDA_DEEP_RESEARCH_PROMPT_ID = exports.WENDA_DEEP_RESEARCH_APPLICATION_ID = exports.WENDA_DEFAULT_SEARCH_TEXT = exports.WENDA_DEFAULT_HD = exports.WENDA_DEFAULT_MODEL_ID = exports.WENDA_DEFAULT_AGENT_ID = void 0;
+exports.WENDA_DEFAULT_SEARCH_TEXT = exports.WENDA_DEFAULT_HD = exports.WENDA_DEFAULT_MODEL_ID = exports.WENDA_DEFAULT_AGENT_ID = void 0;
 exports.normalizeWendaDomain = normalizeWendaDomain;
 exports.getRuntimeWendaDomain = getRuntimeWendaDomain;
 exports.buildWendaUrl = buildWendaUrl;
@@ -17164,11 +17164,6 @@ exports.WENDA_DEFAULT_AGENT_ID = "6f5b49b6-5cb4-11f0-9ae8-fa163f087fa9";
 exports.WENDA_DEFAULT_MODEL_ID = "12609df7-fee9-11ef-a29b-d039570c2aae";
 exports.WENDA_DEFAULT_HD = "1,1";
 exports.WENDA_DEFAULT_SEARCH_TEXT = "请基于药事管理本科课程的教学目标，帮助我设计一个课堂讨论任务。";
-exports.WENDA_DEEP_RESEARCH_APPLICATION_ID = "c9689c61-0533-11f0-8782-d031995c2cce";
-exports.WENDA_DEEP_RESEARCH_PROMPT_ID = "4be65eb4-17a1-11f1-812d-e0be038d5bbb";
-exports.WENDA_DEEP_RESEARCH_SEARCH_TEXT = "请围绕药事管理本科课程建设，梳理近年智能教学研究进展。";
-exports.WENDA_HOUDAO_AGENT_ID = "d11af630-a8fc-11f0-b46d-fa163f5838c7";
-exports.WENDA_HOUDAO_MODEL_ID = "16609df7-fee9-11ef-a29b-d039570c2aae";
 const WENDA_ROUTE_PATHS = {
     history: "history",
     knowledge_base: "knowledge_base",
@@ -17182,20 +17177,6 @@ const WENDA_ROUTE_PATHS = {
     houdao_research_history: "houdao_research_history",
     ai_researcher: "ai_researcher",
     ai_citation: "ai_citation",
-};
-const WENDA_ROUTE_DEFAULT_HD = {
-    history: exports.WENDA_DEFAULT_HD,
-    knowledge_base: exports.WENDA_DEFAULT_HD,
-    subscribe: exports.WENDA_DEFAULT_HD,
-    project: exports.WENDA_DEFAULT_HD,
-    ai_knowledge_base: exports.WENDA_DEFAULT_HD,
-    home: "0,1,1",
-    search_history: "1,1,1",
-    deep_research_history: "0,1,1",
-    ai_applications: exports.WENDA_DEFAULT_HD,
-    houdao_research_history: exports.WENDA_DEFAULT_HD,
-    ai_researcher: exports.WENDA_DEFAULT_HD,
-    ai_citation: exports.WENDA_DEFAULT_HD,
 };
 function normalizeWendaDomain(value) {
     return value
@@ -17213,7 +17194,7 @@ function buildWendaUrl(config) {
     if (!domain)
         throw new Error("请先配置机构闻道域名。");
     const route = config.route || "history";
-    const agentId = config.agentId?.trim() || "";
+    const agentId = config.agentId.trim();
     const modelId = config.modelId?.trim() || "";
     const searchText = config.searchText?.trim() || "";
     const datasetIds = normalizeIdList(config.datasetIds);
@@ -17221,34 +17202,22 @@ function buildWendaUrl(config) {
     const fileIds = normalizeIdList(config.fileIds, 1);
     const hasAttachment = imageIds.length > 0 || fileIds.length > 0;
     const exploreId = config.exploreId?.trim();
-    const applicationId = config.applicationId?.trim() || "";
-    if (route === "history" || route === "houdao_research_history") {
-        if (!agentId)
-            throw new Error("当前对话页面必须提供 agentId。");
-        if (!modelId)
-            throw new Error("当前对话页面必须提供 modelId。");
-        if (!searchText && !hasAttachment) {
-            throw new Error("当前对话页面必须提供检索内容，或至少传入一个图片/文件 ID。");
-        }
-    }
-    if (route === "deep_research_history") {
-        if (!applicationId)
-            throw new Error("DeepResearch 页面必须提供 applicationId。");
-        if (!searchText)
-            throw new Error("DeepResearch 页面必须提供检索内容。");
+    if (!agentId)
+        throw new Error("agentId 是必填参数。");
+    if (route === "history" && !modelId)
+        throw new Error("普通对话页必须提供 modelId。");
+    if (route === "history" && !searchText && !hasAttachment) {
+        throw new Error("普通对话页必须提供检索内容，或至少传入一个图片/文件 ID。");
     }
     const url = new URL(`/api/openAccess/redirect/${WENDA_ROUTE_PATHS[route]}`, `https://${domain}`);
     const params = new URLSearchParams();
-    params.set("hd", config.hd || WENDA_ROUTE_DEFAULT_HD[route]);
-    if (agentId)
-        params.set("agentId", agentId);
+    params.set("hd", config.hd || exports.WENDA_DEFAULT_HD);
+    params.set("agentId", agentId);
     if (modelId)
         params.set("modelId", modelId);
     if (searchText)
         params.set("searchText", searchText);
-    if (route === "history" || typeof config.internetSearch === "boolean") {
-        params.set("internet_search", String(config.internetSearch ?? false));
-    }
+    params.set("internet_search", String(config.internetSearch ?? false));
     if (datasetIds.length)
         params.set("datasetList", JSON.stringify(datasetIds));
     if (imageIds.length)
@@ -17257,20 +17226,6 @@ function buildWendaUrl(config) {
         params.set("file_ids", JSON.stringify(fileIds));
     if (exploreId)
         params.set("exploreId", exploreId);
-    if (config.selectAgentId?.trim())
-        params.set("select_agent_id", config.selectAgentId.trim());
-    if (config.threadId?.trim())
-        params.set("threadId", config.threadId.trim());
-    if (applicationId)
-        params.set("applicationId", applicationId);
-    if (config.reportStyle?.trim())
-        params.set("reportStyle", config.reportStyle.trim());
-    if (config.modeType?.trim())
-        params.set("modeType", config.modeType.trim());
-    if (config.retrievalSources?.length)
-        params.set("retrievalSources", normalizeIdList(config.retrievalSources).join(","));
-    if (config.promptId?.trim())
-        params.set("promptId", config.promptId.trim());
     url.search = params.toString();
     return url.href;
 }
@@ -17320,218 +17275,63 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.WendaEmbedWorkspace = WendaEmbedWorkspace;
 const react_1 = __importStar(require("react"));
 const wenda_1 = require("../../lib/wenda");
-const WENDA_NAV_GROUPS = [
-    {
-        title: "问道",
-        items: [
-            {
-                id: "science-home",
-                route: "home",
-                group: "问道",
-                label: "科学探索",
-                shortLabel: "探",
-                description: "进入闻道首页，承接科学导航和智能体入口。",
-            },
-            {
-                id: "conversation",
-                route: "history",
-                group: "问道",
-                label: "对话页面",
-                shortLabel: "话",
-                description: "进入普通对话页，默认使用医学影像学智能体和 DeepSeek-R1。",
-            },
-            {
-                id: "ai-researcher",
-                route: "ai_researcher",
-                group: "问道",
-                label: "AI研究员",
-                shortLabel: "研",
-                description: "打开 AI 研究员页面，用于研究辅助和学术任务推进。",
-            },
-            {
-                id: "subscribe",
-                route: "subscribe",
-                group: "问道",
-                label: "学术追踪",
-                shortLabel: "追",
-                description: "打开学术追踪页面，跟踪科研领域和订阅内容。",
-            },
-            {
-                id: "ai-knowledge-base",
-                route: "ai_knowledge_base",
-                group: "问道",
-                label: "AI知识库",
-                shortLabel: "知",
-                description: "进入 AI 知识库页面，维护和组织课程相关知识资源。",
-            },
-            {
-                id: "ai-applications",
-                route: "ai_applications",
-                group: "问道",
-                label: "AI应用",
-                shortLabel: "用",
-                description: "打开 AI 应用页面，进入平台提供的应用能力集合。",
-            },
-            {
-                id: "ai-citation",
-                route: "ai_citation",
-                group: "问道",
-                label: "AI引证网络",
-                shortLabel: "引",
-                description: "打开 AI 引证网络页面，用于文献和引证关系查看。",
-            },
-        ],
-    },
-    {
-        title: "求索",
-        items: [
-            {
-                id: "knowledge-base",
-                route: "knowledge_base",
-                group: "求索",
-                label: "知识星链",
-                shortLabel: "链",
-                description: "打开知识星链页面，查看原工作集和知识链资源。",
-            },
-            {
-                id: "project",
-                route: "project",
-                group: "求索",
-                label: "课题 / 任务",
-                shortLabel: "题",
-                description: "打开课题页面，承接项目和任务类研究工作。",
-            },
-            {
-                id: "deep-research",
-                route: "deep_research_history",
-                group: "求索",
-                label: "DeepResearch",
-                shortLabel: "深",
-                description: "进入 DeepResearch 对话页，默认启用学术、网络和知识库检索源。",
-            },
-            {
-                id: "houdao",
-                route: "houdao_research_history",
-                group: "求索",
-                label: "厚道对话",
-                shortLabel: "厚",
-                description: "打开厚道对话页面，使用文档指引中的厚道智能体配置。",
-            },
-            {
-                id: "search-history",
-                route: "search_history",
-                group: "求索",
-                label: "历史记录",
-                shortLabel: "史",
-                description: "打开历史记录页面，回看已有检索和对话记录。",
-            },
-        ],
-    },
-];
-const DEFAULT_ITEM_ID = "science-home";
-const ALL_NAV_ITEMS = WENDA_NAV_GROUPS.flatMap((group) => group.items);
-function findNavItem(itemId) {
-    return ALL_NAV_ITEMS.find((item) => item.id === itemId) || ALL_NAV_ITEMS[0];
-}
-function buildWorkspaceUrl(domain, item) {
-    if (item.id === "science-home") {
-        return (0, wenda_1.buildWendaUrl)({
-            domain,
-            route: "home",
-            hd: "0,1,1",
-            selectAgentId: wenda_1.WENDA_DEFAULT_AGENT_ID,
-        });
-    }
-    if (item.route === "history") {
-        return (0, wenda_1.buildWendaUrl)({
-            domain,
-            route: item.route,
-            agentId: wenda_1.WENDA_DEFAULT_AGENT_ID,
-            modelId: wenda_1.WENDA_DEFAULT_MODEL_ID,
-            searchText: wenda_1.WENDA_DEFAULT_SEARCH_TEXT,
-            hd: wenda_1.WENDA_DEFAULT_HD,
-            internetSearch: false,
-        });
-    }
-    if (item.route === "deep_research_history") {
-        return (0, wenda_1.buildWendaUrl)({
-            domain,
-            route: item.route,
-            applicationId: wenda_1.WENDA_DEEP_RESEARCH_APPLICATION_ID,
-            searchText: wenda_1.WENDA_DEEP_RESEARCH_SEARCH_TEXT,
-            hd: "0,1,1",
-            reportStyle: "survey",
-            modeType: "exploration",
-            retrievalSources: ["academic", "internet", "knowledge_base"],
-            promptId: wenda_1.WENDA_DEEP_RESEARCH_PROMPT_ID,
-        });
-    }
-    if (item.route === "houdao_research_history") {
-        return (0, wenda_1.buildWendaUrl)({
-            domain,
-            route: item.route,
-            agentId: wenda_1.WENDA_HOUDAO_AGENT_ID,
-            modelId: wenda_1.WENDA_HOUDAO_MODEL_ID,
-            searchText: wenda_1.WENDA_DEFAULT_SEARCH_TEXT,
-            hd: wenda_1.WENDA_DEFAULT_HD,
-        });
-    }
+function buildWorkspaceUrl(domain) {
     return (0, wenda_1.buildWendaUrl)({
         domain,
-        route: item.route,
-        hd: item.route === "search_history" ? "1,1,1" : wenda_1.WENDA_DEFAULT_HD,
+        route: "ai_knowledge_base",
+        agentId: wenda_1.WENDA_DEFAULT_AGENT_ID,
+        hd: wenda_1.WENDA_DEFAULT_HD,
+        internetSearch: false,
+        datasetIds: [],
+        imageIds: [],
+        fileIds: [],
     });
 }
 function WendaEmbedWorkspace() {
     const [domain] = (0, react_1.useState)(() => (0, wenda_1.getRuntimeWendaDomain)());
-    const [activeItemId, setActiveItemId] = (0, react_1.useState)(DEFAULT_ITEM_ID);
     const [frameVersion, setFrameVersion] = (0, react_1.useState)(0);
-    const activeItem = (0, react_1.useMemo)(() => findNavItem(activeItemId), [activeItemId]);
-    const urlState = (0, react_1.useMemo)(() => {
+    const [error, setError] = (0, react_1.useState)("");
+    const [embedUrl, setEmbedUrl] = (0, react_1.useState)(() => {
         try {
-            return { error: "", url: buildWorkspaceUrl(domain, activeItem) };
+            return buildWorkspaceUrl(domain);
+        }
+        catch {
+            return "";
+        }
+    });
+    function refreshFrame() {
+        try {
+            const nextUrl = buildWorkspaceUrl(domain);
+            setEmbedUrl(nextUrl);
+            setFrameVersion((value) => value + 1);
+            setError("");
         }
         catch (nextError) {
-            return {
-                error: nextError instanceof Error ? nextError.message : "闻道链接生成失败。",
-                url: "",
-            };
+            setError(nextError instanceof Error ? nextError.message : "闻道链接生成失败。");
         }
-    }, [activeItem, domain]);
-    function selectItem(itemId) {
-        setActiveItemId(itemId);
-        setFrameVersion((value) => value + 1);
-    }
-    function refreshFrame() {
-        setFrameVersion((value) => value + 1);
     }
     return (react_1.default.createElement("section", { className: "wenda-embed-workspace", "aria-labelledby": "wenda-embed-title" },
+        react_1.default.createElement("div", { className: "wenda-embed-head" },
+            react_1.default.createElement("div", null,
+                react_1.default.createElement("p", { className: "eyebrow" }, "\u5916\u90E8\u5B66\u672F\u670D\u52A1"),
+                react_1.default.createElement("h2", { id: "wenda-embed-title" }, "\u95FB\u9053 AI \u77E5\u8BC6\u5E93\u5185\u5D4C\u5DE5\u4F5C\u533A")),
+            react_1.default.createElement("p", null, "\u4EE5\u9875\u9762\u5185\u5D4C\u65B9\u5F0F\u63A5\u5165\u95FB\u9053 AI \u77E5\u8BC6\u5E93\u9875\u9762\u3002\u77E5\u8BC6\u5E93\u7EF4\u62A4\u548C\u8D44\u6E90\u67E5\u770B\u4ECD\u5728\u95FB\u9053\u9875\u9762\u5185\u5B8C\u6210\uFF1B\u5982\u679C\u5E73\u53F0\u9650\u5236\u5185\u5D4C\uFF0C\u53EF\u4F7F\u7528\u65B0\u7A97\u53E3\u6253\u5F00\u3002")),
         react_1.default.createElement("div", { className: "wenda-embed-grid" },
-            react_1.default.createElement("aside", { className: "wenda-embed-panel wenda-embed-params wenda-sidebar-shell", "aria-label": "\u95FB\u9053\u529F\u80FD\u5BFC\u822A" },
-                react_1.default.createElement("div", { className: "wenda-sidebar-brand" },
-                    react_1.default.createElement("span", { className: "wenda-brand-mark", "aria-hidden": "true" }, "\u95FB"),
-                    react_1.default.createElement("div", null,
-                        react_1.default.createElement("h2", { id: "wenda-embed-title" }, "\u95FB\u9053"),
-                        react_1.default.createElement("p", null, "\u5B66\u672F\u670D\u52A1\u5E73\u53F0"))),
-                react_1.default.createElement("nav", { className: "wenda-nav-list", "aria-label": "\u95FB\u9053 openAccess \u9875\u9762" }, WENDA_NAV_GROUPS.map((group) => (react_1.default.createElement("div", { className: "wenda-nav-group", key: group.title },
-                    react_1.default.createElement("p", null, group.title),
-                    group.items.map((item) => (react_1.default.createElement("button", { className: `wenda-nav-item ${activeItem.id === item.id ? "is-active" : ""}`, type: "button", key: item.id, onClick: () => selectItem(item.id) },
-                        react_1.default.createElement("span", { className: "wenda-nav-icon", "aria-hidden": "true" }, item.shortLabel),
-                        react_1.default.createElement("span", null, item.label)))))))),
-                react_1.default.createElement("div", { className: "wenda-sidebar-footer" },
-                    react_1.default.createElement("strong", null, "\u9875\u9762\u7EA7\u96C6\u6210"),
-                    react_1.default.createElement("span", null, "\u6240\u6709\u9875\u9762\u6309 Word \u6307\u5F15\u901A\u8FC7 iframe \u5185\u5D4C\uFF0C\u65E0\u6CD5\u663E\u793A\u65F6\u4F7F\u7528\u65B0\u7A97\u53E3\u6253\u5F00\u3002"))),
+            react_1.default.createElement("aside", { className: "wenda-embed-panel wenda-embed-params", "aria-label": "\u95FB\u9053 AI \u77E5\u8BC6\u5E93\u5165\u53E3" },
+                react_1.default.createElement("div", { className: "wenda-panel-card" },
+                    react_1.default.createElement("span", null, "\u5F53\u524D\u5165\u53E3"),
+                    react_1.default.createElement("strong", null, "AI \u77E5\u8BC6\u5E93"),
+                    react_1.default.createElement("p", null, "\u7528\u4E8E\u8FDB\u5165\u95FB\u9053\u77E5\u8BC6\u5E93\u5DE5\u4F5C\u533A\uFF0C\u67E5\u770B\u3001\u7EF4\u62A4\u548C\u7EC4\u7EC7\u8BFE\u7A0B\u76F8\u5173\u77E5\u8BC6\u8D44\u6E90\u3002")),
+                error ? react_1.default.createElement("p", { className: "wenda-error" }, error) : null,
+                react_1.default.createElement("button", { className: "wenda-primary-action", type: "button", onClick: refreshFrame }, "\u5237\u65B0\u77E5\u8BC6\u5E93\u9875\u9762")),
             react_1.default.createElement("section", { className: "wenda-iframe-workspace", "aria-label": "\u95FB\u9053 iframe \u5DE5\u4F5C\u533A" },
                 react_1.default.createElement("div", { className: "wenda-iframe-toolbar" },
                     react_1.default.createElement("div", null,
-                        react_1.default.createElement("span", null, activeItem.group),
-                        react_1.default.createElement("strong", null, activeItem.label),
-                        react_1.default.createElement("p", null, activeItem.description)),
-                    react_1.default.createElement("div", { className: "wenda-toolbar-actions" },
-                        react_1.default.createElement("button", { className: "wenda-open-link", type: "button", onClick: refreshFrame }, "\u5237\u65B0"),
-                        react_1.default.createElement("a", { className: `wenda-open-link ${urlState.url ? "" : "is-disabled"}`, href: urlState.url || "#", target: "_blank", rel: "noopener noreferrer", "aria-disabled": urlState.url ? "false" : "true" }, "\u65B0\u7A97\u53E3\u6253\u5F00"))),
-                urlState.error ? react_1.default.createElement("p", { className: "wenda-error" }, urlState.error) : react_1.default.createElement("p", { className: "wenda-frame-warning" }, "\u5982\u679C\u9875\u9762\u65E0\u6CD5\u663E\u793A\uFF0C\u53EF\u80FD\u662F\u95FB\u9053\u5E73\u53F0\u9650\u5236\u8DE8\u7AD9\u5185\u5D4C\uFF0C\u8BF7\u70B9\u51FB\u65B0\u7A97\u53E3\u6253\u5F00\u3002"),
-                react_1.default.createElement("iframe", { key: `${activeItem.id}-${frameVersion}`, className: "wenda-embed-frame", title: `闻道 - ${activeItem.label}`, src: urlState.url || "about:blank", loading: "lazy", referrerPolicy: "strict-origin-when-cross-origin", sandbox: "allow-same-origin allow-scripts allow-forms allow-popups allow-downloads" })))));
+                        react_1.default.createElement("span", null, "\u95FB\u9053\u9875\u9762"),
+                        react_1.default.createElement("strong", null, "AI \u77E5\u8BC6\u5E93\u5DE5\u4F5C\u533A")),
+                    react_1.default.createElement("a", { className: `wenda-open-link ${embedUrl ? "" : "is-disabled"}`, href: embedUrl || "#", target: "_blank", rel: "noopener noreferrer", "aria-disabled": embedUrl ? "false" : "true" }, "\u5728\u65B0\u7A97\u53E3\u6253\u5F00 AI \u77E5\u8BC6\u5E93")),
+                react_1.default.createElement("p", { className: "wenda-frame-warning" }, "\u5982\u679C\u9875\u9762\u65E0\u6CD5\u663E\u793A\uFF0C\u53EF\u80FD\u662F\u95FB\u9053\u5E73\u53F0\u9650\u5236\u8DE8\u7AD9\u5185\u5D4C\uFF0C\u8BF7\u70B9\u51FB\u65B0\u7A97\u53E3\u6253\u5F00\u3002"),
+                react_1.default.createElement("iframe", { key: frameVersion, className: "wenda-embed-frame", title: "\u95FB\u9053 AI \u77E5\u8BC6\u5E93", src: embedUrl || "about:blank", loading: "lazy", referrerPolicy: "strict-origin-when-cross-origin", sandbox: "allow-same-origin allow-scripts allow-forms allow-popups allow-downloads" })))));
 }
 
 },
