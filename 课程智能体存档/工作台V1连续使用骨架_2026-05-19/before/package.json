@@ -1,0 +1,38 @@
+{
+  "name": "pharmacopilot",
+  "version": "0.1.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "dev": "node 后端核心/启动入口/server.cjs",
+    "build": "npm run build:static && npm run build:server && npm run build:next",
+    "build:server": "tsc -p 后端核心/tsconfig.server.json",
+    "build:next": "next build",
+    "start": "node 后端核心/启动入口/server.cjs",
+    "start:static": "node 后端核心/启动入口/server.cjs",
+    "build:wenda": "node scripts/build-wenda-embed.cjs",
+    "build:static": "npm run build:wenda && mkdir -p dist/launch dist/flowchart dist/workflow dist/teaching-navigation dist/teaching-data && rm -rf dist/agent-runtime dist/launch/agent-runtime && cp 前端核心/index.html 前端核心/auth.html 前端核心/teaching-navigation.html 前端核心/navigation.html 前端核心/practice.html 前端核心/teaching-data.html 前端核心/workflow.html 前端核心/app.js 前端核心/styles.css 前端核心/wenda-env.js 前端核心/wenda-embed-workspace.js 前端核心/interface-review-improved.html 前端核心/flowchart.html dist/ && cp 前端核心/index.html 前端核心/auth.html 前端核心/teaching-navigation.html 前端核心/navigation.html 前端核心/practice.html 前端核心/teaching-data.html 前端核心/app.js 前端核心/styles.css 前端核心/wenda-env.js 前端核心/wenda-embed-workspace.js dist/launch/ && cp -R 前端核心/agent-runtime dist/agent-runtime && cp -R 前端核心/agent-runtime dist/launch/agent-runtime && cp 前端核心/teaching-data.html dist/assets.html && cp 前端核心/teaching-data.html dist/launch/assets.html && rm -f dist/launch/workflow.html && cp 前端核心/flowchart.html dist/flowchart/index.html && cp 前端核心/workflow.html dist/workflow/index.html && cp 前端核心/teaching-navigation.html dist/teaching-navigation/index.html && cp 前端核心/teaching-data.html dist/teaching-data/index.html",
+    "typecheck": "tsc -p 后端核心/tsconfig.server.json --noEmit && tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.105.3",
+    "busboy": "^1.6.0",
+    "fast-xml-parser": "^5.7.3",
+    "jszip": "^3.10.1",
+    "mammoth": "^1.12.0",
+    "next": "^16.0.10",
+    "openai": "^6.36.0",
+    "pdf-parse": "^2.4.5",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "zod": "^4.2.1"
+  },
+  "devDependencies": {
+    "@types/busboy": "^1.5.4",
+    "@types/node": "^25.6.0",
+    "@types/pdf-parse": "^1.1.5",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "typescript": "^6.0.3"
+  }
+}

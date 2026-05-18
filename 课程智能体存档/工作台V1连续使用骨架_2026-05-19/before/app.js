@@ -4,7 +4,6 @@ const FANYA_AUTH_KEY = "pharmacopilot-fanya-auth-state";
 const PRACTICE_WORKFLOW_KEY = "pharmacopilot-practice-workflow-state";
 const ASSETS_KEY = "pharmacopilot-assets";
 const ACCOUNT_SESSION_KEY = "pharmacopilot-account-session";
-const CLIENT_STORE_KEY = "pharmacopilot-client-store-v1";
 const HOME_TASK_ENTRY_KEY = "pharmacopilot-home-task-entry";
 const HOME_WENDA_RUN_KEY = "pharmacopilot-home-wenda-science-run";
 const HOME_WENDA_AGENT_ID = "6f5b49b6-5cb4-11f0-9ae8-fa163f087fa9";
@@ -1494,12 +1493,8 @@ const assetFilterState = {
   status: "全部",
   query: "",
 };
-const outputsPageState = {
-  category: "全部",
-  selectedId: "",
-};
 
-const ASSET_SOURCE_FILTERS = ["全部", "教学导航", "教学实践", "教师上传", "泛雅同步", "系统示例"];
+const ASSET_SOURCE_FILTERS = ["全部", "教学实践", "教师上传", "泛雅同步", "系统示例"];
 const ASSET_TYPE_FILTERS = ["全部", "课程画像", "教学设计方案", "课堂活动脚本", "案例材料", "评价量规", "学习证据", "教学复盘", "来源边界", "其他"];
 const ASSET_STATUS_FILTERS = ["全部", "待核验", "可复用", "已用于实践", "需更新"];
 
@@ -1527,304 +1522,6 @@ function loadFromLocalStorage(key, fallback) {
 function saveToLocalStorage(key, value) {
   localStorage.setItem(key, JSON.stringify(value));
 }
-
-function getRuntimeEnv() {
-  window.__PHARMACOPILOT_ENV__ ||= {};
-  return window.__PHARMACOPILOT_ENV__;
-}
-
-function normalizeServiceDomain(value) {
-  return String(value || "")
-    .trim()
-    .replace(/^https?:\/\//i, "")
-    .replace(/\/.*$/, "")
-    .toLowerCase();
-}
-
-function makeDefaultWorkspace() {
-  return {
-    workspaceId: "pharmacopilot-demo-workspace",
-    teacherName: "示例教师",
-    school: "药事管理教研室",
-    courseId: "management-principles-2026",
-    courseName: defaultTrainingCourse.courseName,
-    lessonTitle: defaultTrainingCourse.lessonTitle,
-    lessonNo: "第 6 次课",
-    className: defaultTrainingCourse.teachingObject,
-    currentTopic: defaultTrainingCourse.topic,
-    dataMode: "local demo",
-    updatedAt: new Date().toISOString(),
-  };
-}
-
-function makeDefaultCourseMaterials() {
-  return [
-    {
-      id: "material-syllabus",
-      title: "管理学原理课程大纲",
-      type: "课程资料",
-      boundary: "本地演示材料，仅用于组织教学导航和实践方案。",
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: "material-case",
-      title: "药事管理课堂案例材料",
-      type: "案例材料",
-      boundary: "示例案例，不替代真实课程材料审核。",
-      updatedAt: new Date().toISOString(),
-    },
-  ];
-}
-
-function makeDefaultIntegrationConfig() {
-  const env = getRuntimeEnv();
-  const domain = normalizeServiceDomain(env.VITE_WENDAO_DOMAIN || env.WENDAO_DOMAIN || "");
-  return {
-    wendao: {
-      domain,
-      status: domain ? "configured" : "not_configured",
-      source: domain ? "runtime" : "local demo",
-      updatedAt: "",
-    },
-    fanya: {
-      mode: "mock",
-      status: "mock_ready",
-      platformUrl: FANYA_MOCK_ACCOUNT.platformUrl,
-      boundary: "当前只提供模拟授权、复制文本和新窗口打开，不会真实写入泛雅。",
-      backendProxyEnabled: false,
-      updatedAt: "",
-    },
-    data: {
-      mode: "local demo",
-      boundary: "数据保存在本机浏览器 localStorage，后续可迁移到服务端数据库。",
-    },
-  };
-}
-
-function makeDefaultClientStore() {
-  return {
-    version: 1,
-    accountSession: makeEmptyAccountSession(),
-    currentWorkspace: makeDefaultWorkspace(),
-    courseMaterials: makeDefaultCourseMaterials(),
-    navigationStepStates: {},
-    practiceRuns: [],
-    teachingAssets: makeEmptyAssets(),
-    integrationConfig: makeDefaultIntegrationConfig(),
-    agentRuns: [],
-    updatedAt: new Date().toISOString(),
-  };
-}
-
-function readClientStoreRaw() {
-  return loadFromLocalStorage(CLIENT_STORE_KEY, null);
-}
-
-function getLegacyTrainingSnapshot() {
-  return loadFromLocalStorage(TRAINING_STATE_KEY, null) || loadFromLocalStorage(NAVIGATION_TRAINING_KEY, null);
-}
-
-function buildNavigationStepStatesFromSnapshot(snapshot = getLegacyTrainingSnapshot()) {
-  const state = snapshot || {};
-  const completed = new Set((state.completedStepIds || []).map(Number));
-  const currentStepId = Number(state.currentStepId || 1);
-  return Object.fromEntries(
-    trainingSteps.map((step) => {
-      const id = String(step.id);
-      const result = state.stepResults?.[id] || null;
-      const taskSheet = state.taskSheets?.[id] || null;
-      let status = "pending";
-      if (completed.has(step.id) || result || taskSheet?.savedAt) status = "completed";
-      else if (step.id === currentStepId) status = "current";
-      else if (step.id > currentStepId + 2) status = "locked";
-      return [
-        id,
-        {
-          stepId: step.id,
-          title: step.title,
-          stage: getTeachingPhaseTitle(getTeachingPhaseIdByNodeId(step.id)),
-          status,
-          selectedOptionId: state.currentSelections?.[id] || state.choices?.[id]?.primary || "",
-          result,
-          taskSheet,
-          updatedAt: taskSheet?.savedAt || result?.confirmedAt || state.updatedAt || "",
-        },
-      ];
-    }),
-  );
-}
-
-function normalizeTeachingAssetsStore(value) {
-  return {
-    ...makeEmptyAssets(),
-    ...(value && typeof value === "object" ? value : {}),
-  };
-}
-
-function migrateLegacyStoreFields(store) {
-  const legacySession = loadFromLocalStorage(ACCOUNT_SESSION_KEY, null);
-  const legacyAssets = loadFromLocalStorage(ASSETS_KEY, null);
-  const legacyPractice = loadFromLocalStorage(PRACTICE_WORKFLOW_KEY, null);
-  const legacyFanya = loadFromLocalStorage(FANYA_AUTH_KEY, null);
-  const legacyTraining = getLegacyTrainingSnapshot();
-  const env = getRuntimeEnv();
-
-  if ((!store.accountSession || !store.accountSession.account) && legacySession) {
-    store.accountSession = {
-      ...makeEmptyAccountSession(),
-      ...legacySession,
-      account: legacySession.account && typeof legacySession.account === "object" ? legacySession.account : null,
-    };
-  }
-
-  if (legacyAssets) {
-    const mergedAssets = normalizeTeachingAssetsStore(store.teachingAssets);
-    Object.entries(normalizeTeachingAssetsStore(legacyAssets)).forEach(([key, value]) => {
-      if (Array.isArray(value) && !mergedAssets[key]?.length) mergedAssets[key] = value;
-    });
-    store.teachingAssets = mergedAssets;
-  }
-
-  if (!Object.keys(store.navigationStepStates || {}).length && legacyTraining) {
-    store.navigationStepStates = buildNavigationStepStatesFromSnapshot(legacyTraining);
-  }
-
-  if (legacyPractice && !store.practiceRuns?.length) {
-    store.practiceRuns = [
-      {
-        id: `practice-run-${legacyPractice.updatedAt || "legacy"}`,
-        source: "legacy-practice-workflow",
-        selectedCourseId: legacyPractice.selectedCourseId || "",
-        courseSnapshot: legacyPractice.courseSnapshot || null,
-        importedContext: legacyPractice.importedContext || null,
-        completedStepIds: legacyPractice.completedStepIds || [],
-        finalPracticePlan: legacyPractice.finalPracticePlan || "",
-        finalDiagnostic: legacyPractice.finalDiagnostic || null,
-        updatedAt: legacyPractice.updatedAt || "",
-      },
-    ];
-  }
-
-  store.integrationConfig = {
-    ...makeDefaultIntegrationConfig(),
-    ...(store.integrationConfig || {}),
-    wendao: {
-      ...makeDefaultIntegrationConfig().wendao,
-      ...(store.integrationConfig?.wendao || {}),
-    },
-    fanya: {
-      ...makeDefaultIntegrationConfig().fanya,
-      ...(store.integrationConfig?.fanya || {}),
-    },
-    data: {
-      ...makeDefaultIntegrationConfig().data,
-      ...(store.integrationConfig?.data || {}),
-    },
-  };
-
-  const runtimeDomain = normalizeServiceDomain(env.VITE_WENDAO_DOMAIN || env.WENDAO_DOMAIN || "");
-  const storedDomain = normalizeServiceDomain(store.integrationConfig.wendao.domain);
-  store.integrationConfig.wendao.domain = storedDomain || runtimeDomain;
-  store.integrationConfig.wendao.status = store.integrationConfig.wendao.domain ? "configured" : "not_configured";
-
-  if (legacyFanya?.isConnected) {
-    store.integrationConfig.fanya = {
-      ...store.integrationConfig.fanya,
-      mode: legacyFanya.authMode || "mock",
-      status: "mock_connected",
-      platformUrl: legacyFanya.platformUrl || FANYA_MOCK_ACCOUNT.platformUrl,
-      boundary: legacyFanya.dataBoundary || store.integrationConfig.fanya.boundary,
-      updatedAt: legacyFanya.connectedAt || store.integrationConfig.fanya.updatedAt || "",
-    };
-  }
-
-  const account = store.accountSession?.account;
-  store.currentWorkspace = {
-    ...makeDefaultWorkspace(),
-    ...(store.currentWorkspace || {}),
-    teacherName: account?.teacherName || account?.name || store.currentWorkspace?.teacherName || "示例教师",
-    school: account?.school || store.currentWorkspace?.school || "药事管理教研室",
-  };
-
-  if (legacyTraining?.courseContext) {
-    store.currentWorkspace = {
-      ...store.currentWorkspace,
-      courseName: legacyTraining.courseContext.courseName || store.currentWorkspace.courseName,
-      currentTopic: legacyTraining.courseContext.topic || store.currentWorkspace.currentTopic,
-      lessonTitle: buildTrainingLessonTitle({
-        ...defaultTrainingCourse,
-        ...legacyTraining.courseContext,
-      }),
-    };
-  }
-
-  store.courseMaterials = Array.isArray(store.courseMaterials) && store.courseMaterials.length ? store.courseMaterials : makeDefaultCourseMaterials();
-  store.practiceRuns = Array.isArray(store.practiceRuns) ? store.practiceRuns : [];
-  store.agentRuns = Array.isArray(store.agentRuns) ? store.agentRuns : [];
-  return store;
-}
-
-function applyClientStoreToRuntimeEnv(store = readClientStoreRaw()) {
-  const env = getRuntimeEnv();
-  const domain = normalizeServiceDomain(store?.integrationConfig?.wendao?.domain);
-  if (domain) {
-    env.VITE_WENDAO_DOMAIN = domain;
-    env.WENDAO_DOMAIN = domain;
-  }
-}
-
-function loadClientStore() {
-  const saved = readClientStoreRaw();
-  const store = migrateLegacyStoreFields({
-    ...makeDefaultClientStore(),
-    ...(saved && typeof saved === "object" ? saved : {}),
-  });
-  applyClientStoreToRuntimeEnv(store);
-  return store;
-}
-
-function saveClientStore(store) {
-  const nextStore = migrateLegacyStoreFields({
-    ...makeDefaultClientStore(),
-    ...(store && typeof store === "object" ? store : {}),
-    updatedAt: new Date().toISOString(),
-  });
-  saveToLocalStorage(CLIENT_STORE_KEY, nextStore);
-  applyClientStoreToRuntimeEnv(nextStore);
-  return nextStore;
-}
-
-function updateClientStore(mutator) {
-  const store = loadClientStore();
-  const result = mutator(store) || store;
-  return saveClientStore(result);
-}
-
-function getStoredTeachingAssetItems(assetStore = loadClientStore().teachingAssets) {
-  const store = normalizeTeachingAssetsStore(assetStore);
-  return [
-    ...(store.trainingReports || []),
-    ...(store.practiceReports || []),
-    ...(store.generatedRubrics || []),
-    ...(store.generatedTasks || []),
-    ...(store.uploadedFileMeta || []),
-    ...(store.fanyaSyncRecords || []),
-  ];
-}
-
-function getRecentTeachingAssets(limit = 5) {
-  return getStoredTeachingAssetItems()
-    .filter((item) => item && !item.derived)
-    .sort((a, b) => new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0))
-    .slice(0, limit);
-}
-
-function getConfiguredWendaoDomain() {
-  const store = loadClientStore();
-  return normalizeServiceDomain(store.integrationConfig?.wendao?.domain || "");
-}
-
-applyClientStoreToRuntimeEnv(readClientStoreRaw());
 
 function getOptionLabel(option) {
   if (!option) return "";
@@ -2374,27 +2071,10 @@ function showToast(message) {
   window.setTimeout(() => toast.remove(), 2200);
 }
 
-const SHARED_NAV_ITEMS = [
-  { key: "home", label: "首页", href: "./index.html" },
-  { key: "dashboard", label: "工作台", href: "./dashboard.html" },
-  { key: "teaching-navigation", label: "教学导航", href: "./teaching-navigation.html" },
-  { key: "practice", label: "教学实践", href: "./practice.html" },
-  { key: "assets", label: "教学数据", href: "./teaching-data.html" },
-];
-
-function renderSharedPrimaryNav() {
-  const nav = $("#primaryNav");
-  if (!nav) return;
-  nav.innerHTML = SHARED_NAV_ITEMS.map(
-    (item) => `<a class="nav-link" data-nav="${item.key}" href="${item.href}">${item.label}</a>`,
-  ).join("");
-}
-
 function initGlobalNav() {
   const header = $(".site-header");
   const button = $("#navMenuToggle");
   const nav = $("#primaryNav");
-  renderSharedPrimaryNav();
   const closeNav = () => {
     document.body.classList.remove("nav-open");
     button?.setAttribute("aria-expanded", "false");
@@ -2437,11 +2117,7 @@ function initTheoryAnchorToggles() {
 
 function setActiveNav() {
   const page = document.body.dataset.page;
-  const activePage = page === "navigation"
-    ? "teaching-navigation"
-    : page === "workspace" || page === "settings" || page === "outputs"
-      ? "dashboard"
-      : page;
+  const activePage = page === "navigation" ? "teaching-navigation" : page;
   $$(".nav-link").forEach((link) => link.classList.toggle("active", link.dataset.nav === activePage));
 }
 
@@ -2455,17 +2131,11 @@ function renderGlobalAccountActions(session = loadAccountSession()) {
     if (session?.isAuthenticated && session.account) {
       const displayName = getAccountDisplayName(session);
       container.innerHTML = `
-        <a class="nav-account-chip" href="./dashboard.html" aria-label="当前登录账号：${escapeHtml(displayName)}">
-          <span>已登录</span>
+        <a class="nav-account-chip" href="./auth.html" aria-label="当前登录账号：${escapeHtml(displayName)}">
+          <span>欢迎回来，</span>
           <strong>${escapeHtml(displayName)}</strong>
         </a>
-        <button class="nav-logout-action" type="button" data-global-logout>退出</button>
       `;
-      $("[data-global-logout]", container)?.addEventListener("click", () => {
-        const next = clearAccountSession();
-        renderGlobalAccountActions(next);
-        showToast("已退出登录");
-      });
       return;
     }
     container.innerHTML = `
@@ -2480,9 +2150,9 @@ const HOME_FEATURE_DEMOS = {
     label: "教学导航",
     short: "20环节训练地图",
     kicker: "从课程任务到节点训练",
-    summary: "围绕课前、课中、课后三阶段组织 20 个状态节点，新教师在每个环节确认任务、产出物、评价依据和资产保存边界。",
+    summary: "真实页面对应 20 环节教学训练地图：新教师围绕一节课查看节点解释、产出物、评价依据和复盘区。",
     prompt:
-      "我是一名新教师，请基于本科《管理学原理》课程，打开 20 环节教学训练地图，逐步确认每个节点的任务、产出物和评价依据。",
+      "我是一名新教师，请基于药事管理本科《管理学原理》SWOT 分析课，打开 20 环节教学训练地图，逐步解释每个节点的任务、产出物和评价依据。",
     attachments: [
       { title: "课程任务", meta: "管理学原理 · SWOT 分析课", accent: "amber" },
       { title: "教师起点", meta: "新教师首次独立备课", accent: "stone" },
@@ -2501,9 +2171,9 @@ const HOME_FEATURE_DEMOS = {
     label: "教学实践",
     short: "泛雅模拟实践",
     kicker: "从模拟授权到真实方案",
-    summary: "实践页读取当前课程和导航产物，生成课堂任务、评价量规、最终实践方案，并提供复制到泛雅的人工操作出口。",
+    summary: "真实页面先完成泛雅模拟授权和课程选择，再基于课程资源、班级学情、作业记录和学习过程数据生成真实课程教学实践方案。",
     prompt:
-      "请基于当前课程、已有教学导航产物和本地演示学情，生成课堂任务、评价量规和最终教学实践方案。",
+      "我已完成泛雅模拟授权，请基于导入的课程资源、班级学情、作业记录和学习过程数据，生成 SWOT 分析课的真实课程教学实践方案。",
     attachments: [
       { title: "泛雅模拟授权", meta: "测试账号 / 课程选择 / 数据边界", accent: "blue" },
       { title: "课程上下文", meta: "课程资源 · 班级学情 · 作业记录", accent: "amber" },
@@ -2522,11 +2192,11 @@ const HOME_FEATURE_DEMOS = {
     label: "教学数据",
     short: "数据中枢",
     kicker: "从证据沉淀到复用行动",
-    summary: "教学数据页作为资产中枢和课程图谱，显示来自教学导航、教学实践、教师上传和泛雅模拟边界的真实保存产物。",
+    summary: "真实页面聚合新手教程记录、教学实践生成材料、教师上传材料和泛雅模拟记录，并用课程图谱、来源筛选和数据说明书支持复用。",
     prompt:
-      "请整理本课程的导航任务单、实践方案、评价量规、教师上传材料和平台边界记录，形成可复用教学数据。",
+      "请整理本课程的新手教程记录、教学实践生成材料、教师上传材料和泛雅模拟记录，形成带来源边界的可复用教学数据。",
     attachments: [
-      { title: "四类来源", meta: "教学导航 / 教学实践 / 教师上传 / 泛雅模拟", accent: "amber" },
+      { title: "四类来源", meta: "新手教程 / 教学实践 / 教师上传 / 泛雅模拟", accent: "amber" },
       { title: "来源边界", meta: "课程资料 · 授权范围 · 使用限制", accent: "teal" },
       { title: "复用动作", meta: "教学设计 · 课堂活动 · 学生任务单", accent: "blue" },
     ],
@@ -2640,8 +2310,7 @@ function normalizeHomeWendaDomain(value) {
 
 function getHomeWendaRuntimeDomain() {
   const env = window.__PHARMACOPILOT_ENV__ || {};
-  const stored = readClientStoreRaw()?.integrationConfig?.wendao?.domain || "";
-  return normalizeHomeWendaDomain(stored || env.VITE_WENDAO_DOMAIN || env.WENDAO_DOMAIN || "");
+  return normalizeHomeWendaDomain(env.VITE_WENDAO_DOMAIN || env.WENDAO_DOMAIN || "");
 }
 
 function buildHomeWendaScienceUrl(searchText) {
@@ -2765,36 +2434,6 @@ function initHomeWendaRunner() {
       input.focus();
     }
   });
-}
-
-function renderWendaoConfigNotice() {
-  const domain = getConfiguredWendaoDomain();
-  const targets = ["#homeWendaoConfigNotice", "#wendaConfigNotice"]
-    .map((selector) => $(selector))
-    .filter(Boolean);
-  targets.forEach((target) => {
-    target.dataset.state = domain ? "configured" : "error";
-    target.innerHTML = domain
-      ? `
-        <div>
-          <strong>闻道域名已配置</strong>
-          <p>当前机构域名：${escapeHtml(domain)}。若 iframe 无法展示，请使用新窗口打开。</p>
-        </div>
-        <a class="secondary-action" href="./settings.html">配置服务</a>
-      `
-      : `
-        <div>
-          <strong>闻道暂未配置</strong>
-          <p>请在配置服务中填写 VITE_WENDAO_DOMAIN / WENDAO_DOMAIN。未配置时不会展示空 iframe。</p>
-        </div>
-        <a class="primary-action" href="./settings.html">去配置</a>
-      `;
-  });
-  const wendaRoot = $("#wendaEmbedWorkspaceRoot");
-  if (wendaRoot) {
-    wendaRoot.hidden = !domain;
-    if (!domain) wendaRoot.innerHTML = "";
-  }
 }
 
 function surfaceHomeTaskEntry(page) {
@@ -3104,7 +2743,6 @@ function initHomePage() {
   initHomeTaskEntry();
   initHomeWendaRunner();
   initHomeCoworkDemo();
-  renderWendaoConfigNotice();
 }
 
 function makeEmptyAccountSession() {
@@ -3116,7 +2754,7 @@ function makeEmptyAccountSession() {
 }
 
 function loadAccountSession() {
-  const saved = loadClientStore().accountSession || loadFromLocalStorage(ACCOUNT_SESSION_KEY, null);
+  const saved = loadFromLocalStorage(ACCOUNT_SESSION_KEY, null);
   if (!saved || typeof saved !== "object") return makeEmptyAccountSession();
   return {
     ...makeEmptyAccountSession(),
@@ -3132,28 +2770,11 @@ function saveAccountSession(session) {
     updatedAt: new Date().toISOString(),
   };
   saveToLocalStorage(ACCOUNT_SESSION_KEY, nextSession);
-  updateClientStore((store) => {
-    store.accountSession = nextSession;
-    store.currentWorkspace = {
-      ...store.currentWorkspace,
-      teacherName: nextSession.account?.teacherName || nextSession.account?.name || store.currentWorkspace.teacherName,
-      school: nextSession.account?.school || store.currentWorkspace.school,
-      updatedAt: nextSession.updatedAt,
-    };
-  });
   return nextSession;
 }
 
 function clearAccountSession() {
   localStorage.removeItem(ACCOUNT_SESSION_KEY);
-  updateClientStore((store) => {
-    store.accountSession = makeEmptyAccountSession();
-    store.currentWorkspace = {
-      ...store.currentWorkspace,
-      teacherName: "示例教师",
-      updatedAt: new Date().toISOString(),
-    };
-  });
   return makeEmptyAccountSession();
 }
 
@@ -3236,7 +2857,7 @@ function renderAccountSession(session = loadAccountSession()) {
     panel.innerHTML = `
       <p class="eyebrow">Session</p>
       <h2>尚未登录</h2>
-      <p>完成登录或注册后，会进入本地演示工作台。当前不连接真实学校认证，也不会写入泛雅。</p>
+      <p>完成登录或注册后，可从这里继续进入首页、教学导航、教学实践和教学数据。</p>
       <div class="auth-session-actions">
         <button class="secondary-action" type="button" data-auth-mode="login">切换到登录</button>
         <button class="primary-action" type="button" data-auth-mode="register">创建账号</button>
@@ -3252,14 +2873,14 @@ function renderAccountSession(session = loadAccountSession()) {
   panel.innerHTML = `
     <p class="eyebrow">Session</p>
     <h2>已登录：${escapeHtml(account.teacherName || "课程教师")}</h2>
-    <p>当前账号会话保存在本机浏览器，可继续进入 PharmacoPilot 工作台。</p>
+    <p>当前账号会话保存在本机浏览器，可继续进入药事管理课程教学工作流。</p>
     <dl class="auth-session-meta">
       <div><dt>账号</dt><dd>${escapeHtml(account.identifier || account.email || "未填写")}</dd></div>
       <div><dt>学校 / 院系</dt><dd>${escapeHtml(account.school || "待补充")}</dd></div>
       <div><dt>最近登录</dt><dd>${escapeHtml(getReadableAuthTime(session.updatedAt))}</dd></div>
     </dl>
     <div class="auth-session-actions">
-      <a class="primary-action" href="./dashboard.html">进入工作台</a>
+      <a class="primary-action" href="./teaching-navigation.html">进入教学导航</a>
       <a class="secondary-action" href="./practice.html">进入教学实践</a>
       <a class="secondary-action" href="./teaching-data.html">查看教学数据</a>
       <button class="small-action" type="button" data-auth-logout>退出登录</button>
@@ -3297,9 +2918,6 @@ function handleLoginSubmit(event) {
   renderAccountSession(session);
   renderGlobalAccountActions(session);
   showToast("登录成功，已进入本地账号会话");
-  window.setTimeout(() => {
-    window.location.href = "./dashboard.html";
-  }, 320);
 }
 
 function handleRegisterSubmit(event) {
@@ -3332,9 +2950,6 @@ function handleRegisterSubmit(event) {
   renderAccountSession(session);
   renderGlobalAccountActions(session);
   showToast("账号已创建，已进入本地账号会话");
-  window.setTimeout(() => {
-    window.location.href = "./dashboard.html";
-  }, 320);
 }
 
 function initAuthPage() {
@@ -3348,406 +2963,6 @@ function initAuthPage() {
     button.addEventListener("click", handleAuthProviderClick);
   });
   renderAccountSession();
-}
-
-function getNavigationProgressFromStore(store = loadClientStore()) {
-  const states = Object.values(store.navigationStepStates || {});
-  const completed = states.filter((item) => item.status === "completed").length;
-  const current = states.find((item) => item.status === "current") || states.find((item) => item.status !== "completed");
-  return {
-    completed,
-    total: trainingSteps.length,
-    currentTitle: current?.title || getTrainingStep(1).title,
-    currentStage: current?.stage || getTeachingPhaseTitle(1),
-  };
-}
-
-function getPracticeStatusFromStore(store = loadClientStore()) {
-  const latest = [...(store.practiceRuns || [])].sort((a, b) => new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0))[0];
-  if (!latest) return { label: "待生成", detail: "尚未形成教学实践运行记录。" };
-  const completed = latest.completedStepIds?.length || 0;
-  return {
-    label: latest.finalPracticePlan ? "已生成实践方案" : `已确认 ${completed} 个环节`,
-    detail: latest.importedContext?.courseProfile?.lessonTitle || latest.courseSnapshot?.title || "本地实践运行记录",
-  };
-}
-
-function getIntegrationStatusCopy(store = loadClientStore()) {
-  const domain = normalizeServiceDomain(store.integrationConfig?.wendao?.domain);
-  const fanya = store.integrationConfig?.fanya || makeDefaultIntegrationConfig().fanya;
-  const fanyaMode = fanya.mode || "mock";
-  return {
-    wendao: {
-      state: domain ? "configured" : "error",
-      label: domain ? "已配置" : "未配置",
-      detail: domain ? domain : "请到配置服务填写 VITE_WENDAO_DOMAIN / WENDAO_DOMAIN。",
-    },
-    fanya: {
-      state: fanya.status === "mock_connected" ? "configured" : fanyaMode === "disabled" ? "disabled" : "mock",
-      label: fanya.status === "mock_connected" ? "模拟授权中" : fanyaMode,
-      detail: fanya.boundary || "只支持模拟授权、复制文本和新窗口打开。",
-    },
-    data: {
-      state: "local",
-      label: store.integrationConfig?.data?.mode || "local demo",
-      detail: store.integrationConfig?.data?.boundary || "本机浏览器演示数据。",
-    },
-  };
-}
-
-function renderMiniAssetList(target, items, emptyCopy) {
-  if (!target) return;
-  target.innerHTML = items.length
-    ? items
-        .map(
-          (item) => `
-            <article class="workspace-mini-asset">
-              <span>${escapeHtml(item.type || "教学资产")}</span>
-              <strong>${escapeHtml(item.title || "未命名资产")}</strong>
-              <p>${escapeHtml(item.summary || item.boundary || "暂无摘要")}</p>
-              <small>${escapeHtml(item.source || "本地")} · ${formatDate(item.updatedAt)}</small>
-            </article>
-          `,
-        )
-        .join("")
-    : `
-      <div class="workspace-empty-state">
-        <strong>暂无产物</strong>
-        <p>${escapeHtml(emptyCopy)}</p>
-      </div>
-    `;
-}
-
-function initDashboardPage() {
-  if (!$("#dashboardShell")) return;
-  const store = loadClientStore();
-  const session = store.accountSession || makeEmptyAccountSession();
-  const workspace = store.currentWorkspace || makeDefaultWorkspace();
-  const progress = getNavigationProgressFromStore(store);
-  const practice = getPracticeStatusFromStore(store);
-  const integrations = getIntegrationStatusCopy(store);
-  const assets = getRecentTeachingAssets(4);
-
-  const setText = (selector, text) => {
-    const target = $(selector);
-    if (target) target.textContent = text;
-  };
-  setText("#dashboardTeacher", session.isAuthenticated ? getAccountDisplayName(session) : `${workspace.teacherName}（未登录演示）`);
-  setText("#dashboardCourse", workspace.courseName || defaultTrainingCourse.courseName);
-  setText("#dashboardLesson", workspace.lessonNo || workspace.lessonTitle || defaultTrainingCourse.lessonTitle);
-  setText("#dashboardProgress", `${progress.completed} / ${progress.total}`);
-  setText("#dashboardProgressDetail", `${progress.currentStage}｜${progress.currentTitle}`);
-  setText("#dashboardPracticeStatus", practice.label);
-  setText("#dashboardPracticeDetail", practice.detail);
-  setText("#dashboardAssetCount", `${getStoredTeachingAssetItems(store.teachingAssets).length} 项`);
-  setText("#dashboardDataMode", integrations.data.label);
-
-  const statusTargets = [
-    ["#dashboardWendaoStatus", integrations.wendao],
-    ["#dashboardFanyaStatus", integrations.fanya],
-    ["#dashboardDataStatus", integrations.data],
-  ];
-  statusTargets.forEach(([selector, item]) => {
-    const target = $(selector);
-    if (!target) return;
-    target.dataset.state = item.state;
-    target.innerHTML = `<span>${escapeHtml(item.label)}</span><p>${escapeHtml(item.detail)}</p>`;
-  });
-
-  renderMiniAssetList($("#dashboardRecentAssets"), assets, "先进入教学导航保存一个环节任务单，或进入教学实践生成方案。");
-}
-
-function renderSettingsPage() {
-  const store = loadClientStore();
-  const domain = normalizeServiceDomain(store.integrationConfig?.wendao?.domain);
-  const domainInput = $("#settingsWendaoDomain");
-  const fanyaMode = $("#settingsFanyaMode");
-  if (domainInput && domainInput !== document.activeElement) domainInput.value = domain;
-  if (fanyaMode) fanyaMode.value = store.integrationConfig?.fanya?.mode || "mock";
-  const integrations = getIntegrationStatusCopy(store);
-  const wendaoStatus = $("#settingsWendaoStatus");
-  const fanyaStatus = $("#settingsFanyaStatus");
-  const dataStatus = $("#settingsDataStatus");
-  if (wendaoStatus) {
-    wendaoStatus.dataset.state = integrations.wendao.state;
-    wendaoStatus.innerHTML = `<strong>${escapeHtml(integrations.wendao.label)}</strong><p>${escapeHtml(integrations.wendao.detail)}</p>`;
-  }
-  if (fanyaStatus) {
-    fanyaStatus.dataset.state = integrations.fanya.state;
-    fanyaStatus.innerHTML = `<strong>${escapeHtml(integrations.fanya.label)}</strong><p>${escapeHtml(integrations.fanya.detail)}</p>`;
-  }
-  if (dataStatus) {
-    dataStatus.dataset.state = integrations.data.state;
-    dataStatus.innerHTML = `<strong>${escapeHtml(integrations.data.label)}</strong><p>${escapeHtml(integrations.data.detail)}</p>`;
-  }
-}
-
-function resetDemoDataStore() {
-  const previous = loadClientStore();
-  const preservedSession = previous.accountSession || makeEmptyAccountSession();
-  const preservedIntegration = {
-    ...makeDefaultIntegrationConfig(),
-    ...(previous.integrationConfig || {}),
-  };
-  [
-    TRAINING_STATE_KEY,
-    NAVIGATION_TRAINING_KEY,
-    PRACTICE_WORKFLOW_KEY,
-    ASSETS_KEY,
-    FANYA_AUTH_KEY,
-    HOME_TASK_ENTRY_KEY,
-    HOME_WENDA_RUN_KEY,
-  ].forEach((key) => localStorage.removeItem(key));
-  trainingState = null;
-  fanyaAuthState = null;
-  practiceWorkflowState = null;
-  currentAssetStore = null;
-  saveClientStore({
-    ...makeDefaultClientStore(),
-    accountSession: preservedSession,
-    integrationConfig: preservedIntegration,
-  });
-}
-
-function initSettingsPage() {
-  if (!$("#settingsShell")) return;
-  renderSettingsPage();
-  $("#settingsForm")?.addEventListener("submit", (event) => {
-    event.preventDefault();
-    const domain = normalizeServiceDomain($("#settingsWendaoDomain")?.value || "");
-    const fanyaMode = $("#settingsFanyaMode")?.value || "mock";
-    updateClientStore((store) => {
-      store.integrationConfig.wendao = {
-        ...store.integrationConfig.wendao,
-        domain,
-        status: domain ? "configured" : "not_configured",
-        source: "settings",
-        updatedAt: new Date().toISOString(),
-      };
-      store.integrationConfig.fanya = {
-        ...store.integrationConfig.fanya,
-        mode: fanyaMode,
-        status: fanyaMode === "disabled" ? "disabled" : fanyaMode === "backend_proxy" ? "backend_proxy_not_enabled" : "mock_ready",
-        boundary:
-          fanyaMode === "backend_proxy"
-            ? "后端代理模式仅显示配置状态；当前没有启用真实写入泛雅的代理能力。"
-            : fanyaMode === "disabled"
-              ? "泛雅功能已在本地演示中关闭。"
-              : "当前只提供模拟授权、复制文本和新窗口打开，不会真实写入泛雅。",
-        updatedAt: new Date().toISOString(),
-      };
-    });
-    renderSettingsPage();
-    showToast("服务配置已保存到本地演示 store");
-  });
-  $("#resetDemoData")?.addEventListener("click", () => {
-    resetDemoDataStore();
-    renderSettingsPage();
-    showToast("演示数据已重置，已保留本地账号与服务配置");
-  });
-}
-
-function classifyOutputItem(item) {
-  const text = `${item.type || ""} ${item.title || ""} ${item.summary || ""}`;
-  if (/复盘|反思|改进报告/.test(text)) return "复盘报告";
-  if (/评价量规|量规|Rubric|评分标准/.test(text)) return "评价量规";
-  if (/实践方案|教学实践方案|完整实践/.test(text)) return "实践方案";
-  if (/课堂任务|课程任务|任务单|作业说明/.test(text)) return /教学导航/.test(text) ? "教学导航报告" : "课堂任务";
-  if (/教学导航|训练报告|20 环节|20环节/.test(text)) return "教学导航报告";
-  return "教学导航报告";
-}
-
-function buildOutputItems() {
-  const store = loadClientStore();
-  const assetItems = getStoredTeachingAssetItems(store.teachingAssets).map((item) => ({
-    ...item,
-    outputType: classifyOutputItem(item),
-    isSavedAsset: true,
-  }));
-  const practiceOutputs = (store.practiceRuns || [])
-    .filter((run) => run.finalPracticePlan && !assetItems.some((item) => item.content === run.finalPracticePlan))
-    .map((run) => ({
-      id: `output-${run.id}`,
-      title: "《教学实践方案》",
-      type: "教学实践方案",
-      outputType: "实践方案",
-      source: "教学实践",
-      course: run.importedContext?.courseProfile?.courseName || defaultTrainingCourse.courseName,
-      updatedAt: run.updatedAt,
-      boundary: "来源于教学实践运行记录；第一版不会真实写入泛雅。",
-      summary: run.importedContext?.courseProfile?.lessonTitle || "教学实践页生成的方案。",
-      content: run.finalPracticePlan,
-      isSavedAsset: false,
-    }));
-  return [...assetItems, ...practiceOutputs].sort((a, b) => new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0));
-}
-
-function getFilteredOutputItems() {
-  const items = buildOutputItems();
-  return outputsPageState.category === "全部" ? items : items.filter((item) => item.outputType === outputsPageState.category);
-}
-
-function findOutputItem(id) {
-  return buildOutputItems().find((item) => item.id === id);
-}
-
-function renderOutputsPage() {
-  const shell = $("#outputsShell");
-  if (!shell) return;
-  const allItems = buildOutputItems();
-  const items = getFilteredOutputItems();
-  const categories = ["全部", "教学导航报告", "课堂任务", "评价量规", "实践方案", "复盘报告"];
-  const tabs = $("#outputsCategoryTabs");
-  if (tabs) {
-    tabs.innerHTML = categories
-      .map((category) => {
-        const count = category === "全部" ? allItems.length : allItems.filter((item) => item.outputType === category).length;
-        return `<button type="button" class="${outputsPageState.category === category ? "is-active" : ""}" data-output-category="${category}">${category}<span>${count}</span></button>`;
-      })
-      .join("");
-    $$("[data-output-category]", tabs).forEach((button) => {
-      button.addEventListener("click", () => {
-        outputsPageState.category = button.dataset.outputCategory || "全部";
-        outputsPageState.selectedId = "";
-        renderOutputsPage();
-      });
-    });
-  }
-  const list = $("#outputsList");
-  const active = items.find((item) => item.id === outputsPageState.selectedId) || items[0];
-  if (active) outputsPageState.selectedId = active.id;
-  if (list) {
-    list.innerHTML = items.length
-      ? items
-          .map(
-            (item) => `
-              <article class="output-row ${outputsPageState.selectedId === item.id ? "is-selected" : ""}" data-output-id="${escapeHtml(item.id)}" tabindex="0">
-                <span>${escapeHtml(item.outputType)}</span>
-                <strong>${escapeHtml(item.title || "未命名输出")}</strong>
-                <p>${escapeHtml(item.summary || item.boundary || "暂无摘要")}</p>
-                <small>${escapeHtml(item.source || "本地")} · ${formatDate(item.updatedAt)}</small>
-              </article>
-            `,
-          )
-          .join("")
-      : `
-        <div class="workspace-empty-state">
-          <strong>暂无生成结果</strong>
-          <p>先在教学导航保存任务单，或在教学实践生成课堂任务、评价量规和实践方案。</p>
-        </div>
-      `;
-    $$("[data-output-id]", list).forEach((row) => {
-      row.addEventListener("click", () => {
-        outputsPageState.selectedId = row.dataset.outputId || "";
-        renderOutputsPage();
-      });
-      row.addEventListener("keydown", (event) => {
-        if (event.key !== "Enter" && event.key !== " ") return;
-        event.preventDefault();
-        outputsPageState.selectedId = row.dataset.outputId || "";
-        renderOutputsPage();
-      });
-    });
-  }
-  renderOutputDetail(active);
-}
-
-function renderOutputDetail(item) {
-  const detail = $("#outputDetail");
-  if (!detail) return;
-  if (!item) {
-    detail.innerHTML = `
-      <div class="workspace-empty-state">
-        <strong>等待产物</strong>
-        <p>保存或生成内容后，这里会显示可复制、下载和沉淀到教学资产的 Markdown。</p>
-      </div>
-    `;
-    return;
-  }
-  detail.innerHTML = `
-    <article class="output-detail-card">
-      <div class="output-detail-head">
-        <div>
-          <span>${escapeHtml(item.outputType)}</span>
-          <h2>${escapeHtml(item.title || "未命名输出")}</h2>
-        </div>
-        <strong>${item.isSavedAsset ? "已在教学资产" : "待保存"}</strong>
-      </div>
-      <dl class="output-meta-grid">
-        <div><dt>来源</dt><dd>${escapeHtml(item.source || "本地")}</dd></div>
-        <div><dt>课程</dt><dd>${escapeHtml(item.course || defaultTrainingCourse.courseName)}</dd></div>
-        <div><dt>时间</dt><dd>${formatDate(item.updatedAt)}</dd></div>
-        <div><dt>边界</dt><dd>${escapeHtml(item.boundary || "使用前请教师复核来源边界。")}</dd></div>
-      </dl>
-      <div class="report-actions">
-        <button class="secondary-action" type="button" data-output-copy="${escapeHtml(item.id)}">复制</button>
-        <button class="secondary-action" type="button" data-output-download="${escapeHtml(item.id)}">下载 Markdown</button>
-        <button class="secondary-action" type="button" data-output-save="${escapeHtml(item.id)}">保存到教学资产</button>
-        <button class="secondary-action" type="button" disabled aria-disabled="true">导出 Word（后续）</button>
-      </div>
-      <pre>${escapeHtml(item.content || item.summary || "暂无内容。")}</pre>
-    </article>
-  `;
-  bindOutputActions(detail);
-}
-
-function saveOutputToTeachingAssets(id) {
-  const item = findOutputItem(id);
-  if (!item) return;
-  const store = loadAssets();
-  const saved = {
-    id: `output-asset-${Date.now()}`,
-    title: item.title || "输出汇总产物",
-    type: item.type || item.outputType || "输出汇总",
-    source: item.source || "输出汇总",
-    course: item.course || defaultTrainingCourse.courseName,
-    updatedAt: new Date().toISOString(),
-    tags: Array.from(new Set([...(item.tags || []), item.outputType || "输出汇总"])),
-    boundary: item.boundary || "从输出汇总页保存，正式使用前需教师复核。",
-    summary: item.summary || item.title || "输出汇总页保存的生成结果。",
-    usage: item.usage || "用于后续教学导航、教学实践或教学数据复用。",
-    reuse: item.reuse || "可复制后作为下一次生成的上下文。",
-    risk: item.risk || "第一版为本地演示产物，不代表真实平台写入。",
-    content: item.content || item.summary || "",
-    relatedFiles: [],
-  };
-  const targetKey = saved.type.includes("量规")
-    ? "generatedRubrics"
-    : saved.source.includes("教学实践") || saved.type.includes("实践") || saved.type.includes("任务")
-      ? "practiceReports"
-      : "trainingReports";
-  store[targetKey] = [saved, ...(store[targetKey] || [])];
-  store.tags = Array.from(new Set([...(store.tags || []), ...saved.tags]));
-  saveAssets(store);
-  showToast("输出已保存到教学资产");
-  renderOutputsPage();
-}
-
-function bindOutputActions(root = document) {
-  $$("[data-output-copy]", root).forEach((button) =>
-    button.addEventListener("click", () => {
-      const item = findOutputItem(button.dataset.outputCopy);
-      if (item) copyText(item.content || item.summary || item.title || "");
-    }),
-  );
-  $$("[data-output-download]", root).forEach((button) =>
-    button.addEventListener("click", () => {
-      const item = findOutputItem(button.dataset.outputDownload);
-      if (!item) return;
-      const filename = `${String(item.title || "pharmacopilot-output")
-        .replace(/[\\/:*?"<>|]+/g, "-")
-        .slice(0, 48)}.md`;
-      downloadMarkdown(filename, item.content || item.summary || item.title || "");
-    }),
-  );
-  $$("[data-output-save]", root).forEach((button) =>
-    button.addEventListener("click", () => saveOutputToTeachingAssets(button.dataset.outputSave)),
-  );
-}
-
-function initOutputsPage() {
-  if (!$("#outputsShell")) return;
-  renderOutputsPage();
 }
 
 function getTrainingStep(stepId = trainingState?.currentStepId || 1) {
@@ -3783,7 +2998,6 @@ function createDefaultTrainingState() {
       1: { primary: "E", secondary: [] },
     },
     templates: {},
-    taskSheets: {},
     scores: {},
     analyses: {},
     generatedFragments: {},
@@ -3815,7 +3029,6 @@ function loadTrainingState() {
   trainingState.stepResults ||= {};
   trainingState.choices ||= {};
   trainingState.templates ||= {};
-  trainingState.taskSheets ||= {};
   trainingState.scores ||= {};
   trainingState.analyses ||= {};
   trainingState.generatedFragments ||= {};
@@ -3844,7 +3057,6 @@ function saveTrainingState() {
     currentStepId: trainingState.currentStepId,
     choices: trainingState.choices || {},
     templates: trainingState.templates || {},
-    taskSheets: trainingState.taskSheets || {},
     analyses: trainingState.analyses || {},
     generatedFragments: trainingState.generatedFragments || {},
     completedStepIds: trainingState.completedStepIds || [],
@@ -3857,18 +3069,6 @@ function saveTrainingState() {
     updatedAt: trainingState.updatedAt,
   });
   saveToLocalStorage(NAVIGATION_TRAINING_KEY, trainingState);
-  updateClientStore((store) => {
-    const context = getTrainingCourseContext();
-    store.navigationStepStates = buildNavigationStepStatesFromSnapshot(trainingState);
-    store.currentWorkspace = {
-      ...store.currentWorkspace,
-      courseName: context.courseName,
-      lessonTitle: context.lessonTitle,
-      currentTopic: context.topic,
-      className: context.teachingObject,
-      updatedAt: trainingState.updatedAt,
-    };
-  });
 }
 
 function migrateConfirmedTrainingResults() {
@@ -5223,7 +4423,7 @@ function renderRouteGameMission(node, stepId, status, options = {}) {
       </details>
       <div class="route-mission-actions">
         <button class="primary-action" data-route-action="start-training" type="button" ${isLocked ? "disabled aria-disabled=\"true\"" : ""}>
-          ${isLocked ? "完成前序关卡后挑战本关" : status === "completed" ? "查看任务单" : "开始填写任务单"}
+          ${isLocked ? "完成前序关卡后挑战本关" : status === "completed" ? "查看结果" : status === "current" ? "继续挑战" : "开始挑战"}
         </button>
       </div>
     </section>
@@ -5321,196 +4521,13 @@ function renderRouteStoryRows(node, step, stepId) {
     .join("");
 }
 
-function getRouteNodeEvaluationDimensions(stepId, node) {
-  const rubric = getTrainingStepRubric(stepId);
-  const dimensions = (rubric?.dimensions || []).map((dimension) => dimension.label || dimension.name).filter(Boolean);
-  return dimensions.length ? dimensions : [node.rubric];
-}
-
-function getRouteTaskSheetDraft(stepId, node, step, preview) {
-  const saved = trainingState?.taskSheets?.[String(stepId)] || {};
-  const requirements = getRouteNodeInputRequirements(node).join("\n");
-  const dimensions = getRouteNodeEvaluationDimensions(stepId, node).join("\n");
-  return {
-    currentTask: saved.currentTask || node.task,
-    teacherConfirmations: saved.teacherConfirmations || requirements,
-    agentSuggestion: saved.agentSuggestion || preview?.fragment || `围绕“${step.title}”，建议先确认课程资料、学生起点、课堂产出和评价证据之间是否一致。`,
-    evaluationDimensions: saved.evaluationDimensions || dimensions,
-    teacherNotes: saved.teacherNotes || "",
-  };
-}
-
-function buildNavigationTaskSheetMarkdown(sheet, stepId, node, step) {
-  const phaseTitle = getTeachingPhaseTitle(getTeachingPhaseIdByNodeId(stepId));
-  return [
-    `# 教学导航任务单：${String(stepId).padStart(2, "0")} ${step.title}`,
-    "",
-    `- 所属阶段：${phaseTitle}`,
-    `- 课程：${getTrainingCourseContext().courseName}`,
-    `- 主题：${getTrainingCourseContext().topic}`,
-    `- 来源边界：教学导航页教师填写并确认的本地演示产物，不含真实泛雅写入。`,
-    "",
-    "## 当前任务",
-    sheet.currentTask || node.task,
-    "",
-    "## 教师需要确认的信息",
-    sheet.teacherConfirmations || "待教师补充。",
-    "",
-    "## 智能体建议",
-    sheet.agentSuggestion || "待生成。",
-    "",
-    "## 评价维度",
-    sheet.evaluationDimensions || node.rubric,
-    "",
-    "## 教师补充",
-    sheet.teacherNotes || "暂无。",
-  ].join("\n");
-}
-
-function readRouteTaskSheetForm(stepId) {
-  const root = $(`[data-route-task-sheet="${stepId}"]`);
-  if (!root) return null;
-  const value = (name) => $(`[name="${name}"]`, root)?.value.trim() || "";
-  return {
-    currentTask: value("currentTask"),
-    teacherConfirmations: value("teacherConfirmations"),
-    agentSuggestion: value("agentSuggestion"),
-    evaluationDimensions: value("evaluationDimensions"),
-    teacherNotes: value("teacherNotes"),
-    savedAt: new Date().toISOString(),
-  };
-}
-
-function renderRouteTaskSheetForm(stepId, node, step, preview) {
-  const sheet = getRouteTaskSheetDraft(stepId, node, step, preview);
-  return `
-    <section class="route-workbench-block route-task-sheet-form" data-route-task-sheet="${stepId}" aria-labelledby="route-task-sheet-title-${stepId}">
-      <div class="route-block-head">
-        <div>
-          <p class="eyebrow">Task sheet</p>
-          <h4 id="route-task-sheet-title-${stepId}">环节任务单</h4>
-        </div>
-        <span>保存后进入教学资产</span>
-      </div>
-      <label>
-        <span>当前任务</span>
-        <textarea name="currentTask" rows="3">${escapeHtml(sheet.currentTask)}</textarea>
-      </label>
-      <label>
-        <span>教师需要确认的信息</span>
-        <textarea name="teacherConfirmations" rows="4">${escapeHtml(sheet.teacherConfirmations)}</textarea>
-      </label>
-      <label>
-        <span>智能体建议</span>
-        <textarea name="agentSuggestion" rows="5">${escapeHtml(sheet.agentSuggestion)}</textarea>
-      </label>
-      <label>
-        <span>评价维度</span>
-        <textarea name="evaluationDimensions" rows="4">${escapeHtml(sheet.evaluationDimensions)}</textarea>
-      </label>
-      <label>
-        <span>教师补充说明</span>
-        <textarea name="teacherNotes" rows="3" placeholder="补充本班学情、材料边界、课堂约束或需要二次确认的事项。">${escapeHtml(sheet.teacherNotes)}</textarea>
-      </label>
-      <div class="route-detail-actions">
-        <button class="primary-action" type="button" data-route-action="save-task-sheet">保存为教学资产</button>
-        <button class="secondary-action" type="button" data-route-action="open-strategy">进入方案选择</button>
-        <button class="secondary-action" type="button" data-route-action="collapse-card">返回简报</button>
-      </div>
-    </section>
-  `;
-}
-
-function renderRouteTaskSheetBrief(stepId, node, step, preview) {
-  const sheet = getRouteTaskSheetDraft(stepId, node, step, preview);
-  const dimensions = sheet.evaluationDimensions
-    .split(/\n+/)
-    .map((item) => item.trim())
-    .filter(Boolean)
-    .slice(0, 4);
-  return `
-    <section class="route-workbench-block route-task-sheet-brief" aria-label="环节任务单摘要">
-      <div class="route-block-head">
-        <div>
-          <p class="eyebrow">任务单</p>
-          <h4>当前任务与确认信息</h4>
-        </div>
-        <span>${trainingState.taskSheets?.[String(stepId)] ? "已保存" : "待填写"}</span>
-      </div>
-      <div class="route-task-sheet-grid">
-        <article>
-          <span>当前任务</span>
-          <p>${escapeHtml(sheet.currentTask)}</p>
-        </article>
-        <article>
-          <span>教师确认</span>
-          <p>${escapeHtml(compactAssetGraphText(sheet.teacherConfirmations, 92))}</p>
-        </article>
-        <article>
-          <span>智能体建议</span>
-          <p>${escapeHtml(compactAssetGraphText(sheet.agentSuggestion, 108))}</p>
-        </article>
-        <article>
-          <span>评价维度</span>
-          <div class="route-node-dimension-tags">${dimensions.map((dimension) => `<span>${escapeHtml(dimension)}</span>`).join("")}</div>
-        </article>
-      </div>
-    </section>
-  `;
-}
-
-function saveRouteTaskSheet() {
-  const stepId = Number(selectedRouteNodeId);
-  const node = getRouteNode(stepId);
-  const step = getContextualTrainingStep(getTrainingStep(stepId));
-  const sheet = readRouteTaskSheetForm(stepId);
-  if (!sheet) return;
-  if (!sheet.currentTask || !sheet.teacherConfirmations || !sheet.agentSuggestion || !sheet.evaluationDimensions) {
-    showToast("请先补全任务、确认信息、智能体建议和评价维度");
-    return;
-  }
-  trainingState.taskSheets ||= {};
-  trainingState.taskSheets[String(stepId)] = sheet;
-  if (!hasRouteStepId(trainingState.completedStepIds, stepId)) trainingState.completedStepIds.push(stepId);
-  trainingState.currentStepId = Math.min(Math.max(Number(trainingState.currentStepId || 1), stepId + 1), trainingSteps.length);
-  const content = buildNavigationTaskSheetMarkdown(sheet, stepId, node, step);
-  const phaseTitle = getTeachingPhaseTitle(getTeachingPhaseIdByNodeId(stepId));
-  const store = loadAssets();
-  const item = {
-    id: `navigation-task-sheet-${stepId}-${Date.now()}`,
-    title: `${String(stepId).padStart(2, "0")} ${step.title}｜教学导航任务单`,
-    type: "教学导航任务单",
-    source: "教学导航",
-    course: getTrainingCourseContext().courseName,
-    stage: phaseTitle,
-    updatedAt: sheet.savedAt,
-    tags: ["教学导航", "任务单", phaseTitle, getTrainingCourseContext().topic],
-    boundary: "来源于教学导航页教师填写并确认的本地任务单；不读取真实学生个人数据，也不会写入泛雅。",
-    summary: `${phaseTitle}中“${step.title}”的当前任务、教师确认信息、智能体建议和评价维度。`,
-    usage: "用于教学实践页生成课堂任务、评价量规和实践方案。",
-    reuse: "可在教学实践页或输出汇总页复制后继续生成。",
-    risk: "正式用于课堂前，教师需根据真实课程资料、学生起点和学校评价规范复核。",
-    content,
-    relatedFiles: [],
-  };
-  store.trainingReports = [item, ...(store.trainingReports || [])];
-  store.tags = Array.from(new Set([...(store.tags || []), ...item.tags]));
-  saveAssets(store);
-  saveTrainingState();
-  routeNodeCardOpen = true;
-  routeNodeCardMode = "explain";
-  routeNodeRecommendationMessage = `任务单已保存为教学资产，可进入教学实践生成课堂任务和评价量规。`;
-  renderTeachingNavigationPage();
-  showToast("任务单已保存到教学资产");
-}
-
 function renderNodeDetailPanel() {
   const container = $("#teachingNodeDetail");
   if (!container) return;
   const panel = container.closest(".route-detail-card");
   if (!routeNodeCardOpen) {
     container.innerHTML = "";
-    panel?.classList.remove("is-open", "is-expanded", "is-explain-mode", "is-training-mode", "is-task-sheet-mode", "is-locked-node");
+    panel?.classList.remove("is-open", "is-expanded", "is-explain-mode", "is-training-mode", "is-locked-node");
     panel?.setAttribute("aria-hidden", "true");
     return;
   }
@@ -5532,23 +4549,21 @@ function renderNodeDetailPanel() {
   const scoreMeta = getTrainingSidebarScoreMeta(stepId);
   const isConfirmed = Boolean(trainingState.stepResults?.[String(stepId)]);
   const isLocked = status === "locked";
-  const isTaskSheetMode = routeNodeCardMode === "task-sheet" && !isLocked;
   const isTrainingMode = routeNodeCardMode === "training" && !isLocked;
   const teachingPhaseId = getTeachingPhaseIdByNodeId(stepId);
   const teachingPhaseTitle = getTeachingPhaseTitle(teachingPhaseId);
-  if (isLocked && (routeNodeCardMode === "training" || routeNodeCardMode === "task-sheet")) routeNodeCardMode = "explain";
+  if (isLocked && routeNodeCardMode === "training") routeNodeCardMode = "explain";
   container.setAttribute("tabindex", "-1");
   panel?.classList.add("is-open");
-  panel?.classList.toggle("is-expanded", isTrainingMode || isTaskSheetMode);
-  panel?.classList.toggle("is-explain-mode", !isTrainingMode && !isTaskSheetMode);
+  panel?.classList.toggle("is-expanded", isTrainingMode);
+  panel?.classList.toggle("is-explain-mode", !isTrainingMode);
   panel?.classList.toggle("is-training-mode", isTrainingMode);
-  panel?.classList.toggle("is-task-sheet-mode", isTaskSheetMode);
   panel?.classList.toggle("is-locked-node", isLocked);
   panel?.setAttribute("aria-hidden", "false");
 
   const commonHeader = `
       <div class="route-detail-kicker">
-        <span>${isTaskSheetMode ? "任务单填写" : isTrainingMode ? "方案选择" : "关卡简报"}</span>
+        <span>${isTrainingMode ? "方案选择" : "关卡简报"}</span>
         <div class="route-popover-title-actions">
           <strong class="route-detail-status status-${status}">${escapeHtml(detailStatusLabel)}</strong>
           <button class="route-popover-close" data-route-action="close-card" type="button" aria-label="关闭环节说明卡">×</button>
@@ -5563,7 +4578,7 @@ function renderNodeDetailPanel() {
         </div>
       </header>`;
 
-  if (!isTrainingMode && !isTaskSheetMode) {
+  if (!isTrainingMode) {
     container.innerHTML = `
       <article class="route-node-detail-card route-workbench-card route-node-summary-card route-node-explain-card" data-route-workbench-step="${stepId}">
         ${commonHeader}
@@ -5575,7 +4590,6 @@ function renderNodeDetailPanel() {
         <section class="route-workbench-block route-explain-workbench" aria-labelledby="route-explain-title-${stepId}">
           <h4 id="route-explain-title-${stepId}" class="sr-only">关卡任务简报</h4>
           ${renderRouteGameMission(node, stepId, status, { isLocked })}
-          ${renderRouteTaskSheetBrief(stepId, node, step, preview)}
           <details class="route-node-more-details">
             <summary>查看教师输入、产出和评价细节</summary>
             <div class="route-story-list">
@@ -5592,24 +4606,6 @@ function renderNodeDetailPanel() {
     `;
     $("[data-route-action='close-card']", container)?.addEventListener("click", closeRouteNodeCard);
     $("[data-route-action='start-training']", container)?.addEventListener("click", startRouteNodeTraining);
-    return;
-  }
-
-  if (isTaskSheetMode) {
-    container.innerHTML = `
-      <article class="route-node-detail-card route-workbench-card route-node-expanded-card" data-route-workbench-step="${stepId}">
-        ${commonHeader}
-        ${renderRouteTaskSheetForm(stepId, node, step, preview)}
-      </article>
-    `;
-    $("[data-route-action='close-card']", container)?.addEventListener("click", closeRouteNodeCard);
-    $("[data-route-action='collapse-card']", container)?.addEventListener("click", collapseRouteNodeCard);
-    $("[data-route-action='save-task-sheet']", container)?.addEventListener("click", saveRouteTaskSheet);
-    $("[data-route-action='open-strategy']", container)?.addEventListener("click", () => {
-      routeNodeCardMode = "training";
-      renderNodeDetailPanel();
-      focusRouteNodeDetailPanel();
-    });
     return;
   }
 
@@ -5690,7 +4686,7 @@ function startRouteNodeTraining() {
     return;
   }
   routeNodeCardOpen = true;
-  routeNodeCardMode = "task-sheet";
+  routeNodeCardMode = "training";
   routeNodeRecommendationMessage = "";
   renderNodeDetailPanel();
   focusRouteNodeDetailPanel();
@@ -5865,12 +4861,7 @@ function openTrainingRouteModal(node) {
     </div>
   `;
   $("[data-route-modal-start]", body)?.addEventListener("click", () => {
-    closeTrainingRouteModal();
-    selectedRouteNodeId = Number(node.id);
-    routeNodeCardOpen = true;
-    routeNodeCardMode = "task-sheet";
-    renderTeachingNavigationPage();
-    focusRouteNodeDetailPanel();
+    showToast("当前版本先展示任务要求，后续将接入任务单填写与材料生成。");
   });
   modal.classList.add("is-open");
   modal.setAttribute("aria-hidden", "false");
@@ -8312,254 +7303,6 @@ function initChaoxingEditorEmbedPanel() {
   applyChaoxingPracticeNodeAffordances();
 }
 
-function getPracticeV1Context() {
-  const selectedCourse = getSelectedFanyaCourse?.();
-  const store = loadClientStore();
-  const workspace = store.currentWorkspace || makeDefaultWorkspace();
-  const trainingContext = getTrainingCourseContext();
-  if (selectedCourse) {
-    const imported = buildImportedContext(selectedCourse);
-    return {
-      courseName: imported.courseProfile.courseName,
-      lessonTitle: imported.courseProfile.lessonTitle,
-      className: imported.className,
-      currentTopic: imported.currentTopic,
-      learnerSummary: `预习完成率 ${imported.learningAnalytics.previewCompletionRate}%，讨论参与率 ${imported.learningAnalytics.discussionParticipation}%，薄弱点：${imported.assignmentProfile.weakPoints.slice(0, 3).join("、")}`,
-      sourceBoundary: "泛雅模拟授权课程上下文；未读取真实学生个人数据。",
-    };
-  }
-  return {
-    courseName: workspace.courseName || trainingContext.courseName,
-    lessonTitle: workspace.lessonTitle || trainingContext.lessonTitle,
-    className: workspace.className || trainingContext.teachingObject,
-    currentTopic: workspace.currentTopic || trainingContext.topic,
-    learnerSummary: "本地演示学情：新教师首次独立备课，需基于课堂反馈继续确认学生起点。",
-    sourceBoundary: "当前课程与教学导航本地演示数据。",
-  };
-}
-
-function getNavigationAssetsForPractice() {
-  return getStoredTeachingAssetItems()
-    .filter((item) => normalizeAssetSource(item.source) === "教学导航")
-    .sort((a, b) => new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0))
-    .slice(0, 6);
-}
-
-function getLatestPracticeV1Run() {
-  return [...(loadClientStore().agentRuns || [])]
-    .filter((run) => run.type === "practice-v1")
-    .sort((a, b) => new Date(b.updatedAt || 0) - new Date(a.updatedAt || 0))[0] || null;
-}
-
-function savePracticeV1Run(partial) {
-  let savedRun = null;
-  updateClientStore((store) => {
-    const previous = getLatestPracticeV1Run() || {};
-    savedRun = {
-      id: previous.id || `practice-v1-${Date.now()}`,
-      type: "practice-v1",
-      context: getPracticeV1Context(),
-      task: previous.task || "",
-      rubric: previous.rubric || "",
-      plan: previous.plan || "",
-      ...partial,
-      updatedAt: new Date().toISOString(),
-    };
-    store.agentRuns = [savedRun, ...(store.agentRuns || []).filter((run) => run.id !== savedRun.id)].slice(0, 20);
-    store.practiceRuns = [
-      {
-        id: savedRun.id,
-        source: "practice-v1",
-        importedContext: { courseProfile: { courseName: savedRun.context.courseName, lessonTitle: savedRun.context.lessonTitle }, className: savedRun.context.className },
-        completedStepIds: [],
-        finalPracticePlan: savedRun.plan || "",
-        updatedAt: savedRun.updatedAt,
-      },
-      ...(store.practiceRuns || []).filter((run) => run.id !== savedRun.id),
-    ].slice(0, 12);
-  });
-  return savedRun;
-}
-
-function buildPracticeNavigationSummary(assets = getNavigationAssetsForPractice()) {
-  if (!assets.length) {
-    return "尚未保存教学导航任务单。建议先到教学导航选择一个环节，填写任务单并保存为教学资产。";
-  }
-  return assets
-    .map((asset, index) => `${index + 1}. ${asset.title}：${asset.summary || asset.boundary || "已保存导航产物。"}`)
-    .join("\n");
-}
-
-function generatePracticeV1Task() {
-  const context = getPracticeV1Context();
-  const navigationSummary = buildPracticeNavigationSummary();
-  const task = [
-    `# ${context.courseName}｜课堂任务`,
-    "",
-    `- 课次：${context.lessonTitle}`,
-    `- 班级：${context.className}`,
-    `- 主题：${context.currentTopic}`,
-    `- 来源边界：${context.sourceBoundary}`,
-    "",
-    "## 教学导航产物摘要",
-    navigationSummary,
-    "",
-    "## Agent 生成课堂任务",
-    `请学生围绕“${context.lessonTitle}”完成一份小组课堂任务：先基于课程材料提取关键事实，再说明判断依据，最后形成一条可执行的管理建议。`,
-    "",
-    "## 提交要求",
-    "- 以小组为单位提交一页任务单或课堂展示记录。",
-    "- 每条判断至少对应一条课程材料或课堂讨论证据。",
-    "- 结论必须说明适用边界和需要继续核验的信息。",
-    "",
-    "## 泛雅边界",
-    "本内容仅支持复制粘贴到泛雅课程，不会通过 PharmacoPilot 自动写入第三方平台。",
-  ].join("\n");
-  const run = savePracticeV1Run({ task });
-  renderPracticeV1Flow(run);
-  showToast("课堂任务已生成");
-  return task;
-}
-
-function generatePracticeV1Rubric() {
-  const context = getPracticeV1Context();
-  const rubric = [
-    `# ${context.courseName}｜评价量规`,
-    "",
-    `- 课次：${context.lessonTitle}`,
-    `- 来源边界：${context.sourceBoundary}`,
-    "",
-    "| 维度 | 权重 | 达成表现 | 证据要求 |",
-    "| --- | ---: | --- | --- |",
-    "| 任务理解 | 25% | 能准确解释课堂任务与课程目标的关系 | 任务单、课堂发言或小组记录 |",
-    "| 证据支撑 | 30% | 判断能引用课程材料、案例事实或课堂讨论证据 | 材料标注、证据表、展示说明 |",
-    "| 方案可行 | 25% | 建议与课程情境、资源约束和风险边界匹配 | 小组方案、教师追问记录 |",
-    "| 反思改进 | 20% | 能说明不足、边界和下一步修订方向 | 个人反思、同伴互评或复盘记录 |",
-    "",
-    "正式计分前需教师根据本校过程性评价规范调整权重。",
-  ].join("\n");
-  const run = savePracticeV1Run({ rubric });
-  renderPracticeV1Flow(run);
-  showToast("评价量规已生成");
-  return rubric;
-}
-
-function generatePracticeV1Plan() {
-  const run = getLatestPracticeV1Run() || {};
-  const context = getPracticeV1Context();
-  const task = run.task || generatePracticeV1Task();
-  const rubric = run.rubric || generatePracticeV1Rubric();
-  const plan = [
-    `# ${context.courseName}｜最终教学实践方案`,
-    "",
-    `- 课次：${context.lessonTitle}`,
-    `- 班级：${context.className}`,
-    `- 主题：${context.currentTopic}`,
-    `- 数据边界：${context.sourceBoundary}`,
-    `- 泛雅边界：只生成可复制内容和新窗口入口，不真实写回泛雅。`,
-    "",
-    "## 当前课程上下文",
-    context.learnerSummary,
-    "",
-    "## 当前教学导航产物摘要",
-    buildPracticeNavigationSummary(),
-    "",
-    "## 课堂任务",
-    task.replace(/^# .+\n+/, ""),
-    "",
-    "## 评价量规",
-    rubric.replace(/^# .+\n+/, ""),
-    "",
-    "## 教师复核清单",
-    "- 复核课程材料是否允许分发给学生。",
-    "- 复核评价权重是否符合本校过程性评价要求。",
-    "- 复核泛雅发布位置、班级对象和截止时间。",
-  ].join("\n");
-  const saved = savePracticeV1Run({ task, rubric, plan });
-  renderPracticeV1Flow(saved);
-  showToast("最终教学实践方案已生成");
-  return plan;
-}
-
-function renderPracticeV1Flow(run = getLatestPracticeV1Run()) {
-  const root = $("#practiceV1Flow");
-  if (!root) return;
-  const context = getPracticeV1Context();
-  const integrations = getIntegrationStatusCopy();
-  const navigationAssets = getNavigationAssetsForPractice();
-  const setText = (selector, text) => {
-    const target = $(selector, root);
-    if (target) target.textContent = text;
-  };
-  setText("#practiceV1CourseName", context.courseName);
-  setText("#practiceV1LessonTitle", context.lessonTitle);
-  setText("#practiceV1ClassName", context.className);
-  setText("#practiceV1LearnerSummary", context.learnerSummary);
-  const fanyaStatus = $("#practiceV1FanyaStatus", root);
-  if (fanyaStatus) {
-    fanyaStatus.dataset.state = integrations.fanya.state;
-    fanyaStatus.innerHTML = `<strong>${escapeHtml(integrations.fanya.label)}</strong><p>${escapeHtml(integrations.fanya.detail)}</p>`;
-  }
-  const navSummary = $("#practiceV1NavigationSummary", root);
-  if (navSummary) {
-    navSummary.innerHTML = navigationAssets.length
-      ? navigationAssets
-          .map((asset) => `<article><strong>${escapeHtml(asset.title)}</strong><p>${escapeHtml(asset.summary || asset.boundary || "")}</p><small>${formatDate(asset.updatedAt)}</small></article>`)
-          .join("")
-      : `<div class="workspace-empty-state"><strong>暂无导航产物</strong><p>先到教学导航填写并保存一个环节任务单，实践方案会自动读取。</p></div>`;
-  }
-  const taskOutput = $("#practiceV1TaskOutput", root);
-  const rubricOutput = $("#practiceV1RubricOutput", root);
-  const planOutput = $("#practiceV1PlanOutput", root);
-  if (taskOutput) taskOutput.textContent = run?.task || "点击“生成课堂任务”后显示可复制文本。";
-  if (rubricOutput) rubricOutput.textContent = run?.rubric || "点击“生成评价量规”后显示维度、权重和证据要求。";
-  if (planOutput) planOutput.textContent = run?.plan || "点击“生成最终教学实践方案”后显示完整 Markdown。";
-  const openFanya = $("#practiceV1OpenFanya", root);
-  if (openFanya) openFanya.href = fanyaAuthState?.platformUrl || loadClientStore().integrationConfig?.fanya?.platformUrl || FANYA_MOCK_ACCOUNT.platformUrl;
-}
-
-function savePracticeV1PlanToAssets() {
-  const run = getLatestPracticeV1Run();
-  const plan = run?.plan || generatePracticeV1Plan();
-  const context = getPracticeV1Context();
-  const store = loadAssets();
-  const item = {
-    id: `practice-v1-plan-${Date.now()}`,
-    title: `${context.courseName}｜最终教学实践方案`,
-    type: "教学实践方案",
-    source: "教学实践",
-    course: context.courseName,
-    updatedAt: new Date().toISOString(),
-    tags: ["教学实践", "实践方案", "可复制到泛雅"],
-    boundary: "来源于教学实践页本地生成内容；只支持复制和新窗口打开，不会真实写入泛雅。",
-    summary: `${context.lessonTitle} 的课堂任务、评价量规和教师复核清单。`,
-    usage: "用于备课、课堂任务发布前人工复核和泛雅手动粘贴。",
-    reuse: "可在教学数据页继续作为资产复用。",
-    risk: "正式使用前需教师核验课程材料、学生对象、时间安排和学校评价规范。",
-    content: plan,
-    relatedFiles: [],
-  };
-  store.practiceReports = [item, ...(store.practiceReports || [])];
-  store.tags = Array.from(new Set([...(store.tags || []), ...item.tags]));
-  saveAssets(store);
-  showToast("实践方案已保存到教学资产");
-}
-
-function initPracticeV1Flow() {
-  if (!$("#practiceV1Flow")) return;
-  renderPracticeV1Flow();
-  $("#generatePracticeV1Task")?.addEventListener("click", generatePracticeV1Task);
-  $("#generatePracticeV1Rubric")?.addEventListener("click", generatePracticeV1Rubric);
-  $("#generatePracticeV1Plan")?.addEventListener("click", generatePracticeV1Plan);
-  $("#copyPracticeV1Plan")?.addEventListener("click", () => copyText(getLatestPracticeV1Run()?.plan || generatePracticeV1Plan()));
-  $("#downloadPracticeV1Plan")?.addEventListener("click", () => downloadMarkdown("pharmacopilot-practice-v1-plan.md", getLatestPracticeV1Run()?.plan || generatePracticeV1Plan()));
-  $("#savePracticeV1Plan")?.addEventListener("click", savePracticeV1PlanToAssets);
-  $("#copyPracticeV1ToFanya")?.addEventListener("click", () => {
-    copyText(getLatestPracticeV1Run()?.plan || generatePracticeV1Plan());
-    showToast("已复制可粘贴内容；系统不会真实写入泛雅");
-  });
-}
-
 function initPracticePage() {
   if (!$("#fanyaAuthForm")) return;
   fanyaAuthState = {
@@ -8575,7 +7318,6 @@ function initPracticePage() {
   renderAuthorizedCourses();
   renderPracticeWorkspace();
   initChaoxingEditorEmbedPanel();
-  initPracticeV1Flow();
 
   $("#fanyaAuthForm")?.addEventListener("submit", simulateFanyaAuth);
   $("#useMockFanyaAccount")?.addEventListener("click", useMockFanyaAccount);
@@ -8672,16 +7414,6 @@ function simulateFanyaAuth(event) {
     availableCourses,
   };
   saveToLocalStorage(FANYA_AUTH_KEY, fanyaAuthState);
-  updateClientStore((store) => {
-    store.integrationConfig.fanya = {
-      ...store.integrationConfig.fanya,
-      mode: "mock",
-      status: "mock_connected",
-      platformUrl,
-      boundary: fanyaAuthState.dataBoundary,
-      updatedAt: fanyaAuthState.connectedAt,
-    };
-  });
   renderFanyaLogin();
   renderAuthorizedCourses();
   renderPracticeWorkspace();
@@ -8864,14 +7596,6 @@ function resetFanyaAuth() {
   fanyaAuthState = makeEmptyFanyaAuthState();
   practiceWorkflowState = null;
   saveToLocalStorage(FANYA_AUTH_KEY, fanyaAuthState);
-  updateClientStore((store) => {
-    store.integrationConfig.fanya = {
-      ...store.integrationConfig.fanya,
-      mode: store.integrationConfig.fanya.mode || "mock",
-      status: store.integrationConfig.fanya.mode === "disabled" ? "disabled" : "mock_ready",
-      updatedAt: new Date().toISOString(),
-    };
-  });
   renderFanyaLogin();
   renderAuthorizedCourses();
   renderPracticeWorkspace();
@@ -8994,30 +7718,6 @@ function savePracticeWorkflowState() {
   if (!practiceWorkflowState) return;
   practiceWorkflowState.updatedAt = new Date().toISOString();
   saveToLocalStorage(PRACTICE_WORKFLOW_KEY, practiceWorkflowState);
-  updateClientStore((store) => {
-    const run = {
-      id: `practice-run-${practiceWorkflowState.selectedCourseId || "demo"}`,
-      source: "practice-workflow",
-      selectedCourseId: practiceWorkflowState.selectedCourseId || "",
-      courseSnapshot: practiceWorkflowState.courseSnapshot || null,
-      importedContext: practiceWorkflowState.importedContext || null,
-      completedStepIds: practiceWorkflowState.completedStepIds || [],
-      finalPracticePlan: practiceWorkflowState.finalPracticePlan || "",
-      finalDiagnostic: practiceWorkflowState.finalDiagnostic || null,
-      updatedAt: practiceWorkflowState.updatedAt,
-    };
-    store.practiceRuns = [run, ...(store.practiceRuns || []).filter((item) => item.id !== run.id)].slice(0, 12);
-    if (practiceWorkflowState.importedContext?.courseProfile) {
-      store.currentWorkspace = {
-        ...store.currentWorkspace,
-        courseName: practiceWorkflowState.importedContext.courseProfile.courseName || store.currentWorkspace.courseName,
-        lessonTitle: practiceWorkflowState.importedContext.courseProfile.lessonTitle || store.currentWorkspace.lessonTitle,
-        className: practiceWorkflowState.importedContext.className || store.currentWorkspace.className,
-        currentTopic: practiceWorkflowState.importedContext.currentTopic || store.currentWorkspace.currentTopic,
-        updatedAt: practiceWorkflowState.updatedAt,
-      };
-    }
-  });
 }
 
 function migrateConfirmedPracticeResults() {
@@ -9828,12 +8528,7 @@ function makeEmptyAssets() {
 }
 
 function loadAssets() {
-  const storeV1 = loadClientStore();
-  const legacy = {
-    ...makeEmptyAssets(),
-    ...loadFromLocalStorage(ASSETS_KEY, makeEmptyAssets()),
-    ...normalizeTeachingAssetsStore(storeV1.teachingAssets),
-  };
+  const legacy = loadFromLocalStorage(ASSETS_KEY, makeEmptyAssets());
   currentAssetStore = {
     ...makeEmptyAssets(),
     ...legacy,
@@ -9853,9 +8548,6 @@ function saveAssets(store = currentAssetStore) {
     ...(store || {}),
   };
   saveToLocalStorage(ASSETS_KEY, currentAssetStore);
-  updateClientStore((clientStore) => {
-    clientStore.teachingAssets = currentAssetStore;
-  });
 }
 
 const MANAGEMENT_COURSE_GRAPH_NODES = [
@@ -10052,63 +8744,12 @@ function getManagementCourseAssetStats() {
   const reusable = assets.filter((asset) => asset.status === "可复用" || asset.status === "已用于实践").length;
   return {
     total: assets.length,
-    navigation: assets.filter((asset) => asset.source === "教学导航").length,
     uploaded: (store.uploadedFileMeta || []).length,
     practice: (store.practiceReports || []).length + (store.generatedTasks || []).length,
     fanya: (store.fanyaSyncRecords || []).length,
     boundaryRate: assets.length ? Math.round((withBoundary / assets.length) * 100) : 0,
     reusableRate: assets.length ? Math.round((reusable / assets.length) * 100) : 0,
   };
-}
-
-function getAssetsForManagementCourseNode(node) {
-  const items = getAssetWorkbenchItems().filter((asset) => !asset.derived);
-  if (!items.length) return [];
-  if (node.id === "course-core") return items.slice(0, 6);
-  if (node.id === "planning-decision" || node.id === "swot-example") {
-    return items.filter((asset) => /计划|决策|SWOT|任务单|导航/.test(getAssetSearchText(asset))).slice(0, 6);
-  }
-  if (node.id === "rubric-bank") return items.filter((asset) => asset.type === "评价量规").slice(0, 6);
-  if (node.id === "learning-evidence" || node.id === "control-quality") {
-    return items.filter((asset) => /实践|复盘|学习证据|任务|方案/.test(getAssetSearchText(asset))).slice(0, 6);
-  }
-  if (node.id === "case-library") return items.filter((asset) => /案例|材料|知识库|上传/.test(getAssetSearchText(asset))).slice(0, 6);
-  return items.filter((asset) => asset.course === defaultTrainingCourse.courseName || /管理学原理|教学导航|教学实践/.test(getAssetSearchText(asset))).slice(0, 4);
-}
-
-function renderCourseNodeAssetPanel(node) {
-  const assets = getAssetsForManagementCourseNode(node);
-  if (!assets.length) {
-    return `
-      <div class="course-node-assets-empty">
-        <strong>该节点暂无真实保存产物</strong>
-        <p>建议先进入教学导航保存环节任务单，或进入教学实践生成课堂任务和实践方案。</p>
-        <div>
-          <a href="./teaching-navigation.html">继续教学导航</a>
-          <a href="./practice.html">进入教学实践</a>
-        </div>
-      </div>
-    `;
-  }
-  return `
-    <div class="course-node-assets">
-      ${assets
-        .map(
-          (asset) => `
-            <article>
-              <div>
-                <span>${escapeHtml(asset.source)} · ${escapeHtml(asset.type)}</span>
-                <strong>${escapeHtml(asset.title)}</strong>
-              </div>
-              <p>${escapeHtml(asset.summary || asset.boundary || "暂无摘要")}</p>
-              <small>时间：${formatDate(asset.updatedAt)}｜边界：${escapeHtml(asset.boundary || "待补充")}</small>
-              <button type="button" data-copy-asset="${escapeHtml(asset.id)}">复制复用</button>
-            </article>
-          `,
-        )
-        .join("")}
-    </div>
-  `;
 }
 
 function isManagementCourseNodeFocused(node) {
@@ -10244,17 +8885,15 @@ function renderManagementCoursePanels() {
     diagnostics.innerHTML = `
       <div class="course-stat-grid">
         <span><strong>${stats.total}</strong><small>资产条目</small></span>
-        <span><strong>${stats.navigation}</strong><small>导航产物</small></span>
         <span><strong>${stats.boundaryRate}%</strong><small>边界覆盖</small></span>
         <span><strong>${stats.reusableRate}%</strong><small>可复用率</small></span>
+        <span><strong>${stats.uploaded}</strong><small>教师上传</small></span>
       </div>
       <ul class="course-panel-list">
         ${(node.quality || []).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
       </ul>
-      <p class="course-diagnostic-foot">教学实践生成材料 ${stats.practice} 项，教师上传 ${stats.uploaded} 项，泛雅模拟记录 ${stats.fanya} 项。</p>
-      ${renderCourseNodeAssetPanel(node)}
+      <p class="course-diagnostic-foot">教学实践生成材料 ${stats.practice} 项，泛雅模拟记录 ${stats.fanya} 项。</p>
     `;
-    bindAssetActions(diagnostics);
   }
   if (actionsTitle) actionsTitle.textContent = `${node.title}动作`;
   if (actions) {
@@ -10671,7 +9310,6 @@ function initManagementCourseGraphPage() {
   loadAssets();
   importTrainingAndPracticeAssets();
   renderManagementCourseGraph();
-  renderWendaoConfigNotice();
   initAcademicServiceEmbedPanel();
   initFanyaKnowledgeGraphPanel();
   return true;
@@ -11021,10 +9659,9 @@ function collectAssetItems() {
 function normalizeAssetSource(source = "") {
   const value = String(source || "").trim();
   if (/泛雅|学习通|同步/.test(value)) return "泛雅同步";
-  if (/教学导航|导航任务|环节任务单/.test(value)) return "教学导航";
   if (/教学实践|实践|课堂|作业/.test(value)) return "教学实践";
   if (/上传|知识库|教师/.test(value)) return "教师上传";
-  if (/系统示例|新手教程|导航|训练|示例/.test(value)) return "系统示例";
+  if (/系统示例|新手教程|教学导航|导航|训练|示例/.test(value)) return "系统示例";
   return "教师上传";
 }
 
@@ -12540,9 +11177,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const page = document.body.dataset.page;
   if (page === "home") initHomePage();
   if (page === "auth") initAuthPage();
-  if (page === "workspace") initDashboardPage();
-  if (page === "settings") initSettingsPage();
-  if (page === "outputs") initOutputsPage();
   if (page === "teaching-navigation") initTeachingNavigationPage();
   if (page === "navigation") initNavigationTrainingPage();
   if (page === "practice") initPracticePage();
@@ -12559,16 +11193,10 @@ window.copyText = copyText;
 window.downloadMarkdown = downloadMarkdown;
 window.saveToLocalStorage = saveToLocalStorage;
 window.loadFromLocalStorage = loadFromLocalStorage;
-window.loadClientStore = loadClientStore;
-window.saveClientStore = saveClientStore;
-window.updateClientStore = updateClientStore;
 window.renderHorizontalBarChart = renderHorizontalBarChart;
 window.renderStepHeatmap = renderStepHeatmap;
 window.renderBulletChart = renderBulletChart;
 window.initAuthPage = initAuthPage;
-window.initDashboardPage = initDashboardPage;
-window.initSettingsPage = initSettingsPage;
-window.initOutputsPage = initOutputsPage;
 window.loadAccountSession = loadAccountSession;
 window.saveAccountSession = saveAccountSession;
 window.clearAccountSession = clearAccountSession;

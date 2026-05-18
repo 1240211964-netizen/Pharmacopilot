@@ -35,10 +35,14 @@
         </button>
         <div class="home-nav-group" id="homeNavGroup">
           <nav class="topnav" id="primaryNav" aria-label="页面导航">
+            <a class="nav-link active" data-nav="home" href="./index.html">首页</a>
+            <a class="nav-link" data-nav="teaching-navigation" href="./teaching-navigation.html">教学导航</a>
+            <a class="nav-link" data-nav="practice" href="./practice.html">教学实践</a>
+            <a class="nav-link" data-nav="assets" href="./teaching-data.html">教学数据</a>
           </nav>
           <div class="top-actions" aria-label="首页操作入口">
             <a class="nav-outline-action" href="#homeCoworkStage">查看示例</a>
-            <a class="nav-primary-action" href="./dashboard.html">进入工作台</a>
+            <a class="nav-primary-action" href="./teaching-navigation.html">进入工作台</a>
           </div>
         </div>
       </div>
@@ -50,11 +54,11 @@
           <p class="eyebrow">Teaching Agent Workbench</p>
           <h1 id="main-title">面向新教学范式，重构新教师备课路径。</h1>
           <p class="lede">
-            PharmacoPilot 面向新教师，把本科《管理学原理》课程的教学设计、课堂实践、评价诊断和资产沉淀组织成一个连续工作台。SWOT 分析只是教学导航中的示例知识点，不会泛化到教学实践和教学数据模块。
+            输入教学目标、上传课程材料、设定课堂约束。Pharmacopilot 会围绕药事管理本科《管理学原理》SWOT 分析课，生成教学导航、课堂任务、评价量规和课后复盘草稿。
           </p>
           <div class="hero-actions">
-            <a class="primary-action" href="./auth.html?mode=login">登录进入工作台</a>
-            <a class="secondary-action" href="./dashboard.html">查看工作台</a>
+            <a class="primary-action" href="./teaching-navigation.html">生成教学导航</a>
+            <a class="secondary-action" href="./practice.html">进入教学实践</a>
           </div>
         </div>
 
@@ -119,7 +123,6 @@
         </aside>
 
         <section class="home-task-entry home-wenda-runner reveal-on-load" aria-labelledby="home-wenda-runner-title">
-          <div id="homeWendaoConfigNotice" class="integration-config-notice" data-state="error"></div>
           <div class="home-wenda-runner-main">
             <div class="home-wenda-runner-copy">
               <p class="eyebrow">教学研究入口</p>

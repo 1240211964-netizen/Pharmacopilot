@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PharmacoPilot | 配置服务</title>
+    <meta name="description" content="配置 PharmacoPilot 本地演示服务边界。" />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./styles.css" />
+    <script defer src="./wenda-env.js"></script>
+    <script defer src="./app.js"></script>
+  </head>
+  <body data-page="settings">
+    <header class="site-header">
+      <div class="topbar">
+        <a class="brand" href="./index.html" aria-label="PharmacoPilot 首页">
+          <span class="brand-mark" aria-hidden="true"><span class="brand-monogram">P</span></span>
+          <span class="brand-lockup">
+            <span class="brand-wordmark">PharmacoPilot</span>
+            <span class="brand-submark">课程智能体</span>
+          </span>
+        </a>
+        <button class="nav-menu-toggle" id="navMenuToggle" type="button" aria-label="打开导航菜单" aria-controls="primaryNav" aria-expanded="false">
+          <span aria-hidden="true"></span>
+        </button>
+        <nav class="topnav" id="primaryNav" aria-label="页面导航"></nav>
+        <div class="top-actions" data-account-actions></div>
+      </div>
+    </header>
+
+    <main class="workspace-shell settings-shell" id="settingsShell">
+      <section class="workspace-hero" aria-labelledby="settings-title">
+        <div>
+          <p class="eyebrow">Service boundary</p>
+          <h1 id="settings-title">配置服务</h1>
+          <p class="lede">当前仍是本地演示工作台。这里用于显示集成边界，避免把未配置、模拟中或后端代理未启用误解为真实写入第三方平台。</p>
+        </div>
+      </section>
+
+      <section class="settings-grid">
+        <form class="workspace-panel settings-form" id="settingsForm">
+          <label>
+            <span>闻道机构域名</span>
+            <input id="settingsWendaoDomain" name="wendaoDomain" placeholder="例如：xxx.libsp.net" autocomplete="off" />
+            <small>对应 VITE_WENDAO_DOMAIN / WENDAO_DOMAIN。这里只保存到本机演示 store。</small>
+          </label>
+          <label>
+            <span>当前泛雅模式</span>
+            <select id="settingsFanyaMode" name="fanyaMode">
+              <option value="disabled">disabled</option>
+              <option value="mock">mock</option>
+              <option value="backend_proxy">backend_proxy</option>
+            </select>
+            <small>backend_proxy 仅显示预留状态，未启用时不能声称真实写入。</small>
+          </label>
+          <div class="report-actions">
+            <button class="primary-action" type="submit">保存配置</button>
+            <a class="secondary-action" href="./dashboard.html">返回工作台</a>
+          </div>
+        </form>
+
+        <aside class="settings-status-stack" aria-label="当前配置状态">
+          <article class="workspace-service-card">
+            <span>闻道状态</span>
+            <div id="settingsWendaoStatus" class="workspace-status-pill" data-state="error"></div>
+          </article>
+          <article class="workspace-service-card">
+            <span>泛雅状态</span>
+            <div id="settingsFanyaStatus" class="workspace-status-pill" data-state="mock"></div>
+          </article>
+          <article class="workspace-service-card">
+            <span>数据模式</span>
+            <div id="settingsDataStatus" class="workspace-status-pill" data-state="local"></div>
+          </article>
+        </aside>
+      </section>
+
+      <section class="workspace-panel settings-danger-zone" aria-labelledby="reset-demo-title">
+        <div>
+          <p class="eyebrow">Demo data</p>
+          <h2 id="reset-demo-title">重置演示数据</h2>
+          <p>清空教学导航状态、实践运行、教学资产和泛雅模拟授权，保留本地账号和服务配置。</p>
+        </div>
+        <button class="secondary-action" id="resetDemoData" type="button">重置演示数据</button>
+      </section>
+    </main>
+  </body>
+</html>

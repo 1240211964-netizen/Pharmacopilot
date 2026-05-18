@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PharmacoPilot | 输出汇总</title>
+    <meta name="description" content="汇总 PharmacoPilot 生成的教学导航、课堂任务、评价量规、实践方案和复盘报告。" />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./styles.css" />
+    <script defer src="./app.js"></script>
+  </head>
+  <body data-page="outputs">
+    <header class="site-header">
+      <div class="topbar">
+        <a class="brand" href="./index.html" aria-label="PharmacoPilot 首页">
+          <span class="brand-mark" aria-hidden="true"><span class="brand-monogram">P</span></span>
+          <span class="brand-lockup">
+            <span class="brand-wordmark">PharmacoPilot</span>
+            <span class="brand-submark">课程智能体</span>
+          </span>
+        </a>
+        <button class="nav-menu-toggle" id="navMenuToggle" type="button" aria-label="打开导航菜单" aria-controls="primaryNav" aria-expanded="false">
+          <span aria-hidden="true"></span>
+        </button>
+        <nav class="topnav" id="primaryNav" aria-label="页面导航"></nav>
+        <div class="top-actions" data-account-actions></div>
+      </div>
+    </header>
+
+    <main class="workspace-shell outputs-shell" id="outputsShell">
+      <section class="workspace-hero" aria-labelledby="outputs-title">
+        <div>
+          <p class="eyebrow">Generated outputs</p>
+          <h1 id="outputs-title">输出汇总</h1>
+          <p class="lede">集中查看教学导航报告、课堂任务、评价量规、实践方案和复盘报告。当前支持查看、复制、下载 Markdown 和保存到教学资产。</p>
+        </div>
+        <a class="secondary-action" href="./teaching-data.html">查看教学数据</a>
+      </section>
+
+      <section class="outputs-layout" aria-label="生成结果汇总">
+        <aside class="outputs-list-panel">
+          <div class="outputs-tabs" id="outputsCategoryTabs" aria-label="输出类型筛选"></div>
+          <div id="outputsList" class="outputs-list" aria-live="polite"></div>
+        </aside>
+        <section id="outputDetail" class="outputs-detail-panel" aria-live="polite"></section>
+      </section>
+    </main>
+  </body>
+</html>

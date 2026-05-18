@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PharmacoPilot | 工作台</title>
+    <meta name="description" content="PharmacoPilot 登录后的课程智能体工作台。" />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./styles.css" />
+    <script defer src="./wenda-env.js"></script>
+    <script defer src="./app.js"></script>
+  </head>
+  <body data-page="workspace">
+    <header class="site-header">
+      <div class="topbar">
+        <a class="brand" href="./index.html" aria-label="PharmacoPilot 首页">
+          <span class="brand-mark" aria-hidden="true"><span class="brand-monogram">P</span></span>
+          <span class="brand-lockup">
+            <span class="brand-wordmark">PharmacoPilot</span>
+            <span class="brand-submark">课程智能体</span>
+          </span>
+        </a>
+        <button class="nav-menu-toggle" id="navMenuToggle" type="button" aria-label="打开导航菜单" aria-controls="primaryNav" aria-expanded="false">
+          <span aria-hidden="true"></span>
+        </button>
+        <nav class="topnav" id="primaryNav" aria-label="页面导航"></nav>
+        <div class="top-actions" data-account-actions></div>
+      </div>
+    </header>
+
+    <main class="workspace-shell" id="dashboardShell">
+      <section class="workspace-hero" aria-labelledby="workspace-title">
+        <div>
+          <p class="eyebrow">Course agent workspace</p>
+          <h1 id="workspace-title">PharmacoPilot 工作台</h1>
+          <p class="lede">围绕本科《管理学原理》课程，把教学导航、课堂实践、评价诊断和教学资产沉淀串成一条可连续使用的本地演示流程。</p>
+        </div>
+        <aside class="workspace-user-card" aria-label="当前工作台上下文">
+          <span>当前教师</span>
+          <strong id="dashboardTeacher">示例教师</strong>
+          <p id="dashboardCourse">管理学原理</p>
+          <small id="dashboardLesson">第 6 次课</small>
+        </aside>
+      </section>
+
+      <section class="workspace-action-grid" aria-label="主操作">
+        <a class="workspace-action-card is-primary" href="./teaching-navigation.html">
+          <span>01</span>
+          <strong>继续教学导航</strong>
+          <p>打开 20 环节路线图，填写并保存环节任务单。</p>
+        </a>
+        <a class="workspace-action-card" href="./practice.html">
+          <span>02</span>
+          <strong>进入教学实践</strong>
+          <p>基于课程上下文和导航产物生成课堂任务、量规和实践方案。</p>
+        </a>
+        <a class="workspace-action-card" href="./teaching-data.html">
+          <span>03</span>
+          <strong>查看教学数据</strong>
+          <p>在课程图谱中查看真实保存的教学资产。</p>
+        </a>
+        <a class="workspace-action-card" href="./settings.html">
+          <span>04</span>
+          <strong>配置服务</strong>
+          <p>设置闻道域名、查看泛雅模式和重置演示数据。</p>
+        </a>
+      </section>
+
+      <section class="workspace-dashboard-grid" aria-label="工作台状态">
+        <article class="workspace-panel">
+          <p class="eyebrow">Navigation</p>
+          <h2>教学导航进度</h2>
+          <strong id="dashboardProgress">0 / 20</strong>
+          <p id="dashboardProgressDetail">等待开始</p>
+        </article>
+        <article class="workspace-panel">
+          <p class="eyebrow">Practice</p>
+          <h2>教学实践状态</h2>
+          <strong id="dashboardPracticeStatus">待生成</strong>
+          <p id="dashboardPracticeDetail">尚未形成教学实践运行记录。</p>
+        </article>
+        <article class="workspace-panel">
+          <p class="eyebrow">Assets</p>
+          <h2>最近产物</h2>
+          <strong id="dashboardAssetCount">0 项</strong>
+          <div id="dashboardRecentAssets" class="workspace-mini-list"></div>
+        </article>
+      </section>
+
+      <section class="workspace-service-grid" aria-label="服务状态">
+        <article class="workspace-service-card">
+          <span>闻道配置</span>
+          <div id="dashboardWendaoStatus" class="workspace-status-pill" data-state="error"></div>
+        </article>
+        <article class="workspace-service-card">
+          <span>泛雅连接</span>
+          <div id="dashboardFanyaStatus" class="workspace-status-pill" data-state="mock"></div>
+        </article>
+        <article class="workspace-service-card">
+          <span>数据模式</span>
+          <div id="dashboardDataStatus" class="workspace-status-pill" data-state="local"></div>
+          <small id="dashboardDataMode">local demo</small>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>
