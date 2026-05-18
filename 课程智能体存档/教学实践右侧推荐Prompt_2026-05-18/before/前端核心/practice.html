@@ -273,14 +273,20 @@
               <p>选择教学实践环节后，系统会在当前区域打开超星 AI 学情分析页面。</p>
             </div>
           </div>
-          <aside class="practice-fanya-editor-status practice-ai-prompt-panel" aria-label="推荐学情分析 Prompt">
-            <span>推荐学情分析 Prompt</span>
+          <aside class="practice-fanya-editor-status" aria-label="超星 AI 学情分析嵌入状态">
+            <span>当前状态</span>
+            <strong id="chaoxingEditorStatusText">等待点击 STEP</strong>
+            <p id="chaoxingEditorStatusDescription">点击任一教学环节后，本区域会直接显示超星页面。</p>
             <div class="practice-ai-step-context" aria-label="当前绑定教学环节">
               <span id="chaoxingEditorActiveStep">未选择</span>
               <strong id="chaoxingEditorActiveStepTitle">学情分析与学习起点诊断</strong>
             </div>
-            <pre id="chaoxingLearningPromptText" class="practice-ai-prompt-text">请基于当前课程、班级学情、作业表现和学习过程数据，生成本环节的学情分析、学生分层、教学支架建议和需要教师复核的数据缺口。</pre>
-            <button class="secondary-action practice-ai-prompt-copy" id="copyChaoxingLearningPrompt" type="button">复制 Prompt</button>
+            <dl>
+              <div><dt>课程 ID</dt><dd>251769346</dd></div>
+              <div><dt>班级 ID</dt><dd>131807646</dd></div>
+              <div><dt>平台页面</dt><dd>AI 学情分析</dd></div>
+              <div><dt>显示方式</dt><dd>STEP 点击后自动显示</dd></div>
+            </dl>
           </aside>
         </div>
       </section>

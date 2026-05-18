@@ -7062,57 +7062,6 @@ function updateChaoxingPracticeOpenLink(stepInfo = getSelectedChaoxingPracticeSt
   openLink.setAttribute("aria-label", `新窗口打开${formatChaoxingPracticeStep(stepInfo)}的超星页面`);
 }
 
-function getChaoxingPromptCourseContext() {
-  const selected = getSelectedFanyaCourse?.();
-  if (selected) return selected;
-  if (fanyaAuthState?.availableCourses?.length) return fanyaAuthState.availableCourses[0];
-  return makePracticeCourseData(fanyaAuthState?.teacherName || FANYA_MOCK_ACCOUNT.teacherName)[0];
-}
-
-function buildChaoxingLearningAnalysisPrompt(stepInfo = getSelectedChaoxingPracticeStep()) {
-  const course = getChaoxingPromptCourseContext();
-  const courseProfile = course?.courseProfile || {};
-  const learnerProfile = course?.learnerProfile || {};
-  const assignmentProfile = course?.assignmentProfile || {};
-  const learningAnalytics = course?.learningAnalytics || {};
-  const objective = courseProfile.courseObjectives?.[0] || "请结合课程目标完成本课学习任务。";
-  const weakPoints = assignmentProfile.weakPoints?.slice(0, 3).join("、") || "待结合近期作业进一步诊断";
-  const misconceptions = learningAnalytics.commonMisconceptions?.slice(0, 3).join("、") || "待结合课堂互动进一步识别";
-  const difficulties = learnerProfile.commonDifficulties?.slice(0, 3).join("、") || "待结合学生表现进一步判断";
-  const stepLabel = formatChaoxingPracticeStep(stepInfo);
-  return [
-    `请作为高校课程 AI 学情分析助手，基于下列课程与班级数据，为“${stepLabel}”生成可用于教学决策的学情分析。`,
-    "",
-    "【课程与课堂】",
-    `- 课程：${courseProfile.courseName || defaultTrainingCourse.courseName}`,
-    `- 章节/课题：${courseProfile.chapter || "待确认"}｜${courseProfile.lessonTitle || defaultTrainingCourse.lessonTitle}`,
-    `- 授课对象：${course?.className || defaultTrainingCourse.teachingObject}`,
-    `- 本课目标：${objective}`,
-    "",
-    "【已知学情数据】",
-    `- 学生规模与基础：${learnerProfile.studentCount || "待确认"} 人；${learnerProfile.priorKnowledgeLevel || "基础情况待确认"}`,
-    `- 常见学习困难：${difficulties}`,
-    `- 预习完成率：${learningAnalytics.previewCompletionRate ?? "待确认"}%；讨论参与率：${learningAnalytics.discussionParticipation ?? "待确认"}%；高风险学生比例：${learningAnalytics.atRiskStudentsRatio ?? "待确认"}%`,
-    `- 近期作业：提交率 ${assignmentProfile.submissionRate ?? "待确认"}%；平均分 ${assignmentProfile.averageScore ?? "待确认"}；薄弱点：${weakPoints}`,
-    `- 常见误区：${misconceptions}`,
-    "",
-    "【请输出】",
-    "1. 学习起点诊断：学生进入本环节前已经具备什么、缺什么。",
-    "2. 学生分层：至少给出基础薄弱、一般、进阶三类学生的表现特征。",
-    "3. 本环节风险：指出最可能影响课堂推进的概念误区、数据缺口或参与问题。",
-    "4. 教学支架建议：给出可直接用于本 STEP 的教师提问、材料支架和课堂调控建议。",
-    "5. 复核清单：列出教师需要在超星数据或课堂观察中继续确认的 3 项证据。",
-  ].join("\n");
-}
-
-function updateChaoxingLearningPrompt(stepInfo = getSelectedChaoxingPracticeStep()) {
-  const prompt = buildChaoxingLearningAnalysisPrompt(stepInfo);
-  const promptText = $("#chaoxingLearningPromptText");
-  const copyButton = $("#copyChaoxingLearningPrompt");
-  if (promptText) promptText.textContent = prompt;
-  if (copyButton) copyButton.dataset.promptText = prompt;
-}
-
 function applyChaoxingPracticeNodeAffordances() {
   const selected = getSelectedChaoxingPracticeStep();
   $$(".practice-stage-node").forEach((node) => {
@@ -7139,7 +7088,6 @@ function selectChaoxingPracticeStep(stepInfo, options = {}) {
   if (activeStep) activeStep.textContent = `STEP ${String(stepInfo.stepNo).padStart(2, "0")}`;
   if (activeStepTitle) activeStepTitle.textContent = stepInfo.title || "教学实践环节";
   if (loadButton) loadButton.textContent = `刷新 STEP ${String(stepInfo.stepNo).padStart(2, "0")}`;
-  updateChaoxingLearningPrompt(stepInfo);
   updateChaoxingPracticeOpenLink(stepInfo);
   applyChaoxingPracticeNodeAffordances();
   if (options.updateIdle !== false && panel?.dataset.embedState !== "loaded" && panel?.dataset.embedState !== "loading") {
@@ -7236,7 +7184,6 @@ function initChaoxingEditorEmbedPanel() {
   const frame = $("#chaoxingEditorFrame");
   const loadButton = $("#loadChaoxingEditorEmbed");
   const openLink = $("#openChaoxingEditor");
-  const copyPromptButton = $("#copyChaoxingLearningPrompt");
   const stageCanvas = $("#practice-stage-canvas");
   const url = panel.dataset.editorUrl || openLink?.href || CHAOXING_AI_PRACTICE_URL;
   let loadingTimer = null;
@@ -7258,10 +7205,6 @@ function initChaoxingEditorEmbedPanel() {
 
   if (openLink && url) openLink.href = url;
   selectChaoxingPracticeStep(getSelectedChaoxingPracticeStep(), { updateIdle: true });
-  copyPromptButton?.addEventListener("click", () => {
-    const prompt = copyPromptButton.dataset.promptText || $("#chaoxingLearningPromptText")?.textContent || "";
-    copyText(prompt);
-  });
 
   stageCanvas?.addEventListener("click", (event) => {
     const node = event.target instanceof Element ? event.target.closest(".practice-stage-node") : null;
@@ -7417,7 +7360,6 @@ function simulateFanyaAuth(event) {
   renderFanyaLogin();
   renderAuthorizedCourses();
   renderPracticeWorkspace();
-  updateChaoxingLearningPrompt();
   showToast("已开启泛雅模拟授权");
 }
 
@@ -7457,7 +7399,6 @@ function selectFanyaCourse(courseId) {
   loadPracticeWorkflowState();
   renderAuthorizedCourses();
   renderPracticeWorkspace();
-  updateChaoxingLearningPrompt();
   $("#practiceWorkspace")?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 

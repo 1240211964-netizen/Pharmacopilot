@@ -22602,10 +22602,6 @@ body[data-page="practice"] .practice-fanya-editor-status p {
   line-height: 1.6;
 }
 
-body[data-page="practice"] .practice-ai-prompt-panel {
-  gap: 14px;
-}
-
 body[data-page="practice"] .practice-ai-step-context {
   display: grid;
   gap: 7px;
@@ -22632,25 +22628,6 @@ body[data-page="practice"] .practice-ai-step-context strong {
   color: var(--text-main);
   font-size: 0.95rem;
   line-height: 1.34;
-}
-
-body[data-page="practice"] .practice-ai-prompt-text {
-  max-height: 440px;
-  margin: 0;
-  border: 1px solid rgba(77, 63, 49, 0.1);
-  border-radius: 14px;
-  background: rgba(255, 253, 248, 0.82);
-  color: var(--text-main);
-  font: inherit;
-  font-size: 0.84rem;
-  line-height: 1.66;
-  overflow: auto;
-  padding: 13px;
-  white-space: pre-wrap;
-}
-
-body[data-page="practice"] .practice-ai-prompt-copy {
-  width: 100%;
 }
 
 body[data-page="practice"] .practice-fanya-editor-status dl {
