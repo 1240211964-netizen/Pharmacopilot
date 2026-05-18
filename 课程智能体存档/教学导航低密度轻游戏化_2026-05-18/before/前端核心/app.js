@@ -4379,14 +4379,18 @@ function renderMapNode(node) {
       aria-label="关卡 ${stepLabel} ${escapeHtml(node.title)}：${escapeHtml(mission.statusLabel)}"
     >
       <span class="route-level-shell">
-        <span class="route-level-number">关卡 ${stepLabel}</span>
+        <span class="route-level-top">
+          <span class="route-level-number">Level ${stepLabel}</span>
+          <span class="route-level-state">${escapeHtml(mission.statusLabel)}</span>
+        </span>
         <span class="route-node-orb route-level-token" aria-hidden="true"><span>${escapeHtml(levelIcon)}</span></span>
         <span class="route-node-title route-level-title">${escapeHtml(getStepShortName(node.id))}</span>
+        <span class="route-level-reward">解锁：${escapeHtml(mission.reward)}</span>
+        <span class="route-level-meter" aria-hidden="true"><span></span></span>
       </span>
       <span class="route-node-tooltip" role="tooltip">
         <strong>${stepLabel} ${escapeHtml(node.title)}</strong>
-        <em>${escapeHtml(statusLabel)} · ${escapeHtml(mission.reward)} · ${mission.progress}%</em>
-        <small>${escapeHtml(mission.challenge)}</small>
+        <em>${escapeHtml(statusLabel)} · ${escapeHtml(mission.reward)}</em>
       </span>
     </button>
   `;
@@ -4397,33 +4401,44 @@ function renderRouteGameMission(node, stepId, status, options = {}) {
   const statusLabel = mission.statusLabel;
   const isLocked = Boolean(options.isLocked);
   const inputRequirements = getRouteNodeInputRequirements(node);
-  const showProgress = status === "current" || status === "completed";
   return `
     <section class="route-game-mission route-mission-brief" aria-label="关卡任务简报">
       <div class="route-game-mission-head">
-        <span class="route-game-level">关卡 ${String(stepId).padStart(2, "0")}</span>
+        <span class="route-game-level">Level ${String(stepId).padStart(2, "0")}</span>
         <div>
-          <p class="eyebrow">本关任务</p>
-          <h4>${escapeHtml(mission.challenge)}</h4>
+          <p class="eyebrow">Challenge brief</p>
+          <h4>关卡任务简报</h4>
         </div>
         <strong>${escapeHtml(statusLabel)}</strong>
       </div>
-      ${showProgress ? `<div class="route-game-meter-large" aria-label="关卡进度 ${mission.progress}%"><span style="width:${mission.progress}%"></span></div>` : ""}
-      <div class="route-mission-lines">
-        <p><span>通关条件</span>${escapeHtml(node.rubric)}</p>
-        <small>解锁能力：${escapeHtml(mission.power)} · ${escapeHtml(node.output)}</small>
+      <div class="route-game-meter-large" aria-label="关卡进度 ${mission.progress}%">
+        <span style="width:${mission.progress}%"></span>
       </div>
-      <details class="route-mission-more">
-        <summary>查看输入与产出边界</summary>
-        <dl>
-          <div><dt>教师输入</dt><dd>${inputRequirements.map((item) => escapeHtml(item)).join("；")}</dd></div>
-          <div><dt>智能体产出</dt><dd>${escapeHtml(node.output)}</dd></div>
-          <div><dt>能力徽记</dt><dd>${escapeHtml(mission.reward)}</dd></div>
-        </dl>
-      </details>
+      <div class="route-game-mission-grid">
+        <div>
+          <span>本关挑战</span>
+          <p>${escapeHtml(mission.challenge)}</p>
+        </div>
+        <div>
+          <span>教师需要提供的信息</span>
+          <ul>${inputRequirements.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+        </div>
+        <div>
+          <span>智能体生成结果</span>
+          <p>${escapeHtml(node.output)}</p>
+        </div>
+        <div>
+          <span>通关条件</span>
+          <p>${escapeHtml(node.rubric)}</p>
+        </div>
+        <div>
+          <span>解锁奖励</span>
+          <p>${escapeHtml(mission.reward)} · ${escapeHtml(mission.power)}</p>
+        </div>
+      </div>
       <div class="route-mission-actions">
         <button class="primary-action" data-route-action="start-training" type="button" ${isLocked ? "disabled aria-disabled=\"true\"" : ""}>
-          ${isLocked ? "完成前序关卡后挑战本关" : status === "completed" ? "查看结果" : status === "current" ? "继续挑战" : "开始挑战"}
+          ${isLocked ? "完成前序关卡后挑战本关" : "开始挑战"}
         </button>
       </div>
     </section>
@@ -4563,17 +4578,19 @@ function renderNodeDetailPanel() {
 
   const commonHeader = `
       <div class="route-detail-kicker">
-        <span>${isTrainingMode ? "方案选择" : "关卡简报"}</span>
+        <span>${isTrainingMode ? "方案卡牌工作台" : "关卡任务简报"}</span>
         <div class="route-popover-title-actions">
           <strong class="route-detail-status status-${status}">${escapeHtml(detailStatusLabel)}</strong>
           <button class="route-popover-close" data-route-action="close-card" type="button" aria-label="关闭环节说明卡">×</button>
         </div>
       </div>
       <header class="route-workbench-head">
-        <h3>关卡 ${String(stepId).padStart(2, "0")}｜${escapeHtml(step.title)}</h3>
-        <p>${escapeHtml(isTrainingMode ? "选择一个主方案，生成简短草稿后确认通关。" : node.goal)}</p>
+        <h3>${String(stepId).padStart(2, "0")}｜${escapeHtml(step.title)}</h3>
+        <p>${escapeHtml(node.goal)}</p>
         <div class="route-workbench-meta">
           <span>${escapeHtml(teachingPhaseTitle)}</span>
+          <span>关卡 ${String(stepId).padStart(2, "0")}</span>
+          <span>当前评分：${escapeHtml(scoreMeta.label)}</span>
           ${isConfirmed ? `<span>已确认结果</span>` : `<span>尚未确认</span>`}
         </div>
       </header>`;
@@ -4588,14 +4605,13 @@ function renderNodeDetailPanel() {
             : ""
         }
         <section class="route-workbench-block route-explain-workbench" aria-labelledby="route-explain-title-${stepId}">
-          <h4 id="route-explain-title-${stepId}" class="sr-only">关卡任务简报</h4>
-          ${renderRouteGameMission(node, stepId, status, { isLocked })}
-          <details class="route-node-more-details">
-            <summary>查看教师输入、产出和评价细节</summary>
-            <div class="route-story-list">
-              ${renderRouteStoryRows(node, step, stepId)}
+          <div class="route-block-head">
+            <div>
+              <p class="eyebrow">Challenge brief</p>
+              <h4 id="route-explain-title-${stepId}">关卡任务简报</h4>
             </div>
-          </details>
+          </div>
+          ${renderRouteGameMission(node, stepId, status, { isLocked })}
           ${
             isLocked
               ? `<p class="route-locked-hint">本关仍可预览说明，但需要先完成前序关卡，才能进入方案选择和智能生成流程。</p>`
@@ -4617,42 +4633,55 @@ function renderNodeDetailPanel() {
         <div class="route-block-head">
           <div>
             <p class="eyebrow">Strategy cards</p>
-            <h4 id="route-option-title-${stepId}">选择一个主方案</h4>
+            <h4 id="route-option-title-${stepId}">方案卡牌选择</h4>
           </div>
-          <span>${selectedOptionId ? `已选 ${escapeHtml(selectedOptionId)}` : "推荐 3 个"}</span>
+          <span>${selectedOptionId ? `主方案卡 ${escapeHtml(selectedOptionId)}` : "请选择主方案卡"}</span>
         </div>
-        ${renderTrainingOptionCards(step, choice, { compact: true, limit: 3 })}
+        ${renderRouteStrategyBrief(step, choice, score, analysis, selectedOptionId)}
+        ${renderTrainingOptionCards(step, choice)}
       </section>
 
-      ${
-        selectedOptionId
-          ? `
-            <section class="route-workbench-block route-generated-workbench route-generated-compact" aria-labelledby="route-generated-title-${stepId}">
-              <div class="route-block-head">
-                <div>
-                  <p class="eyebrow">Agent draft</p>
-                  <h4 id="route-generated-title-${stepId}">生成摘要</h4>
-                </div>
-                <span>${escapeHtml(scoreMeta.label)}</span>
-              </div>
-              <p class="route-generated-summary">${escapeHtml(compactAssetGraphText(preview.fragment || "当前方案暂未生成草稿。", 118))}</p>
-              <div class="route-detail-actions">
-                <button class="primary-action" data-route-action="confirm" type="button">确认通关</button>
-                <button class="secondary-action" data-route-action="collapse-card" type="button">返回简报</button>
-              </div>
-              <details class="route-training-more">
-                <summary>展开智能草稿、成熟度评分和低分维度</summary>
-                <pre class="route-generated-draft">${escapeHtml(preview.fragment || "当前方案暂未生成草稿。")}</pre>
-                ${renderSelectionInsightPanel(score, analysis, "training")}
-                <div class="route-task-grid">
-                  <div><span>教师任务</span><p>${escapeHtml(node.task)}</p></div>
-                  <div><span>通关产出物</span><p>${escapeHtml(node.output)}</p></div>
-                </div>
-              </details>
-            </section>
-          `
-          : `<p class="route-generated-placeholder">选择一个方案后，系统会显示简短生成结果和通关按钮。</p>`
-      }
+      <section class="route-workbench-block route-generated-workbench" aria-labelledby="route-generated-title-${stepId}">
+        <div class="route-block-head">
+          <div>
+            <p class="eyebrow">Agent draft</p>
+            <h4 id="route-generated-title-${stepId}">智能体生成结果</h4>
+          </div>
+          <span>${selectedOptionId ? "已生成" : "待选择主方案"}</span>
+        </div>
+        ${
+          selectedOptionId
+            ? `<pre class="route-generated-draft">${escapeHtml(preview.fragment || "当前方案暂未生成草稿。")}</pre>`
+            : `<p class="route-generated-placeholder">选择一个主方案后，系统会生成本环节可复制、可审校的训练草稿。</p>`
+        }
+      </section>
+
+      <section class="route-workbench-block route-insight-workbench" aria-label="即时测评区">
+        <div class="route-block-head">
+          <div>
+            <p class="eyebrow">Maturity score</p>
+            <h4>成熟度评分与低分维度</h4>
+          </div>
+        </div>
+        ${renderSelectionInsightPanel(score, analysis, "training")}
+      </section>
+
+      <section class="route-workbench-block route-task-workbench" aria-labelledby="route-task-title-${stepId}">
+        <div class="route-block-head">
+          <div>
+            <p class="eyebrow">Pass checkpoint</p>
+            <h4 id="route-task-title-${stepId}">通关确认</h4>
+          </div>
+        </div>
+        <div class="route-task-grid">
+          <div><span>教师任务</span><p>${escapeHtml(node.task)}</p></div>
+          <div><span>通关产出物</span><p>${escapeHtml(node.output)}</p></div>
+        </div>
+        <div class="route-detail-actions">
+          <button class="primary-action" data-route-action="confirm" type="button" ${selectedOptionId ? "" : "disabled aria-disabled=\"true\""}>确认通关</button>
+          <button class="secondary-action" data-route-action="collapse-card" type="button">返回环节说明</button>
+        </div>
+      </section>
     </article>
   `;
   $("[data-route-action='close-card']", container)?.addEventListener("click", closeRouteNodeCard);
@@ -4795,9 +4824,6 @@ function renderProgressSummary() {
   const container = $("#teachingProgressSummary");
   if (!container) return;
   const current = getRouteNode(trainingState?.currentStepId || selectedRouteNodeId);
-  const completedCount = trainingState?.completedStepIds?.length || 0;
-  const currentPhase = getTeachingPhaseTitle(getTeachingPhaseIdByNodeId(current.id));
-  const nextLabel = `${String(current.id).padStart(2, "0")} ${current.title}`;
   const preClassNodes = getTeachingPhaseNodes(1);
   const preClassReady = preClassNodes.filter((node) => {
     const status = getRouteNodeStatus(node.id);
@@ -4813,31 +4839,21 @@ function renderProgressSummary() {
     { label: "课后关卡解锁度", value: `${Math.round((afterClassReady / afterClassNodes.length) * 100)}%`, copy: "后续需要完成学习成果评价、数据诊断、差异化反馈和教学反思沉淀。" },
   ];
   container.innerHTML = `
-    <article class="route-progress-strip">
-      <div><span>已完成</span><strong>${completedCount} / ${trainingSteps.length}</strong></div>
-      <div><span>当前阶段</span><strong>${escapeHtml(currentPhase)}</strong></div>
-      <div><span>下一关</span><strong>${escapeHtml(nextLabel)}</strong></div>
-      <details class="route-progress-details">
-        <summary>查看完整复盘</summary>
-        <div class="route-progress-detail-grid">
-          ${summaries
-            .map(
-              (item) => `
-                <section class="route-progress-card">
-                  <span>${escapeHtml(item.label)}</span>
-                  <strong>${escapeHtml(item.value)}</strong>
-                  <p>${escapeHtml(item.copy)}</p>
-                </section>
-              `,
-            )
-            .join("")}
-          <section class="route-progress-card route-next-advice">
-            <span>下一步建议</span>
-            <strong>${escapeHtml(nextLabel)}</strong>
-            <p>建议继续挑战“${escapeHtml(current.title)}”，检查该环节是否同时回应 ${escapeHtml(currentPhase)}、学习证据和药事管理真实情境。</p>
-          </section>
-        </div>
-      </details>
+    ${summaries
+      .map(
+        (item) => `
+          <article class="route-progress-card">
+            <span>${escapeHtml(item.label)}</span>
+            <strong>${escapeHtml(item.value)}</strong>
+            <p>${escapeHtml(item.copy)}</p>
+          </article>
+        `,
+      )
+      .join("")}
+    <article class="route-progress-card route-next-advice">
+      <span>下一步建议</span>
+      <strong>${String(current.id).padStart(2, "0")} ${escapeHtml(current.title)}</strong>
+      <p>建议继续挑战“${escapeHtml(current.title)}”，检查该环节是否同时回应 ${escapeHtml(getTeachingPhaseTitle(getTeachingPhaseIdByNodeId(current.id)))}、学习证据和药事管理真实情境。</p>
     </article>
   `;
 }
@@ -4955,50 +4971,32 @@ function renderTrainingCurrentStep() {
   $("#copyTrainingStepDraft")?.addEventListener("click", () => copyText(fragment || ""));
 }
 
-function renderTrainingOptionCards(step, choice, options = {}) {
-  const entries = Object.entries(step.options || {});
-  const compact = Boolean(options.compact);
-  const limit = Number(options.limit || entries.length);
-  const visibleEntries = compact ? entries.slice(0, limit) : entries;
-  const hiddenEntries = compact ? entries.slice(limit) : [];
-  const renderCard = ([id, label], isHidden = false) => {
-    const isPrimary = choice.primary === id;
-    const isSecondary = choice.secondary.includes(id);
-    const roleLabel = isPrimary ? "主方案" : isSecondary ? "辅助" : isHidden ? "更多" : "推荐";
-    return `
-      <article class="option-card ${compact ? "option-card-compact" : ""} ${isPrimary ? "primary-selected selected" : ""} ${isSecondary ? "secondary-selected auxiliary" : ""}" data-training-option-card="${id}">
-        <div class="option-topline">
-          <span class="option-id">${compact ? id : `Card ${id}`}</span>
-          <span class="option-role-badge">${escapeHtml(roleLabel)}</span>
-        </div>
-        <h3>${escapeHtml(label)}</h3>
-        <p class="option-card-brief">${escapeHtml(optionDescription(step, id, label))}</p>
-        ${
-          compact
-            ? `<div class="option-actions option-actions-compact"><button class="${isPrimary ? "active" : ""}" data-primary-option="${id}" type="button">${isPrimary ? "已选" : "选择"}</button></div>`
-            : `<div class="option-detail"><strong>${isPrimary ? "主方案依据" : isSecondary ? "辅助补充方向" : "方案提示"}</strong><p>${escapeHtml(isPrimary ? "该卡将作为本关成熟度评分和智能体生成的主依据。" : isSecondary ? "该卡将作为生成文本的辅助线索，不覆盖主方案评分。" : "可设为主方案或辅助方案，用于完善本关教学设计。")}</p></div>
+function renderTrainingOptionCards(step, choice) {
+  return `
+    <div class="option-grid route-option-card-deck">
+      ${Object.entries(step.options)
+        .map(([id, label]) => {
+          const isPrimary = choice.primary === id;
+          const isSecondary = choice.secondary.includes(id);
+          const roleLabel = isPrimary ? "主方案卡" : isSecondary ? "辅助方案卡" : "候选方案卡";
+          return `
+            <article class="option-card ${isPrimary ? "primary-selected selected" : ""} ${isSecondary ? "secondary-selected auxiliary" : ""}" data-training-option-card="${id}">
+              <div class="option-topline">
+                <span class="option-id">Card ${id}</span>
+                <span class="option-role-badge">${escapeHtml(roleLabel)}</span>
+              </div>
+              <h3>${escapeHtml(label)}</h3>
+              <p class="option-card-brief">${escapeHtml(optionDescription(step, id, label))}</p>
+              <div class="option-detail"><strong>${isPrimary ? "主方案依据" : isSecondary ? "辅助补充方向" : "方案提示"}</strong><p>${escapeHtml(isPrimary ? "该卡将作为本关成熟度评分和智能体生成的主依据。" : isSecondary ? "该卡将作为生成文本的辅助线索，不覆盖主方案评分。" : "可设为主方案或辅助方案，用于完善本关教学设计。")}</p></div>
               <div class="option-actions">
                 <button class="${isPrimary ? "active" : ""}" data-primary-option="${id}" type="button">设为主方案</button>
                 <button class="${isSecondary ? "active" : ""}" data-secondary-option="${id}" ${isPrimary ? "disabled" : ""} type="button">辅助方案</button>
-              </div>`
-        }
-      </article>
-    `;
-  };
-  return `
-    <div class="option-grid route-option-card-deck">
-      ${visibleEntries.map((entry) => renderCard(entry)).join("")}
+              </div>
+            </article>
+          `;
+        })
+        .join("")}
     </div>
-    ${
-      hiddenEntries.length
-        ? `<details class="route-more-options">
-            <summary>更多方案</summary>
-            <div class="option-grid route-option-card-deck route-option-card-deck-more">
-              ${hiddenEntries.map((entry) => renderCard(entry, true)).join("")}
-            </div>
-          </details>`
-        : ""
-    }
   `;
 }
 
