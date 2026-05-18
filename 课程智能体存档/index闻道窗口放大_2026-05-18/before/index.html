@@ -57,6 +57,47 @@
           <p class="lede">
             输入教学目标、上传课程材料、设定课堂约束。Pharmacopilot 会围绕药事管理本科《管理学原理》SWOT 分析课，生成教学导航、课堂任务、评价量规和课后复盘草稿。
           </p>
+          <form class="home-task-entry" id="homeTaskEntryForm" aria-label="一句话发起教学任务">
+            <label for="homeTaskInput">一句话发起教学任务</label>
+            <div class="home-task-entry-row">
+              <input
+                id="homeTaskInput"
+                name="homeTask"
+                autocomplete="off"
+                placeholder="例如：下周我要讲 SWOT 分析，帮我生成一份可审校的教学实践方案"
+              />
+              <button type="submit">开始生成</button>
+            </div>
+            <div class="home-task-entry-foot">
+              <span>系统会按任务进入教学实践或教学数据。</span>
+              <div class="home-task-presets" aria-label="快捷教学任务">
+                <button
+                  class="is-active"
+                  type="button"
+                  data-home-task-preset
+                  data-home-task-target="practice"
+                  data-home-task-text="帮我基于泛雅模拟学情，为 SWOT 分析课设计课堂活动、随堂测验和评价量规。"
+                >
+                  生成教学实践
+                </button>
+                <button
+                  type="button"
+                  data-home-task-preset
+                  data-home-task-target="assets"
+                  data-home-task-text="帮我整理 SWOT 分析课的教案、案例、反馈模板和复盘记录，沉淀为教学数据。"
+                >
+                  整理教学数据
+                </button>
+              </div>
+            </div>
+            <div
+              id="wendaEmbedWorkspaceRoot"
+              class="home-wenda-dialog-root wenda-embed-root"
+              data-wenda-workspace
+              data-wenda-variant="home-dialog"
+              aria-label="科学探索窗口"
+            ></div>
+          </form>
           <div class="hero-actions">
             <a class="primary-action" href="./teaching-navigation.html">生成教学导航</a>
             <a class="secondary-action" href="./practice.html">进入教学实践</a>
@@ -122,15 +163,6 @@
             </div>
           </div>
         </aside>
-
-        <section class="home-task-entry home-wenda-expanded reveal-on-load" aria-label="科学探索窗口">
-          <div
-            id="wendaEmbedWorkspaceRoot"
-            class="home-wenda-dialog-root wenda-embed-root"
-            data-wenda-workspace
-            data-wenda-variant="home-dialog"
-          ></div>
-        </section>
       </section>
 
     </main>
