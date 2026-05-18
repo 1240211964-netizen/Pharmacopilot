@@ -18123,188 +18123,9 @@ body[data-page="assets"] .academic-service-frame-shell iframe {
   background: #fffaf2;
 }
 
-body[data-page="assets"] .academic-service-visual-preview {
-  position: absolute;
-  inset: 16px;
-  z-index: 1;
-  display: block;
-  border-radius: 22px;
-  overflow: hidden;
-  transition:
-    opacity 0.18s ease,
-    visibility 0.18s ease;
-}
-
-body[data-page="assets"] .academic-preview-browser {
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
-  height: 100%;
-  min-height: 0;
-  border: 1px solid rgba(77, 63, 49, 0.12);
-  border-radius: 22px;
-  background: #fffdf8;
-  box-shadow: 0 18px 44px rgba(70, 51, 34, 0.08);
-  overflow: hidden;
-}
-
-body[data-page="assets"] .academic-preview-bar {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  min-width: 0;
-  border-bottom: 1px solid rgba(77, 63, 49, 0.1);
-  background: rgba(247, 241, 232, 0.76);
-  padding: 11px 14px;
-}
-
-body[data-page="assets"] .academic-preview-bar span {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: rgba(138, 79, 36, 0.32);
-}
-
-body[data-page="assets"] .academic-preview-bar strong {
-  min-width: 0;
-  margin-left: 7px;
-  color: var(--text-soft);
-  font-size: 0.82rem;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-body[data-page="assets"] .academic-preview-shell {
-  display: grid;
-  grid-template-columns: 178px minmax(0, 1fr);
-  min-height: 0;
-}
-
-body[data-page="assets"] .academic-preview-nav {
-  display: grid;
-  align-content: start;
-  gap: 7px;
-  border-right: 1px solid rgba(77, 63, 49, 0.1);
-  background: rgba(247, 241, 232, 0.46);
-  padding: 16px 12px;
-}
-
-body[data-page="assets"] .academic-preview-nav b {
-  color: var(--text-main);
-  font-size: 0.86rem;
-  margin-bottom: 4px;
-}
-
-body[data-page="assets"] .academic-preview-nav span {
-  min-width: 0;
-  border: 1px solid transparent;
-  border-radius: 12px;
-  color: var(--text-muted);
-  font-size: 0.78rem;
-  font-weight: 760;
-  padding: 8px 9px;
-  overflow-wrap: anywhere;
-}
-
-body[data-page="assets"] .academic-preview-nav span.is-active {
-  border-color: rgba(138, 79, 36, 0.2);
-  background: rgba(138, 79, 36, 0.12);
-  color: var(--accent-brown-dark);
-}
-
-body[data-page="assets"] .academic-preview-main {
-  display: grid;
-  align-content: start;
-  gap: 14px;
-  min-width: 0;
-  padding: clamp(18px, 3vw, 34px);
-}
-
-body[data-page="assets"] .academic-preview-toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 9px;
-  align-items: center;
-  justify-content: space-between;
-}
-
-body[data-page="assets"] .academic-preview-toolbar span,
-body[data-page="assets"] .academic-preview-answer span {
-  color: var(--text-muted);
-  font-size: 0.76rem;
-  font-weight: 840;
-}
-
-body[data-page="assets"] .academic-preview-toolbar strong {
-  border: 1px solid rgba(138, 79, 36, 0.18);
-  border-radius: 999px;
-  background: rgba(138, 79, 36, 0.1);
-  color: var(--accent-brown-dark);
-  font-size: 0.8rem;
-  padding: 7px 10px;
-}
-
-body[data-page="assets"] .academic-preview-question,
-body[data-page="assets"] .academic-preview-answer,
-body[data-page="assets"] .academic-preview-url {
-  min-width: 0;
-  border: 1px solid rgba(77, 63, 49, 0.1);
-  border-radius: 18px;
-  background: rgba(255, 252, 246, 0.78);
-  padding: 16px;
-}
-
-body[data-page="assets"] .academic-preview-question small {
-  color: var(--text-muted);
-  font-size: 0.72rem;
-  font-weight: 840;
-}
-
-body[data-page="assets"] .academic-preview-question h3 {
-  margin: 8px 0 0;
-  color: var(--text-main);
-  font-size: clamp(1.3rem, 2.4vw, 2.1rem);
-  line-height: 1.2;
-  letter-spacing: 0;
-  overflow-wrap: anywhere;
-}
-
-body[data-page="assets"] .academic-preview-answer p {
-  margin: 10px 0 0;
-  color: var(--text-soft);
-  line-height: 1.72;
-}
-
-body[data-page="assets"] .academic-preview-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 14px;
-}
-
-body[data-page="assets"] .academic-preview-chips em {
-  border: 1px solid rgba(77, 63, 49, 0.1);
-  border-radius: 999px;
-  background: rgba(247, 241, 232, 0.62);
-  color: var(--text-soft);
-  font-style: normal;
-  font-size: 0.78rem;
-  font-weight: 760;
-  padding: 7px 10px;
-}
-
-body[data-page="assets"] .academic-preview-url {
-  color: var(--text-muted);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 0.76rem;
-  line-height: 1.55;
-  overflow-wrap: anywhere;
-}
-
 body[data-page="assets"] .academic-service-placeholder {
   position: absolute;
   inset: 18px;
-  z-index: 2;
   display: grid;
   place-content: center;
   gap: 12px;
@@ -18348,19 +18169,7 @@ body[data-page="assets"] .academic-service-embed[data-embed-state="loading"] .ac
   animation: fanya-loading-pulse 1.1s ease-in-out infinite;
 }
 
-body[data-page="assets"] .academic-service-embed[data-embed-state="preview"] .academic-service-placeholder,
-body[data-page="assets"] .academic-service-embed[data-embed-state="ready"] .academic-service-placeholder,
 body[data-page="assets"] .academic-service-embed[data-embed-state="loaded"] .academic-service-placeholder {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-}
-
-body[data-page="assets"] .academic-service-embed[data-embed-state="loading"] .academic-service-visual-preview {
-  opacity: 0.16;
-}
-
-body[data-page="assets"] .academic-service-embed[data-embed-state="loaded"] .academic-service-visual-preview {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -18455,10 +18264,7 @@ body[data-page="assets"] .academic-service-parameter-grid {
 }
 
 body[data-page="assets"] .academic-service-parameter-grid label:nth-child(5),
-body[data-page="assets"] .academic-service-parameter-grid label:nth-child(7),
-body[data-page="assets"] .academic-service-parameter-grid label:nth-child(8),
-body[data-page="assets"] .academic-service-parameter-grid label:nth-child(9),
-body[data-page="assets"] .academic-service-parameter-grid label:nth-child(11) {
+body[data-page="assets"] .academic-service-parameter-grid label:nth-child(6) {
   grid-column: 1 / -1;
 }
 
@@ -18888,38 +18694,6 @@ body[data-page="assets"] .fanya-context-list dd {
   body[data-page="assets"] .fanya-iframe-placeholder {
     inset: 12px;
     padding: 18px;
-  }
-
-  body[data-page="assets"] .academic-service-visual-preview {
-    inset: 10px;
-  }
-
-  body[data-page="assets"] .academic-preview-shell {
-    grid-template-columns: 1fr;
-  }
-
-  body[data-page="assets"] .academic-preview-nav {
-    display: flex;
-    gap: 6px;
-    overflow-x: auto;
-    border-right: 0;
-    border-bottom: 1px solid rgba(77, 63, 49, 0.1);
-    padding: 10px;
-  }
-
-  body[data-page="assets"] .academic-preview-nav b {
-    flex: 0 0 auto;
-    margin: 0;
-    padding: 8px 4px;
-  }
-
-  body[data-page="assets"] .academic-preview-nav span {
-    flex: 0 0 auto;
-    white-space: nowrap;
-  }
-
-  body[data-page="assets"] .academic-preview-main {
-    padding: 14px;
   }
 
   body[data-page="assets"] .academic-service-placeholder strong,

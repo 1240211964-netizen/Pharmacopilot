@@ -8097,11 +8097,9 @@ const MANAGEMENT_COURSE_GRAPH_NODES = [
 const FANYA_KNOWLEDGE_GRAPH_URL =
   "https://mooc2-ans.chaoxing.com/topic-ans/knowgraph/index.html#/knowledgeMap/frameDiagramTeacher?courseid=251769346&clazzid=131807646&courseId=251769346&classId=131807646&clazzId=131807646&cpi=18085305&enc=399a5e53fc07ceeee1367420f088ffd5&openc=fa9f34ffaedc53b0a54335cd85a002ac&t=1778920097391&ut=t&modeType=2&topicModelId=0";
 const FANYA_KNOWLEDGE_GRAPH_STATUS_URL = "/api/fanya/knowledge-graph/status";
-const ACADEMIC_SERVICE_DEFAULT_DOMAIN = "nju.libsp.net";
 const ACADEMIC_SERVICE_ROUTES = {
   chat: { label: "对话页面", path: "history", hd: "1,1", mode: "chat" },
   deep_research: { label: "DeepResearch 对话", path: "deep_research_history", hd: "0,1,1", mode: "deepResearch" },
-  houdao: { label: "厚道对话页面", path: "houdao_research_history", hd: "1,1", mode: "chat" },
   knowledge_base: { label: "知识星链", path: "knowledge_base", hd: "1,1", mode: "static" },
   ai_knowledge_base: { label: "AI 知识库", path: "ai_knowledge_base", hd: "1,1", mode: "static" },
   subscribe: { label: "学术追踪", path: "subscribe", hd: "1,1", mode: "static" },
@@ -8356,11 +8354,6 @@ function academicServiceValue(id) {
   return $(`#${id}`)?.value.trim() || "";
 }
 
-function ensureAcademicServiceDefaults() {
-  const domain = $("#academicServiceDomain");
-  if (domain && !domain.value.trim()) domain.value = ACADEMIC_SERVICE_DEFAULT_DOMAIN;
-}
-
 function normalizeAcademicServiceDomain(value) {
   const host = String(value || "")
     .trim()
@@ -8387,16 +8380,6 @@ function formatAcademicServiceJsonList(value) {
   return items.length ? JSON.stringify(items) : "";
 }
 
-function countAcademicServiceJsonList(value) {
-  const text = formatAcademicServiceJsonList(value);
-  if (!text) return 0;
-  try {
-    return JSON.parse(text).length || 0;
-  } catch {
-    return 0;
-  }
-}
-
 function buildAcademicServiceEmbedUrl() {
   const domain = normalizeAcademicServiceDomain(academicServiceValue("academicServiceDomain"));
   const route = getAcademicServiceRoute();
@@ -8409,38 +8392,27 @@ function buildAcademicServiceEmbedUrl() {
   const searchText = academicServiceValue("academicServiceSearchText");
   const agentId = academicServiceValue("academicServiceAgentId");
   const modelId = academicServiceValue("academicServiceModelId");
-  const fileIds = formatAcademicServiceJsonList(academicServiceValue("academicServiceFileIds"));
 
   params.set("hd", route.hd);
 
   if (route.mode === "chat") {
-    const exploreId = academicServiceValue("academicServiceExploreId");
     if (agentId) params.set("agentId", agentId);
     if (modelId) params.set("modelId", modelId);
-    if (exploreId) params.set("exploreId", exploreId);
     params.set("searchText", searchText);
     params.set("internet_search", "false");
     const datasetList = formatAcademicServiceJsonList(academicServiceValue("academicServiceDatasetList"));
-    const imageIds = formatAcademicServiceJsonList(academicServiceValue("academicServiceImageIds"));
     if (datasetList) params.set("datasetList", datasetList);
-    if (imageIds) params.set("image_ids", imageIds);
-    if (fileIds) params.set("file_ids", fileIds);
   }
 
   if (route.mode === "deepResearch") {
     const applicationId = academicServiceValue("academicServiceApplicationId") || agentId;
     const promptId = academicServiceValue("academicServicePromptId");
     const retrievalSources = academicServiceValue("academicServiceRetrievalSources");
-    const threadId = academicServiceValue("academicServiceThreadId");
-    const reportStyle = academicServiceValue("academicServiceReportStyle") || "survey";
-    if (threadId) params.set("threadId", threadId);
     if (applicationId) params.set("applicationId", applicationId);
     params.set("searchText", searchText);
     params.set("modeType", "exploration");
-    params.set("reportStyle", reportStyle);
     if (retrievalSources) params.set("retrievalSources", retrievalSources);
     if (promptId) params.set("promptId", promptId);
-    if (fileIds) params.set("file_ids", fileIds);
   }
 
   if (route.mode === "home" && agentId) {
@@ -8449,71 +8421,6 @@ function buildAcademicServiceEmbedUrl() {
 
   url.search = params.toString();
   return { url: url.href, route, error: "" };
-}
-
-function renderAcademicServiceVisualPreview(url, route, error) {
-  const target = $("#academicServiceVisualPreview");
-  if (!target) return;
-  const domain = normalizeAcademicServiceDomain(academicServiceValue("academicServiceDomain")) || ACADEMIC_SERVICE_DEFAULT_DOMAIN;
-  const searchText = academicServiceValue("academicServiceSearchText") || "影像学检查有哪些辐射风险？";
-  const datasetCount = countAcademicServiceJsonList(academicServiceValue("academicServiceDatasetList"));
-  const imageCount = countAcademicServiceJsonList(academicServiceValue("academicServiceImageIds"));
-  const fileCount = countAcademicServiceJsonList(academicServiceValue("academicServiceFileIds"));
-  const activePath = `/api/openAccess/redirect/${route.path}`;
-  const routeItems = Object.values(ACADEMIC_SERVICE_ROUTES)
-    .map(
-      (item) => `
-        <span class="${item.path === route.path ? "is-active" : ""}">
-          ${escapeHtml(item.label)}
-        </span>
-      `,
-    )
-    .join("");
-  const previewUrl = error ? `https://${domain}${activePath}?hd=${route.hd}` : url;
-  const modeLabel = route.mode === "deepResearch" ? "DeepResearch 写作模式" : route.mode === "chat" ? "AI 对话" : "平台功能页";
-  const resultCopy =
-    route.mode === "deepResearch"
-      ? "系统已按 Word 指引接入学术资源、网络资源与 AI 知识库，准备生成文献综述式报告。"
-      : route.mode === "chat"
-        ? "系统已带入智能体、模型、知识库、图片与文件参数，进入精简布局对话页。"
-        : "系统已生成精简布局入口，可直接承接对应平台页面。";
-
-  target.innerHTML = `
-    <div class="academic-preview-browser">
-      <div class="academic-preview-bar">
-        <span></span><span></span><span></span>
-        <strong>${escapeHtml(domain)}</strong>
-      </div>
-      <div class="academic-preview-shell">
-        <nav class="academic-preview-nav" aria-label="学术服务平台预览导航">
-          <b>闻道开放访问</b>
-          ${routeItems}
-        </nav>
-        <section class="academic-preview-main" aria-label="学术服务平台可视化结果">
-          <div class="academic-preview-toolbar">
-            <span>${escapeHtml(route.label)}</span>
-            <strong>${escapeHtml(modeLabel)}</strong>
-          </div>
-          <article class="academic-preview-question">
-            <small>searchText</small>
-            <h3>${escapeHtml(searchText)}</h3>
-          </article>
-          <div class="academic-preview-answer">
-            <span>DeepSeek-R1</span>
-            <p>${escapeHtml(resultCopy)}</p>
-            <div class="academic-preview-chips">
-              <em>hd=${escapeHtml(route.hd)}</em>
-              <em>${datasetCount || 0} 个知识库</em>
-              <em>${imageCount || 0} 张图片</em>
-              <em>${fileCount || 0} 个文件</em>
-              <em>联网检索关闭</em>
-            </div>
-          </div>
-          <div class="academic-preview-url" title="${escapeHtml(previewUrl)}">${escapeHtml(previewUrl)}</div>
-        </section>
-      </div>
-    </div>
-  `;
 }
 
 function setAcademicServiceEmbedState(state, title, description) {
@@ -8549,12 +8456,10 @@ function syncAcademicServiceEmbedUrl() {
     openLink.setAttribute("aria-disabled", url ? "false" : "true");
   }
 
-  renderAcademicServiceVisualPreview(url, route, error);
-
   if (error) {
     setAcademicServiceEmbedState("idle", "待填写域名", error);
   } else {
-    setAcademicServiceEmbedState("preview", "已生成本地预览", `${route.label} 已按 Word 指引生成开放访问地址，可点击“嵌入本页”加载真实平台。`);
+    setAcademicServiceEmbedState("ready", "可嵌入本页", `${route.label} 的开放访问地址已生成。`);
   }
   return url;
 }
@@ -8562,9 +8467,6 @@ function syncAcademicServiceEmbedUrl() {
 function initAcademicServiceEmbedPanel() {
   const panel = $("#academicServiceEmbedPanel");
   if (!panel) return;
-  ensureAcademicServiceDefaults();
-  const hero = $(".course-asset-hero");
-  if (hero && hero.nextElementSibling !== panel) hero.insertAdjacentElement("afterend", panel);
   const form = $("#academicServiceEmbedForm");
   const frame = $("#academicServiceFrame");
   const copyButton = $("#copyAcademicServiceUrl");
@@ -8594,7 +8496,7 @@ function initAcademicServiceEmbedPanel() {
   });
 
   $$(
-    "#academicServiceDomain, #academicServiceSurface, #academicServiceSearchText, #academicServiceAgentId, #academicServiceModelId, #academicServiceApplicationId, #academicServicePromptId, #academicServiceDatasetList, #academicServiceExploreId, #academicServiceImageIds, #academicServiceFileIds, #academicServiceThreadId, #academicServiceReportStyle, #academicServiceRetrievalSources",
+    "#academicServiceDomain, #academicServiceSurface, #academicServiceSearchText, #academicServiceAgentId, #academicServiceModelId, #academicServiceApplicationId, #academicServicePromptId, #academicServiceDatasetList, #academicServiceRetrievalSources",
   ).forEach((field) => {
     field.addEventListener("input", syncAcademicServiceEmbedUrl);
     field.addEventListener("change", syncAcademicServiceEmbedUrl);

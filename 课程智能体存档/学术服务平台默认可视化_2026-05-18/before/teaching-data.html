@@ -117,7 +117,7 @@
         class="academic-service-embed"
         id="academicServiceEmbedPanel"
         aria-labelledby="academic-service-title"
-        data-embed-state="preview"
+        data-embed-state="idle"
       >
         <div class="academic-service-head">
           <div>
@@ -139,19 +139,18 @@
               referrerpolicy="strict-origin-when-cross-origin"
               sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-downloads"
             ></iframe>
-            <div class="academic-service-visual-preview" id="academicServiceVisualPreview" aria-live="polite"></div>
             <div class="academic-service-placeholder" id="academicServicePlaceholder" aria-live="polite">
-              <span>本地预览已生成</span>
-              <strong>页面已按 Word 指引填好开放访问参数。</strong>
-              <p>点击“嵌入本页”会尝试加载真实平台页面；当前预览不传输账号、密码、cookie 或授权码。</p>
+              <span>内嵌待加载</span>
+              <strong>填写机构闻道域名后，可在本页直接打开学术服务平台。</strong>
+              <p>当前不会保存平台账号、密码、cookie 或授权码。</p>
             </div>
           </div>
 
           <aside class="academic-service-control" aria-label="学术服务平台内嵌控制">
             <div class="academic-service-status-card">
               <span>接入状态</span>
-              <strong id="academicServiceStatusText">已生成本地预览</strong>
-              <p id="academicServiceStatusDescription">已使用示例闻道域名和 Word 文档中的开放访问参数生成可视化结果。</p>
+              <strong id="academicServiceStatusText">待填写域名</strong>
+              <p id="academicServiceStatusDescription">请输入机构对应的 xxx.libsp.net 域名，系统会生成内嵌地址。</p>
             </div>
 
             <form class="academic-service-form" id="academicServiceEmbedForm">
@@ -163,8 +162,7 @@
                   type="text"
                   inputmode="url"
                   autocomplete="off"
-                  value="nju.libsp.net"
-                  placeholder="例如 nju.libsp.net"
+                  placeholder="xxx.libsp.net"
                 />
               </label>
 
@@ -173,7 +171,6 @@
                 <select id="academicServiceSurface" name="surface">
                   <option value="chat">对话页面</option>
                   <option value="deep_research">DeepResearch 对话</option>
-                  <option value="houdao">厚道对话页面</option>
                   <option value="knowledge_base">知识星链</option>
                   <option value="ai_knowledge_base">AI 知识库</option>
                   <option value="subscribe">学术追踪</option>
@@ -188,7 +185,7 @@
 
               <label>
                 <span>默认检索内容</span>
-                <textarea id="academicServiceSearchText" name="searchText" rows="3">影像学检查有哪些辐射风险？</textarea>
+                <textarea id="academicServiceSearchText" name="searchText" rows="3">围绕管理学原理 SWOT 分析生成一份大学课堂教案。</textarea>
               </label>
 
               <div class="academic-service-parameter-grid" aria-label="开放访问参数">
@@ -216,31 +213,6 @@
                     type="text"
                     value='["3dc5e5b2-1b88-11f1-aff3-fa163f1c2d68","3de2fc1a-1b88-11f1-aff3-fa163f1c2d68"]'
                   />
-                </label>
-                <label>
-                  <span>探究 ID</span>
-                  <input id="academicServiceExploreId" name="exploreId" type="text" value="1" />
-                </label>
-                <label>
-                  <span>图片 ID</span>
-                  <input id="academicServiceImageIds" name="imageIds" type="text" value='["2476ccd6-e22e-11f0-bd82-f439092617ca"]' />
-                </label>
-                <label>
-                  <span>文件 ID</span>
-                  <input id="academicServiceFileIds" name="fileIds" type="text" value='["c4cc4a9c-ec6c-11f0-b928-f439092617ca"]' />
-                </label>
-                <label>
-                  <span>DeepResearch 线程</span>
-                  <input id="academicServiceThreadId" name="threadId" type="text" value="2de6dfc0-b9e5-11f0-ae1c-652418fd9077" />
-                </label>
-                <label>
-                  <span>报告风格</span>
-                  <select id="academicServiceReportStyle" name="reportStyle">
-                    <option value="survey">文献综述</option>
-                    <option value="industry">行业调研</option>
-                    <option value="proposal">开题报告</option>
-                    <option value="innovation">创新性分析</option>
-                  </select>
                 </label>
                 <label>
                   <span>检索源</span>
