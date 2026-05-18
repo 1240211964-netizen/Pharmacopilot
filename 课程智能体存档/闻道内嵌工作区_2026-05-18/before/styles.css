@@ -18512,264 +18512,6 @@ body[data-page="assets"] .academic-service-context-list dd {
   overflow-wrap: anywhere;
 }
 
-body[data-page="assets"] .wenda-embed-root {
-  min-width: 0;
-  margin-bottom: 24px;
-}
-
-body[data-page="assets"] .wenda-embed-workspace {
-  min-width: 0;
-  border: 1px solid rgba(77, 63, 49, 0.12);
-  border-radius: 34px;
-  background:
-    linear-gradient(180deg, rgba(255, 252, 246, 0.97), rgba(246, 240, 231, 0.78)),
-    linear-gradient(90deg, rgba(77, 63, 49, 0.045) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(77, 63, 49, 0.04) 1px, transparent 1px);
-  background-size: auto, 46px 46px, 46px 46px;
-  box-shadow: 0 24px 70px rgba(72, 55, 38, 0.08);
-  padding: 24px;
-  overflow: clip;
-}
-
-body[data-page="assets"] .wenda-embed-head {
-  display: grid;
-  grid-template-columns: minmax(0, 0.78fr) minmax(320px, 0.58fr);
-  gap: 28px;
-  align-items: end;
-  padding: 4px 4px 20px;
-}
-
-body[data-page="assets"] .wenda-embed-head > * {
-  min-width: 0;
-}
-
-body[data-page="assets"] .wenda-embed-head h2 {
-  margin: 0;
-  font-size: 2.7rem;
-  letter-spacing: 0;
-}
-
-body[data-page="assets"] .wenda-embed-head p:last-child {
-  margin: 0;
-  color: var(--text-soft);
-  line-height: 1.72;
-  overflow-wrap: anywhere;
-}
-
-body[data-page="assets"] .wenda-embed-grid {
-  display: grid;
-  grid-template-columns: minmax(260px, 0.68fr) minmax(0, 1.42fr) minmax(260px, 0.72fr);
-  gap: 16px;
-  align-items: stretch;
-}
-
-body[data-page="assets"] .wenda-embed-panel,
-body[data-page="assets"] .wenda-iframe-workspace {
-  min-width: 0;
-  border: 1px solid rgba(77, 63, 49, 0.1);
-  border-radius: 28px;
-  background: rgba(255, 252, 246, 0.84);
-  box-shadow: 0 14px 38px rgba(70, 51, 34, 0.055);
-  padding: 18px;
-}
-
-body[data-page="assets"] .wenda-embed-panel {
-  display: grid;
-  align-content: start;
-  gap: 12px;
-}
-
-body[data-page="assets"] .wenda-panel-card {
-  min-width: 0;
-  border: 1px solid rgba(77, 63, 49, 0.09);
-  border-radius: 18px;
-  background: rgba(247, 241, 232, 0.58);
-  padding: 14px;
-}
-
-body[data-page="assets"] .wenda-panel-card span,
-body[data-page="assets"] .wenda-embed-panel label span,
-body[data-page="assets"] .wenda-iframe-toolbar span {
-  display: block;
-  color: var(--text-muted);
-  font-size: 0.72rem;
-  font-weight: 840;
-}
-
-body[data-page="assets"] .wenda-panel-card strong {
-  display: block;
-  margin-top: 5px;
-  color: #8e4d33;
-  font-size: 1.18rem;
-  line-height: 1.25;
-}
-
-body[data-page="assets"] .wenda-panel-card p,
-body[data-page="assets"] .wenda-inline-note,
-body[data-page="assets"] .wenda-frame-warning {
-  margin: 8px 0 0;
-  color: var(--text-soft);
-  font-size: 0.88rem;
-  line-height: 1.65;
-}
-
-body[data-page="assets"] .wenda-embed-panel label {
-  display: grid;
-  gap: 6px;
-}
-
-body[data-page="assets"] .wenda-embed-panel input,
-body[data-page="assets"] .wenda-embed-panel textarea {
-  width: 100%;
-  min-width: 0;
-  border: 1px solid rgba(77, 63, 49, 0.12);
-  border-radius: 14px;
-  background: rgba(255, 252, 246, 0.9);
-  color: var(--text-main);
-  font: inherit;
-  font-size: 0.86rem;
-  line-height: 1.45;
-  padding: 10px 11px;
-  outline: none;
-}
-
-body[data-page="assets"] .wenda-embed-panel textarea {
-  resize: vertical;
-}
-
-body[data-page="assets"] .wenda-embed-panel input:focus,
-body[data-page="assets"] .wenda-embed-panel textarea:focus {
-  border-color: rgba(138, 79, 36, 0.42);
-  box-shadow: 0 0 0 3px rgba(138, 79, 36, 0.11);
-}
-
-body[data-page="assets"] .wenda-toggle-row {
-  display: flex !important;
-  flex-direction: row;
-  gap: 9px !important;
-  align-items: center;
-  min-height: 40px;
-  border: 1px solid rgba(77, 63, 49, 0.09);
-  border-radius: 14px;
-  background: rgba(247, 241, 232, 0.46);
-  padding: 9px 11px;
-}
-
-body[data-page="assets"] .wenda-toggle-row input {
-  width: 16px;
-  min-width: 16px;
-  height: 16px;
-  padding: 0;
-}
-
-body[data-page="assets"] .wenda-id-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 9px;
-}
-
-body[data-page="assets"] .wenda-error {
-  margin: 0;
-  border: 1px solid rgba(154, 59, 38, 0.2);
-  border-radius: 14px;
-  background: rgba(154, 59, 38, 0.08);
-  color: #8f3425;
-  font-size: 0.86rem;
-  line-height: 1.55;
-  padding: 10px 12px;
-}
-
-body[data-page="assets"] .wenda-primary-action,
-body[data-page="assets"] .wenda-open-link {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 42px;
-  border: 1px solid rgba(77, 63, 49, 0.12);
-  border-radius: 16px;
-  cursor: pointer;
-  padding: 8px 12px;
-  text-align: center;
-  text-decoration: none;
-  font-size: 0.88rem;
-  font-weight: 780;
-}
-
-body[data-page="assets"] .wenda-primary-action {
-  background: #2e3a33;
-  color: #fffaf2;
-}
-
-body[data-page="assets"] .wenda-open-link {
-  background: rgba(255, 252, 246, 0.9);
-  color: var(--text-main);
-}
-
-body[data-page="assets"] .wenda-primary-action:hover,
-body[data-page="assets"] .wenda-open-link:hover {
-  border-color: rgba(44, 57, 48, 0.52);
-  background: rgba(46, 58, 51, 0.96);
-  color: #fffaf2;
-}
-
-body[data-page="assets"] .wenda-open-link.is-disabled {
-  cursor: not-allowed;
-  opacity: 0.54;
-}
-
-body[data-page="assets"] .wenda-iframe-workspace {
-  display: grid;
-  grid-template-rows: auto auto minmax(720px, 1fr) auto;
-  gap: 12px;
-}
-
-body[data-page="assets"] .wenda-iframe-toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  align-items: center;
-  justify-content: space-between;
-}
-
-body[data-page="assets"] .wenda-iframe-toolbar strong {
-  display: block;
-  margin-top: 4px;
-  color: var(--text-main);
-  font-size: 0.95rem;
-  overflow-wrap: anywhere;
-}
-
-body[data-page="assets"] .wenda-frame-warning {
-  margin: 0;
-  border: 1px solid rgba(138, 79, 36, 0.12);
-  border-radius: 16px;
-  background: rgba(247, 241, 232, 0.58);
-  padding: 10px 12px;
-}
-
-body[data-page="assets"] .wenda-embed-frame {
-  display: block;
-  width: 100%;
-  min-height: 720px;
-  height: 100%;
-  border: 1px solid rgba(77, 63, 49, 0.1);
-  border-radius: 22px;
-  background: #fffdf8;
-}
-
-body[data-page="assets"] .wenda-url-preview {
-  min-width: 0;
-  border: 1px solid rgba(77, 63, 49, 0.09);
-  border-radius: 16px;
-  background: rgba(255, 252, 246, 0.76);
-  color: var(--text-muted);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 0.74rem;
-  line-height: 1.55;
-  overflow-wrap: anywhere;
-  padding: 12px;
-}
-
 body[data-page="assets"] .fanya-knowledge-embed {
   min-width: 0;
   margin-top: 24px;
@@ -19044,8 +18786,6 @@ body[data-page="assets"] .fanya-context-list dd {
     grid-row: 4;
   }
 
-  body[data-page="assets"] .wenda-embed-head,
-  body[data-page="assets"] .wenda-embed-grid,
   body[data-page="assets"] .academic-service-head,
   body[data-page="assets"] .academic-service-layout,
   body[data-page="assets"] .fanya-knowledge-head,
@@ -19125,29 +18865,18 @@ body[data-page="assets"] .fanya-context-list dd {
     justify-content: stretch;
   }
 
-  body[data-page="assets"] .wenda-id-grid {
-    grid-template-columns: 1fr;
-  }
-
-  body[data-page="assets"] .wenda-iframe-workspace {
-    grid-template-rows: auto auto minmax(520px, 1fr) auto;
-  }
-
-  body[data-page="assets"] .wenda-embed-workspace,
   body[data-page="assets"] .academic-service-embed,
   body[data-page="assets"] .fanya-knowledge-embed {
     border-radius: 24px;
     padding: 14px;
   }
 
-  body[data-page="assets"] .wenda-embed-head h2,
   body[data-page="assets"] .academic-service-head h2,
   body[data-page="assets"] .fanya-knowledge-head h2 {
     font-size: 1.7rem;
     word-break: break-all;
   }
 
-  body[data-page="assets"] .wenda-embed-frame,
   body[data-page="assets"] .academic-service-frame-shell,
   body[data-page="assets"] .academic-service-frame-shell iframe,
   body[data-page="assets"] .fanya-iframe-shell,
@@ -22567,7 +22296,6 @@ body[data-page="practice"] .practice-stage-canvas,
 body[data-page="practice"] .practice-review-panel,
 body[data-page="practice"] .practice-artifact-output,
 body[data-page="assets"] .course-asset-workbench,
-body[data-page="assets"] .wenda-embed-workspace,
 body[data-page="assets"] .academic-service-embed,
 body[data-page="assets"] .fanya-knowledge-embed {
   border: 1px solid rgba(230, 216, 200, 0.72);
@@ -22589,8 +22317,6 @@ body[data-page="teaching-navigation"] .route-map-card,
 body[data-page="teaching-navigation"] .route-node-popover,
 body[data-page="assets"] .course-graph-center,
 body[data-page="assets"] .course-graph-panel,
-body[data-page="assets"] .wenda-embed-panel,
-body[data-page="assets"] .wenda-iframe-workspace,
 body[data-page="assets"] .academic-service-frame-shell,
 body[data-page="assets"] .academic-service-control,
 body[data-page="assets"] .fanya-iframe-shell,
@@ -22604,7 +22330,6 @@ body[data-page="teaching-navigation"] .teaching-route-stage-band,
 body[data-page="teaching-navigation"] .teaching-route-section.route-map-section,
 body[data-page="teaching-navigation"] .route-map-card,
 body[data-page="assets"] .course-asset-workbench,
-body[data-page="assets"] .wenda-embed-workspace,
 body[data-page="assets"] .academic-service-embed,
 body[data-page="assets"] .fanya-knowledge-embed {
   border-radius: 34px;
@@ -22624,7 +22349,6 @@ body[data-page="teaching-navigation"] .route-map-section .section-head h2,
 body[data-page="practice"] .workbench-panel-heading h2,
 body[data-page="practice"] .workbench-panel-heading h3,
 body[data-page="assets"] .course-asset-workbench-head h2,
-body[data-page="assets"] .wenda-embed-head h2,
 body[data-page="assets"] .academic-service-head h2,
 body[data-page="assets"] .fanya-knowledge-head h2 {
   color: var(--text-main);
@@ -22722,7 +22446,6 @@ body[data-page="assets"] .course-asset-hero-meta span {
 
 body[data-page="assets"] .course-map-node.is-core,
 body[data-page="assets"] .course-action-primary,
-body[data-page="assets"] .wenda-primary-action,
 body[data-page="assets"] .academic-service-action-primary,
 body[data-page="assets"] .fanya-action-primary {
   background: var(--accent-brown);
@@ -22733,8 +22456,6 @@ body[data-page="assets"] .course-graph-toolbar button:hover,
 body[data-page="assets"] .course-graph-toolbar button.is-active,
 body[data-page="assets"] .course-action-stack button:hover,
 body[data-page="assets"] .course-action-primary:hover,
-body[data-page="assets"] .wenda-primary-action:hover,
-body[data-page="assets"] .wenda-open-link:hover,
 body[data-page="assets"] .academic-service-action-primary:hover,
 body[data-page="assets"] .academic-service-action-secondary:hover:not(:disabled):not([aria-disabled="true"]),
 body[data-page="assets"] .fanya-action-secondary:hover,
@@ -22817,7 +22538,6 @@ body[data-page="assets"] .course-graph-statusbar {
   body[data-page="practice"] .practice-workbench-hero-card,
   body[data-page="assets"] .course-asset-hero,
   body[data-page="assets"] .course-asset-workbench,
-  body[data-page="assets"] .wenda-embed-workspace,
   body[data-page="assets"] .academic-service-embed,
   body[data-page="assets"] .fanya-knowledge-embed {
     width: calc(100vw - 28px) !important;
@@ -22864,7 +22584,6 @@ body[data-page="assets"] .course-graph-statusbar {
   body[data-page="practice"] .workbench-panel-heading h2,
   body[data-page="practice"] .workbench-panel-heading h3,
   body[data-page="assets"] .course-asset-workbench-head h2,
-  body[data-page="assets"] .wenda-embed-head h2,
   body[data-page="assets"] .academic-service-head h2,
   body[data-page="assets"] .fanya-knowledge-head h2 {
     max-width: 100%;
@@ -22880,7 +22599,6 @@ body[data-page="assets"] .course-graph-statusbar {
   body[data-page="practice"] .practice-runtime-state-line p,
   body[data-page="assets"] .course-asset-hero .lede,
   body[data-page="assets"] .course-asset-workbench-head p:last-child,
-  body[data-page="assets"] .wenda-embed-head p:last-child,
   body[data-page="assets"] .academic-service-head p:last-child,
   body[data-page="assets"] .fanya-knowledge-head p:last-child {
     max-width: 100%;

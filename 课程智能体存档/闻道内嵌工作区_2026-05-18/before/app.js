@@ -8097,8 +8097,7 @@ const MANAGEMENT_COURSE_GRAPH_NODES = [
 const FANYA_KNOWLEDGE_GRAPH_URL =
   "https://mooc2-ans.chaoxing.com/topic-ans/knowgraph/index.html#/knowledgeMap/frameDiagramTeacher?courseid=251769346&clazzid=131807646&courseId=251769346&classId=131807646&clazzId=131807646&cpi=18085305&enc=399a5e53fc07ceeee1367420f088ffd5&openc=fa9f34ffaedc53b0a54335cd85a002ac&t=1778920097391&ut=t&modeType=2&topicModelId=0";
 const FANYA_KNOWLEDGE_GRAPH_STATUS_URL = "/api/fanya/knowledge-graph/status";
-const ACADEMIC_SERVICE_DEFAULT_SCHOOL = "机构";
-const ACADEMIC_SERVICE_DEFAULT_DOMAIN = "";
+const ACADEMIC_SERVICE_DEFAULT_DOMAIN = "nju.libsp.net";
 const ACADEMIC_SERVICE_ROUTES = {
   chat: { label: "对话页面", path: "history", hd: "1,1", mode: "chat" },
   deep_research: { label: "DeepResearch 对话", path: "deep_research_history", hd: "0,1,1", mode: "deepResearch" },
@@ -8487,7 +8486,7 @@ function renderAcademicServiceVisualPreview(url, route, error) {
       </div>
       <div class="academic-preview-shell">
         <nav class="academic-preview-nav" aria-label="学术服务平台预览导航">
-          <b>${escapeHtml(ACADEMIC_SERVICE_DEFAULT_SCHOOL)}闻道开放访问</b>
+          <b>闻道开放访问</b>
           ${routeItems}
         </nav>
         <section class="academic-preview-main" aria-label="学术服务平台可视化结果">
@@ -8507,7 +8506,6 @@ function renderAcademicServiceVisualPreview(url, route, error) {
               <em>${datasetCount || 0} 个知识库</em>
               <em>${imageCount || 0} 张图片</em>
               <em>${fileCount || 0} 个文件</em>
-              <em>${escapeHtml(ACADEMIC_SERVICE_DEFAULT_SCHOOL)}</em>
               <em>联网检索关闭</em>
             </div>
           </div>
