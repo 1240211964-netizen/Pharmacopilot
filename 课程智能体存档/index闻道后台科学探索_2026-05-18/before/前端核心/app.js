@@ -5,11 +5,6 @@ const PRACTICE_WORKFLOW_KEY = "pharmacopilot-practice-workflow-state";
 const ASSETS_KEY = "pharmacopilot-assets";
 const ACCOUNT_SESSION_KEY = "pharmacopilot-account-session";
 const HOME_TASK_ENTRY_KEY = "pharmacopilot-home-task-entry";
-const HOME_WENDA_RUN_KEY = "pharmacopilot-home-wenda-science-run";
-const HOME_WENDA_AGENT_ID = "6f5b49b6-5cb4-11f0-9ae8-fa163f087fa9";
-const HOME_WENDA_MODEL_ID = "12609df7-fee9-11ef-a29b-d039570c2aae";
-const HOME_WENDA_DEFAULT_PROMPT = "请基于药事管理本科课程的教学目标，帮助我设计一个课堂讨论任务。";
-const HOME_WENDA_HD = "1,1";
 const FANYA_MOCK_ACCOUNT = {
   account: "teacher.demo@pharmacopilot.test",
   token: "mock-fanya-token-2026",
@@ -2300,142 +2295,6 @@ function initHomeTaskEntry() {
   });
 }
 
-function normalizeHomeWendaDomain(value) {
-  return String(value || "")
-    .trim()
-    .replace(/^https?:\/\//i, "")
-    .replace(/\/.*$/, "")
-    .toLowerCase();
-}
-
-function getHomeWendaRuntimeDomain() {
-  const env = window.__PHARMACOPILOT_ENV__ || {};
-  return normalizeHomeWendaDomain(env.VITE_WENDAO_DOMAIN || env.WENDAO_DOMAIN || "");
-}
-
-function buildHomeWendaScienceUrl(searchText) {
-  const domain = getHomeWendaRuntimeDomain();
-  const prompt = String(searchText || "").trim();
-  if (!domain) throw new Error("请先配置 VITE_WENDAO_DOMAIN。");
-  if (!prompt) throw new Error("请先输入检索内容。");
-
-  const url = new URL("/api/openAccess/redirect/history", `https://${domain}`);
-  const params = new URLSearchParams();
-  params.set("agentId", HOME_WENDA_AGENT_ID);
-  params.set("modelId", HOME_WENDA_MODEL_ID);
-  params.set("searchText", prompt);
-  params.set("hd", HOME_WENDA_HD);
-  params.set("internet_search", "false");
-  url.search = params.toString();
-  return url.href;
-}
-
-function setHomeWendaOpenLink(link, url) {
-  if (!link) return;
-  const hasUrl = Boolean(url);
-  link.href = hasUrl ? url : "about:blank";
-  link.classList.toggle("is-disabled", !hasUrl);
-  link.setAttribute("aria-disabled", String(!hasUrl));
-}
-
-function updateHomeWendaRunnerState(state, payload = {}) {
-  const panel = $("#homeWendaRunnerState");
-  const label = $("#homeWendaRunnerStatusLabel");
-  const title = $("#homeWendaRunnerStatusTitle");
-  const copy = $("#homeWendaRunnerStatusCopy");
-  if (!panel || !label || !title || !copy) return;
-
-  const states = {
-    idle: {
-      label: "待输入",
-      title: "后台未启动",
-      copy: "输入检索内容后，系统会在后台创建闻道科学探索页面。",
-    },
-    ready: {
-      label: "可继续",
-      title: "已有上次探索入口",
-      copy: "可继续打开上一次闻道结果页，也可以输入新问题重新启动。",
-    },
-    running: {
-      label: "运行中",
-      title: "闻道科学探索已在后台启动",
-      copy: "页面正在通过 openAccess 链接发起加载；如果平台限制内嵌，请使用新窗口查看。",
-    },
-    loaded: {
-      label: "已发起",
-      title: "后台页面已完成一次加载尝试",
-      copy: "出于跨站安全限制，PharmacoPilot 不读取 iframe 内容；结果请在闻道页面继续查看。",
-    },
-    error: {
-      label: "需配置",
-      title: "暂时无法启动闻道探索",
-      copy: payload.message || "请检查闻道域名配置后再重试。",
-    },
-  };
-  const next = states[state] || states.idle;
-  panel.dataset.state = state;
-  label.textContent = next.label;
-  title.textContent = next.title;
-  copy.textContent = next.copy;
-}
-
-function initHomeWendaRunner() {
-  const form = $("#homeWendaRunnerForm");
-  const input = $("#homeWendaRunnerInput");
-  const frame = $("#homeWendaRunnerFrame");
-  const openLink = $("#homeWendaRunnerOpen");
-  if (!form || !input || !frame || !openLink) return;
-
-  const saved = loadFromLocalStorage(HOME_WENDA_RUN_KEY, null);
-  if (saved && typeof saved === "object" && saved.url) {
-    if (saved.prompt && !input.value.trim()) input.value = saved.prompt;
-    setHomeWendaOpenLink(openLink, saved.url);
-    updateHomeWendaRunnerState("ready");
-  }
-  if (!input.value.trim()) input.value = HOME_WENDA_DEFAULT_PROMPT;
-
-  openLink.addEventListener("click", (event) => {
-    if (openLink.getAttribute("aria-disabled") === "true") event.preventDefault();
-  });
-
-  $$("[data-home-wenda-preset]").forEach((button) => {
-    button.addEventListener("click", () => {
-      input.value = button.dataset.homeWendaPreset || "";
-      input.focus();
-    });
-  });
-
-  frame.addEventListener("load", () => {
-    if (frame.dataset.started !== "true") return;
-    updateHomeWendaRunnerState("loaded");
-  });
-
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
-    const prompt = input.value.trim();
-    try {
-      const url = buildHomeWendaScienceUrl(prompt);
-      frame.dataset.started = "true";
-      frame.src = url;
-      setHomeWendaOpenLink(openLink, url);
-      saveToLocalStorage(HOME_WENDA_RUN_KEY, {
-        prompt,
-        url,
-        domain: getHomeWendaRuntimeDomain(),
-        route: "history",
-        startedAt: new Date().toISOString(),
-      });
-      updateHomeWendaRunnerState("running");
-      showToast("闻道科学探索已在后台启动");
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "闻道链接生成失败。";
-      updateHomeWendaRunnerState("error", { message });
-      showToast(message);
-      input.focus();
-    }
-  });
-}
-
 function surfaceHomeTaskEntry(page) {
   if (!["practice", "assets"].includes(page)) return;
   const params = new URLSearchParams(window.location.search);
@@ -2741,7 +2600,6 @@ function initHomeCoworkDemo() {
 function initHomePage() {
   renderBulletChart($("#homeDiagnosticBulletChart"), HOME_SAMPLE_DIAGNOSTIC);
   initHomeTaskEntry();
-  initHomeWendaRunner();
   initHomeCoworkDemo();
 }
 
