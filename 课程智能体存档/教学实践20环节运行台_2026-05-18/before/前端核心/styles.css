@@ -21399,7 +21399,6 @@ body[data-page="practice"] .practice-workbench-hero {
 
 body[data-page="practice"] .practice-workbench-hero-copy,
 body[data-page="practice"] .practice-workbench-hero-card,
-body[data-page="practice"] .runtime-overview-card,
 body[data-page="practice"] .agent-orchestration-panel,
 body[data-page="practice"] .practice-stage-canvas,
 body[data-page="practice"] .practice-review-panel,
@@ -21438,60 +21437,6 @@ body[data-page="practice"] .practice-workbench-hero-card {
   gap: 18px;
   padding: 22px;
   align-content: start;
-}
-
-body[data-page="practice"] .practice-runtime-overview {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 12px;
-  margin: 0 0 18px;
-}
-
-body[data-page="practice"] .runtime-overview-card {
-  min-height: 138px;
-  padding: 15px;
-  display: grid;
-  align-content: start;
-  gap: 8px;
-  border-radius: 12px;
-  background: rgba(255, 253, 248, 0.78);
-}
-
-body[data-page="practice"] .runtime-overview-card span {
-  color: var(--accent-dark);
-  font-size: 0.72rem;
-  font-weight: 820;
-  line-height: 1.2;
-}
-
-body[data-page="practice"] .runtime-overview-card strong {
-  color: var(--text-main);
-  font-size: 1rem;
-  font-weight: 820;
-  line-height: 1.25;
-}
-
-body[data-page="practice"] .runtime-overview-card p {
-  margin: 0;
-  color: var(--text-soft);
-  font-size: 0.78rem;
-  line-height: 1.5;
-  overflow-wrap: anywhere;
-}
-
-body[data-page="practice"] .runtime-overview-card[data-metric-state="running"] {
-  border-color: rgba(47, 41, 35, 0.2);
-  background: rgba(246, 234, 220, 0.76);
-}
-
-body[data-page="practice"] .runtime-overview-card[data-metric-state="ok"] {
-  border-color: rgba(104, 124, 89, 0.24);
-  background: rgba(221, 232, 210, 0.48);
-}
-
-body[data-page="practice"] .runtime-overview-card[data-metric-state="warning"] {
-  border-color: rgba(184, 121, 45, 0.32);
-  background: rgba(246, 221, 184, 0.56);
 }
 
 body[data-page="practice"] .practice-runtime-state-line {
@@ -21756,30 +21701,9 @@ body[data-page="practice"] .practice-stage-node strong {
 
 body[data-page="practice"] .practice-stage-node small {
   display: block;
+  margin-top: 8px;
   color: var(--text-muted);
   font-size: 0.72rem;
-}
-
-body[data-page="practice"] .stage-node-meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
-  margin-top: 9px;
-}
-
-body[data-page="practice"] .stage-node-meta em {
-  display: inline-flex;
-  max-width: 100%;
-  padding: 3px 7px;
-  border: 1px solid rgba(77, 63, 49, 0.1);
-  border-radius: 999px;
-  background: rgba(255, 253, 248, 0.68);
-  color: var(--text-main);
-  font-size: 0.68rem;
-  font-style: normal;
-  font-weight: 780;
-  line-height: 1.2;
 }
 
 body[data-page="practice"] .practice-stage-node[data-node-status="running"] {
@@ -21975,10 +21899,6 @@ body[data-page="practice"] .practice-legacy-tools-body {
     position: static;
   }
 
-  body[data-page="practice"] .practice-runtime-overview {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
   body[data-page="practice"] .phase-node-grid,
   body[data-page="practice"] .practice-phase-track[data-phase="classroom"] .phase-node-grid,
   body[data-page="practice"] .artifact-output-grid {
@@ -21997,7 +21917,6 @@ body[data-page="practice"] .practice-legacy-tools-body {
   body[data-page="practice"] main > section,
   body[data-page="practice"] .practice-workbench-hero-copy,
   body[data-page="practice"] .practice-workbench-hero-card,
-  body[data-page="practice"] .practice-runtime-overview,
   body[data-page="practice"] .agent-orchestration-panel,
   body[data-page="practice"] .practice-stage-canvas,
   body[data-page="practice"] .practice-review-panel,
@@ -22014,7 +21933,6 @@ body[data-page="practice"] .practice-legacy-tools-body {
 
   body[data-page="practice"] .phase-node-grid,
   body[data-page="practice"] .practice-phase-track[data-phase="classroom"] .phase-node-grid,
-  body[data-page="practice"] .practice-runtime-overview,
   body[data-page="practice"] .current-step-detail-grid,
   body[data-page="practice"] .artifact-output-grid {
     grid-template-columns: 1fr;
@@ -22715,8 +22633,7 @@ body[data-page="practice"] .agent-orchestration-panel {
 }
 
 body[data-page="practice"] .agent-orchestration-panel .workbench-panel-heading span,
-body[data-page="practice"] .agent-orchestration-panel .workbench-panel-heading h2,
-body[data-page="practice"] .agent-orchestration-panel .workbench-panel-heading p {
+body[data-page="practice"] .agent-orchestration-panel .workbench-panel-heading h2 {
   color: rgba(255, 250, 242, 0.82);
 }
 
@@ -22870,7 +22787,6 @@ body[data-page="assets"] .course-graph-statusbar {
   body[data-page="teaching-navigation"] .teaching-route-stage-band,
   body[data-page="teaching-navigation"] .teaching-route-section,
   body[data-page="practice"] .practice-workbench-hero,
-  body[data-page="practice"] .practice-runtime-overview,
   body[data-page="practice"] .practice-agent-workbench,
   body[data-page="practice"] .practice-artifact-output,
   body[data-page="practice"] .practice-legacy-tools,

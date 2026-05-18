@@ -7,14 +7,6 @@
     post: { id: "phase-track-post", label: "课后评价与沉淀", range: "STEP 17-20" },
   };
 
-  const agentConfig = {
-    director: { label: "Director", role: "调度、流程推进、质量门控、判断是否需要教师接管" },
-    "practice-agent": { label: "Practice Agent", role: "生成教学实践方案、课堂活动、教学流程" },
-    "rubric-agent": { label: "Rubric Agent", role: "生成评价维度、评分量规、达成度判断" },
-    "evidence-agent": { label: "Evidence Agent", role: "校验证据链、识别证据缺口、提示来源边界" },
-    "asset-agent": { label: "Asset Agent", role: "沉淀可复用教学资产、任务单、评价表、案例包、反思材料" },
-  };
-
   const defaultSteps = [
     [1, "pre", "教学情境与课程任务分析"],
     [2, "pre", "学情分析与学习起点诊断"],
@@ -42,7 +34,6 @@
     phase,
     title,
     status: "pending",
-    ownerAgent: inferStepAgent(stepNo),
   }));
 
   function executeTeachingAction(action) {
@@ -106,7 +97,6 @@
     renderCurrentStepDetail(null);
     resetReviewPanels();
     renderArtifactOutput();
-    updateRuntimeOverview();
     const eventLog = byId("agent-message-panel");
     if (eventLog) eventLog.innerHTML = "<p>运行事件会记录在这里，主判断以画布和审校面板为准。</p>";
   }
@@ -120,7 +110,6 @@
     setAgentStatus("practice-agent", flow.currentStep ? "running" : "done", "已写入主画布。");
     setPageStatus("running", "推进中", "Practice Agent 已生成教学实践流程，正在等待后续校验与沉淀。");
     renderArtifactOutput();
-    updateRuntimeOverview();
   }
 
   function renderPracticeStepUpdate(payload) {
@@ -139,7 +128,6 @@
     renderTeacherInterventions(flow);
     setAgentStatus("practice-agent", "running", "已更新当前节点。");
     renderArtifactOutput();
-    updateRuntimeOverview();
   }
 
   function renderRubricPreview(payload) {
@@ -155,7 +143,6 @@
     ].join("");
     setAgentStatus("rubric-agent", "done", "评价量规已生成。");
     renderArtifactOutput();
-    updateRuntimeOverview();
   }
 
   function renderEvidenceGap(payload) {
@@ -169,7 +156,6 @@
     panel.querySelector(".review-card-list")?.insertAdjacentHTML("afterbegin", renderEvidenceGapCard(payload));
     setAgentStatus("evidence-agent", "blocked", "存在待补充证据。");
     renderArtifactOutput();
-    updateRuntimeOverview();
   }
 
   function renderEvidenceAttachment(payload) {
@@ -178,7 +164,6 @@
     window.AgentRuntimeStore?.mergeArtifacts({ evidenceLedger: evidence });
     setAgentStatus("evidence-agent", "done", "证据链已记录。");
     renderArtifactOutput();
-    updateRuntimeOverview();
   }
 
   function renderAssetNode(payload) {
@@ -192,7 +177,6 @@
     renderAssetSink(nextGraph);
     setAgentStatus("asset-agent", "done", "资产节点已沉淀。");
     renderArtifactOutput();
-    updateRuntimeOverview();
   }
 
   function renderAssetEdge(payload) {
@@ -206,11 +190,9 @@
     renderAssetSink(nextGraph);
     setAgentStatus("asset-agent", "done", "资产关系已记录。");
     renderArtifactOutput();
-    updateRuntimeOverview();
   }
 
   function renderTeacherQuestion(payload) {
-    window.AgentRuntimeStore?.mergeArtifacts({ teacherQuestion: payload });
     const panel = byId("teacher-confirmation-panel");
     if (!panel) return;
     panel.innerHTML = [
@@ -219,7 +201,6 @@
         payload.question || payload.prompt || payload.description || "请确认是否继续推进当前阶段。",
       )}</p><div class="runtime-question-actions"><button type="button">确认继续</button><button type="button">稍后处理</button></div></article>`,
     ].join("");
-    updateRuntimeOverview();
   }
 
   function renderCompletedStage(payload) {
@@ -231,7 +212,6 @@
     if (phase) {
       document.querySelector(`[data-phase="${phase}"]`)?.setAttribute("data-phase-status", "done");
     }
-    updateRuntimeOverview();
   }
 
   function renderCourseProfile(payload) {
@@ -239,7 +219,6 @@
     setText("practice-course-name", context.courseName || context.course || "管理学原理");
     setText("practice-learner-group", context.program || context.learnerGroup || context.className || "药事管理本科生");
     setText("practice-source-boundary", context.sourceBoundary || "等待教师上传材料 / 使用当前课程知识库");
-    updateRuntimeOverview();
   }
 
   function normalizePracticeFlow(payload) {
@@ -271,14 +250,6 @@
   function normalizeStep(step, index = 0) {
     const stepNo = getStepNo(step.stepNo || step.stepId || step.id) || index + 1;
     const status = normalizeStatus(step.status);
-    const ownerAgent = normalizeAgentId(step.ownerAgent || step.agentId || step.responsibleAgent) || inferStepAgent(stepNo);
-    const requiresTeacherConfirmation = Boolean(
-      step.requiresTeacherConfirmation ||
-        step.needsTeacherConfirmation ||
-        step.teacherConfirmationRequired ||
-        ["needs_review", "blocked"].includes(status) ||
-        step.reviewQuestion,
-    );
     return {
       ...step,
       id: step.id || `step-${String(stepNo).padStart(2, "0")}`,
@@ -286,11 +257,6 @@
       phase: normalizePhase(step.phase) || phaseForStepNo(stepNo),
       title: step.title || step.name || defaultSteps[stepNo - 1]?.title || `教学实践步骤 ${stepNo}`,
       status,
-      ownerAgent,
-      nextAgent: normalizeAgentId(step.nextAgent || step.nextAgentId || step.nextDispatch),
-      requiresTeacherConfirmation,
-      evidenceStatus: step.evidenceStatus || step.evidenceState || "",
-      artifactTypes: Array.isArray(step.artifactTypes) ? step.artifactTypes : Array.isArray(step.artifacts) ? step.artifacts : [],
       teachingIntent: step.teachingIntent || step.intent || "",
       teacherAction: step.teacherAction || step.teacherActions || "",
       studentActivity: step.studentActivity || "",
@@ -309,13 +275,10 @@
   }
 
   function renderStageNode(step) {
-    return `<article class="practice-stage-node" data-stage-node="${escapeHtml(step.stepNo)}" data-node-status="${escapeHtml(step.status)}" data-responsible-agent="${escapeHtml(step.ownerAgent || inferStepAgent(step.stepNo))}">
+    return `<article class="practice-stage-node" data-stage-node="${escapeHtml(step.stepNo)}" data-node-status="${escapeHtml(step.status)}">
       <span>STEP ${String(step.stepNo).padStart(2, "0")}</span>
       <strong>${escapeHtml(step.title)}</strong>
-      <div class="stage-node-meta">
-        <small>${escapeHtml(statusLabel(step.status))}</small>
-        <em>${escapeHtml(agentDisplayName(step.ownerAgent || inferStepAgent(step.stepNo)))}</em>
-      </div>
+      <small>${escapeHtml(statusLabel(step.status))}</small>
     </article>`;
   }
 
@@ -327,30 +290,17 @@
       return;
     }
     const description = step.description || step.summary || "Practice Agent 已创建该节点，等待教师结合课程材料复核。";
-    const ownerAgent = step.ownerAgent || inferStepAgent(step.stepNo);
-    const nextAgent = step.nextAgent || inferNextAgentAfterStep(step);
-    const evidenceStatus =
-      step.evidenceStatus ||
-      (arrayOrText(step.evidence) || arrayOrText(step.evidenceRefs)
-        ? "已有证据要求，等待 Evidence Agent 校验证据链。"
-        : "等待 Evidence Agent 校验证据链。");
-    const confirmationStatus = step.requiresTeacherConfirmation
-      ? step.reviewQuestion || "该节点需要教师确认后继续推进。"
-      : "暂无强制接管点，教师可继续观察 Agent 推进结果。";
     const fields = [
-      ["负责 Agent", `${agentDisplayName(ownerAgent)}：${agentRole(ownerAgent)}`],
       ["教学意图", step.teachingIntent || description],
       ["教师动作", step.teacherAction || "组织课堂推进，明确任务边界，并根据学生反馈进行追问。"],
       ["学生活动", step.studentActivity || "围绕管理学原理任务完成讨论、分析、表达或协作产出。"],
       ["学生课堂产出", step.studentOutput || "形成可评价的课堂记录、任务单、展示材料或反思文本。"],
-      ["评价证据", arrayOrText(step.evidence) || arrayOrText(step.evidenceRefs) || evidenceStatus],
-      ["需要教师判断的事项", confirmationStatus],
-      ["Director 下一步", `调度 ${agentDisplayName(nextAgent)}：${agentRole(nextAgent)}`],
+      ["评价证据", arrayOrText(step.evidence) || arrayOrText(step.evidenceRefs) || "等待 Evidence Agent 校验证据链。"],
+      ["需要教师判断的事项", step.reviewQuestion || "暂无强制接管点，教师可继续观察 Agent 推进结果。"],
     ];
     panel.innerHTML = `<div class="current-step-head"><span>${escapeHtml(phaseConfig[step.phase]?.label || "当前阶段")} · STEP ${String(step.stepNo).padStart(2, "0")}</span><h3>${escapeHtml(step.title)}</h3><p>${escapeHtml(description)}</p></div><div class="current-step-detail-grid">${fields
       .map(([label, value]) => `<article><strong>${escapeHtml(label)}</strong><p>${escapeHtml(value)}</p></article>`)
       .join("")}</div>`;
-    updateRuntimeOverview();
   }
 
   function renderTeacherInterventions(flow) {
@@ -365,13 +315,11 @@
     const questions = [...stepQuestions, ...flow.interventions];
     if (!questions.length) {
       panel.innerHTML = `${renderReviewHeading("教师确认", "暂无接管点")}<p class="review-empty-copy">当前流程未要求教师立即判断。</p>`;
-      updateRuntimeOverview();
       return;
     }
     panel.innerHTML = `${renderReviewHeading("教师确认", "待判断事项")}<div class="review-card-list">${questions
       .map((item) => `<article class="review-item-card is-confirmation"><strong>${escapeHtml(item.title || "待确认")}</strong><p>${escapeHtml(item.question || item.description || "请教师确认。")}</p></article>`)
       .join("")}</div>`;
-    updateRuntimeOverview();
   }
 
   function renderAssetSink(graph) {
@@ -430,21 +378,18 @@
       badge.textContent = label || statusLabel(status);
     }
     setText("practice-runtime-status-copy", copy || "");
-    updateRuntimeOverview();
   }
 
   function setAgentStatus(agentId, status, note) {
-    const normalizedAgentId = normalizeAgentId(agentId) || agentId;
-    const card = document.querySelector(`[data-agent-id="${normalizedAgentId}"]`);
+    const card = document.querySelector(`[data-agent-id="${agentId}"]`);
     if (!card) return;
     card.dataset.agentStatus = status;
     const label = card.querySelector("small");
-    if (label) label.textContent = statusLabel(status);
+    if (label) label.textContent = status;
     if (note) {
       const copy = card.querySelector("p");
       if (copy) copy.textContent = note;
     }
-    updateRuntimeOverview();
   }
 
   function appendEventLog(text) {
@@ -452,157 +397,6 @@
     if (!panel || !text) return;
     panel.insertAdjacentHTML("beforeend", `<p>${escapeHtml(text)}</p>`);
     panel.scrollTop = panel.scrollHeight;
-  }
-
-  function updateRuntimeOverview() {
-    const state = window.AgentRuntimeStore?.getState?.() || {};
-    const artifacts = state.artifacts || {};
-    const flow = artifacts.practiceFlow;
-    const currentStep =
-      flow?.currentStep ||
-      flow?.steps?.find((step) => ["running", "needs_review", "blocked"].includes(step.status)) ||
-      readCurrentStepFromDom();
-    const ownerAgent = currentStep?.ownerAgent || normalizeAgentId(state.currentAgent?.id) || "director";
-    const gaps = state.evidenceGaps || [];
-    const evidenceLedger = artifacts.evidenceLedger || [];
-    const confirmationCount = countTeacherConfirmations(flow, artifacts.teacherQuestion);
-    const artifactSummary = summarizeArtifacts(artifacts, gaps);
-    const nextDispatch = inferNextDispatch(state, currentStep);
-
-    setRuntimeText("runtime-current-step", currentStep ? `STEP ${String(currentStep.stepNo).padStart(2, "0")}` : "等待启动");
-    setRuntimeText(
-      "runtime-current-step-note",
-      currentStep ? currentStep.title || "当前节点已进入运行态。" : "Director 尚未开始调度。",
-    );
-    setRuntimeText("runtime-responsible-agent", agentDisplayName(ownerAgent));
-    setRuntimeText("runtime-responsible-agent-note", agentRole(ownerAgent));
-    setRuntimeText("runtime-evidence-gap", gaps.length ? `${gaps.length} 个缺口` : "0 个缺口");
-    setRuntimeText(
-      "runtime-evidence-gap-note",
-      gaps.length
-        ? "Evidence Agent 已标记待补充来源或课堂数据。"
-        : evidenceLedger.length
-        ? `${evidenceLedger.length} 条证据已记录，继续校验来源边界。`
-        : "等待 Evidence Agent 校验来源边界。",
-    );
-    setRuntimeText("runtime-teacher-confirmation", confirmationCount ? `${confirmationCount} 个接管点` : "暂无接管点");
-    setRuntimeText(
-      "runtime-teacher-confirmation-note",
-      confirmationCount ? "请查看右侧教师确认面板。" : "如需人工判断，会进入右侧审校面板。",
-    );
-    setRuntimeText("runtime-artifacts", `${artifactSummary.count} 类产物`);
-    setRuntimeText("runtime-artifacts-note", artifactSummary.note);
-    setRuntimeText("runtime-next-dispatch", agentDisplayName(nextDispatch.agentId));
-    setRuntimeText("runtime-next-dispatch-note", nextDispatch.note);
-
-    setMetricState("evidence-gap", gaps.length ? "warning" : "ok");
-    setMetricState("teacher-confirmation", confirmationCount ? "warning" : "ok");
-    setMetricState("artifacts", artifactSummary.count ? "ok" : "idle");
-    setMetricState("next-dispatch", nextDispatch.agentId === "director" ? "idle" : "running");
-  }
-
-  function countTeacherConfirmations(flow, teacherQuestion) {
-    const flowQuestions = flow?.steps?.filter((step) => step.reviewQuestion || step.requiresTeacherConfirmation || ["needs_review", "blocked"].includes(step.status)).length || 0;
-    const interventions = Array.isArray(flow?.interventions) ? flow.interventions.length : 0;
-    return flowQuestions + interventions + (teacherQuestion ? 1 : 0);
-  }
-
-  function readCurrentStepFromDom() {
-    const node = document.querySelector(
-      '.practice-stage-node[data-node-status="running"], .practice-stage-node[data-node-status="needs_review"], .practice-stage-node[data-node-status="blocked"]',
-    );
-    if (!node) return null;
-    const stepNo = getStepNo(node.dataset.stageNode);
-    return {
-      stepNo,
-      status: node.dataset.nodeStatus || "running",
-      title: node.querySelector("strong")?.textContent?.trim() || defaultSteps[stepNo - 1]?.title || `教学实践步骤 ${stepNo}`,
-      ownerAgent: normalizeAgentId(node.dataset.responsibleAgent) || inferStepAgent(stepNo),
-    };
-  }
-
-  function summarizeArtifacts(artifacts, gaps) {
-    const formed = [];
-    if (artifacts.practiceFlow) formed.push("教学实践方案");
-    if (artifacts.rubric) formed.push("评价量规");
-    if ((artifacts.evidenceLedger || []).length || gaps.length) formed.push("证据链记录");
-    if ((artifacts.assetGraph?.nodes || []).length) formed.push("可复用资产建议");
-    return {
-      count: formed.length,
-      note: formed.length ? formed.join("、") : "实践方案、量规、证据链和资产建议将逐步形成。",
-    };
-  }
-
-  function inferNextDispatch(state, currentStep) {
-    const artifacts = state.artifacts || {};
-    if (state.runningStatus === "error" || state.runningStatus === "blocked") {
-      return { agentId: "director", note: "运行受阻，等待教师处理后再继续调度。" };
-    }
-    if (currentStep?.requiresTeacherConfirmation || ["needs_review", "blocked"].includes(currentStep?.status)) {
-      return { agentId: "director", note: "当前节点需要教师确认，确认后再调度下一位 Agent。" };
-    }
-    if (currentStep?.nextAgent) {
-      return { agentId: currentStep.nextAgent, note: `当前节点建议下一步调度 ${agentDisplayName(currentStep.nextAgent)}。` };
-    }
-    if (!artifacts.practiceFlow) {
-      return { agentId: "practice-agent", note: "先生成 20 环节教学实践流程与当前节点。" };
-    }
-    if (!artifacts.rubric) {
-      return { agentId: "rubric-agent", note: "补齐评价维度、评分量规和达成度判断。" };
-    }
-    if (!(artifacts.evidenceLedger || []).length || (state.evidenceGaps || []).length) {
-      return { agentId: "evidence-agent", note: "校验方案依据、证据链与来源边界。" };
-    }
-    if (!(artifacts.assetGraph?.nodes || []).length) {
-      return { agentId: "asset-agent", note: "沉淀任务单、评价表、案例包与反思材料。" };
-    }
-    return { agentId: "director", note: "本轮产物已形成，等待教师审校后决定是否继续。" };
-  }
-
-  function inferNextAgentAfterStep(step) {
-    if (!step) return "practice-agent";
-    if (["needs_review", "blocked"].includes(step.status) || step.requiresTeacherConfirmation) return "director";
-    if ([8, 15, 17, 18].includes(Number(step.stepNo))) return "rubric-agent";
-    if ([5, 7, 12, 14].includes(Number(step.stepNo))) return "evidence-agent";
-    if (Number(step.stepNo) >= 19) return "asset-agent";
-    return "practice-agent";
-  }
-
-  function inferStepAgent(stepNo) {
-    const id = Number(stepNo);
-    if ([8, 15, 17].includes(id)) return "rubric-agent";
-    if ([5, 7, 12, 18].includes(id)) return "evidence-agent";
-    if ([19, 20].includes(id)) return "asset-agent";
-    return "practice-agent";
-  }
-
-  function normalizeAgentId(value) {
-    const text = String(value || "").toLowerCase();
-    if (!text) return "";
-    if (text.includes("rubric") || text.includes("量规") || text.includes("评价")) return "rubric-agent";
-    if (text.includes("evidence") || text.includes("证据")) return "evidence-agent";
-    if (text.includes("asset") || text.includes("资产")) return "asset-agent";
-    if (text.includes("practice") || text.includes("实践")) return "practice-agent";
-    if (text.includes("director") || text.includes("context") || text.includes("diagnosis") || text.includes("navigation") || text.includes("导航")) return "director";
-    return agentConfig[text] ? text : "";
-  }
-
-  function agentDisplayName(agentId) {
-    return agentConfig[normalizeAgentId(agentId) || agentId]?.label || "Director";
-  }
-
-  function agentRole(agentId) {
-    return agentConfig[normalizeAgentId(agentId) || agentId]?.role || agentConfig.director.role;
-  }
-
-  function setRuntimeText(id, value) {
-    const node = byId(id);
-    if (node) node.textContent = String(value ?? "");
-  }
-
-  function setMetricState(metric, state) {
-    const node = document.querySelector(`[data-runtime-metric="${metric}"]`);
-    if (node) node.dataset.metricState = state;
   }
 
   function normalizeRubricDimensions(payload) {
@@ -660,14 +454,14 @@
     return (
       {
         idle: "待启动",
-        running: "推进中",
-        pending: "待运行",
-        done: "已完成",
-        needs_review: "待教师确认",
-        blocked: "证据受阻",
+        running: "running",
+        pending: "pending",
+        done: "done",
+        needs_review: "needs review",
+        blocked: "blocked",
         ready_for_review: "待审校",
-        error: "运行受阻",
-        waiting: "等待",
+        error: "blocked",
+        waiting: "waiting",
       }[status] || status
     );
   }
@@ -713,6 +507,5 @@
     resetWorkbench,
     setAgentStatus,
     setPageStatus,
-    updateRuntimeOverview,
   };
 })();

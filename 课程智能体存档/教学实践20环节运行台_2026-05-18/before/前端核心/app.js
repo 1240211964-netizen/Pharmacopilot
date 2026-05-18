@@ -1880,7 +1880,7 @@ function enhancePracticeScoredDimensions(step, dimensions, selectedOption, impor
     }
     if (/真实|情境|案例|药事|证据|问题/.test(text)) {
       if (importedContext.resourceProfile.caseCount > 0) {
-        delta += has(["案例", "课程案例材料", "案例问题逻辑", "案例分析任务"]) ? 0.32 : 0.08;
+        delta += has(["案例", "SWOT 课堂案例材料", "案例问题逻辑", "案例分析任务"]) ? 0.32 : 0.08;
         reasons.push("课程资源中已有案例材料，提升真实情境适配度。");
       }
       if (importedContext.resourceProfile.missingResources.includes("课堂案例证据表") && has(["项目", "调研", "数据"])) {
@@ -6494,19 +6494,19 @@ function makePracticeCourseData(teacherName = "示例教师") {
       id: "pharmacy-management-2026",
       title: "管理学原理 · 2026 春",
       className: "药事管理本科 2024 级",
-      currentTopic: "药品政策与机构管理案例分析",
+      currentTopic: "SWOT 分析",
       status: "可进入实践",
       teacherProfile: commonTeacher,
       courseProfile: {
         courseName: "管理学原理",
         semester: "2026 春",
-        chapter: "组织决策与政策情境分析",
-        lessonTitle: "药品政策与机构管理课堂案例分析",
+        chapter: "战略分析工具应用",
+        lessonTitle: "管理学原理中的 SWOT 分析：药事管理本科课堂案例",
         lessonLength: "1次课 / 2学时",
-        syllabusKeywords: ["管理学原理", "药品政策", "机构管理", "组织决策", "证据判断", "合规监管"],
+        syllabusKeywords: ["管理学原理", "SWOT 分析", "药事管理", "组织决策", "证据判断", "合规监管"],
         courseObjectives: [
-          "理解管理学工具在药事管理组织决策中的应用边界。",
-          "能够基于真实业务场景证据完成问题识别与解释。",
+          "理解 SWOT 分析在管理学组织决策中的应用边界。",
+          "能够基于真实业务场景证据完成 SWOT 分类与解释。",
           "能够提出兼顾服务价值、合规要求和运营可行性的优先决策建议。",
         ],
       },
@@ -6518,10 +6518,11 @@ function makePracticeCourseData(teacherName = "示例教师") {
         motivationLevel: "中等，需要情境激发",
         classParticipation: "课堂参与中等",
         commonDifficulties: [
-          "容易混淆事实、判断与建议",
-          "管理建议缺少证据支撑",
+          "容易混淆内部条件与外部环境",
+          "把机会写成主观愿望",
+          "决策建议缺少证据支撑",
           "对医保支付和合规边界理解不足",
-          "案例要素归类边界不清",
+          "SWOT 分类边界不清",
         ],
       },
       resourceProfile: {
@@ -6530,14 +6531,14 @@ function makePracticeCourseData(teacherName = "示例教师") {
         videoCount: 1,
         caseCount: 2,
         questionBankCount: 18,
-        uploadedMaterials: ["管理学工具导入课件", "药事管理课堂案例", "政策材料摘要"],
+        uploadedMaterials: ["SWOT 分析导入课件", "药事管理课堂案例", "政策材料摘要"],
         missingResources: ["课堂案例证据表"],
       },
       assignmentProfile: {
         recentAssignments: ["管理工具概念测验", "门店经营案例短评"],
         submissionRate: 82,
         averageScore: 76,
-        weakPoints: ["案例要素归类边界不清", "药学证据引用不足", "决策建议可行性弱", "证据引用不足"],
+        weakPoints: ["SWOT 分类边界不清", "药学证据引用不足", "决策建议可行性弱", "证据引用不足"],
         rubricHistory: ["案例分析评价量规", "课堂展示评价量规"],
       },
       learningAnalytics: {
@@ -6547,8 +6548,8 @@ function makePracticeCourseData(teacherName = "示例教师") {
         activeStudentsRatio: 61,
         atRiskStudentsRatio: 12,
         commonMisconceptions: [
-          "把现象描述等同于管理判断",
-          "把政策支持简单写成可执行方案",
+          "把药师能力不足误判为外部威胁",
+          "把政策支持简单写成优势",
           "只列现象，不说明证据来源",
         ],
       },
@@ -7492,7 +7493,7 @@ function calculatePracticeRecommendations(step, importedContext, previousChoices
     add(["讨论秩序管理", "小组协作完成任务", "教师反馈机制", "即时口头反馈"], 14, "讨论参与率低于 60%，需要更明确的小组协作、课堂秩序和教师即时反馈。");
   }
   if (importedContext.resourceProfile.caseCount > 0) {
-    add(["案例教学", "案例问题逻辑", "课程案例材料", "案例分析任务"], 16, "课程资源中已有案例材料，适合用案例驱动真实药事管理判断。");
+    add(["案例教学", "案例问题逻辑", "SWOT 课堂案例材料", "案例分析任务"], 16, "课程资源中已有案例材料，适合用案例驱动真实药事管理判断。");
   }
   if (weakText.includes("证据引用不足")) {
     add(["证据模板与记录表", "学习过程文档", "分析深度标准", "过程性评价"], 16, "既往作业显示证据引用不足，应强化过程文档、证据表和分析深度标准。");
@@ -7506,7 +7507,7 @@ function calculatePracticeRecommendations(step, importedContext, previousChoices
     add(["过程指导", "教师反馈机制", "风险预案", "即时口头反馈", "分层学习材料"], 10, "高风险学生比例和常见误区提示教师应增强过程反馈和风险控制。");
   }
   if (previousChoices["5"]?.primary === "B") {
-    add(["案例问题逻辑", "案例分析任务", "课程案例材料"], 6, "前序教学方法选择了案例教学，后续内容、资源和任务应保持案例主线。");
+    add(["案例问题逻辑", "案例分析任务", "SWOT 课堂案例材料"], 6, "前序教学方法选择了案例教学，后续内容、资源和任务应保持案例主线。");
   }
   Object.values(result).forEach((item) => {
     item.score = clamp(item.score, 40, 98);
@@ -7584,7 +7585,7 @@ function generatePracticeDecisionScore(step, primaryLabel, secondaryLabels = [],
     scores.engagement += has(["小组", "讨论", "反馈"]) ? 0.35 : -0.14;
   }
   if (importedContext.resourceProfile.caseCount > 0) {
-    scores.authenticity += has(["案例", "课程案例材料", "案例问题逻辑"]) ? 0.58 : 0.18;
+    scores.authenticity += has(["案例", "SWOT 课堂案例材料", "案例问题逻辑"]) ? 0.58 : 0.18;
   }
   if (weakText.includes("证据引用不足") || learnerText.includes("证据")) {
     scores.assessment += has(["证据", "过程性评价", "学习过程文档", "任务成果评价", "分析深度标准", "矩阵成果评价"]) ? 0.62 : -0.22;

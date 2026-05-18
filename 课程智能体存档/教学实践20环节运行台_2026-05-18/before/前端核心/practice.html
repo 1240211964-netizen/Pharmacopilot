@@ -6,7 +6,7 @@
     <title>Pharmacopilot | 教学实践</title>
     <meta
       name="description"
-      content="教学实践页聚焦 20 环节状态推进、专业 Agent 调度、证据缺口、教师确认与产物沉淀。"
+      content="教学实践页聚焦课堂执行中的当前任务、证据校验与教师确认事项。"
     />
     <link rel="icon" href="data:," />
     <link rel="stylesheet" href="./styles.css" />
@@ -52,14 +52,14 @@
     <main>
       <section class="practice-workbench-hero" aria-labelledby="practice-workbench-title" data-runtime-state="idle">
         <div class="practice-workbench-hero-copy">
-          <p class="practice-kicker">教学实践 · 少数专业 Agent / 20 个状态节点</p>
-          <h1 id="practice-workbench-title">20 环节教学实践运行台</h1>
-          <p class="practice-workbench-subtitle">Copilot 正在推进本次课堂实践。20 个教学环节只表示流程状态，实际由 Director 调度 Practice、Rubric、Evidence、Asset 等专业 Agent 协同完成。</p>
+          <p class="practice-kicker">教学实践 · 多智能体运行时</p>
+          <h1 id="practice-workbench-title">教学实践工作台</h1>
+          <p class="practice-workbench-subtitle">Copilot 会调度多智能体生成、校验并沉淀课堂实践方案。</p>
         </div>
         <div class="practice-workbench-hero-card" aria-label="当前实践上下文">
           <div class="practice-runtime-state-line">
             <span id="practice-runtime-status" data-runtime-status="idle">待启动</span>
-            <p id="practice-runtime-status-copy">Copilot 尚未运行。启动后 Director 将根据当前 STEP、证据缺口和教师确认点决定下一位专业 Agent。</p>
+            <p id="practice-runtime-status-copy">Copilot 尚未运行。启动后 Director 将调度各专业 Agent 推进课堂实践方案。</p>
           </div>
           <dl class="practice-context-grid">
             <div><dt>课程</dt><dd id="practice-course-name">管理学原理</dd></div>
@@ -70,45 +70,11 @@
         </div>
       </section>
 
-      <section class="practice-runtime-overview" aria-label="教学实践运行态摘要">
-        <article class="runtime-overview-card" data-runtime-metric="current-step">
-          <span>当前 STEP</span>
-          <strong id="runtime-current-step">等待启动</strong>
-          <p id="runtime-current-step-note">Director 尚未开始调度。</p>
-        </article>
-        <article class="runtime-overview-card" data-runtime-metric="responsible-agent">
-          <span>负责 Agent</span>
-          <strong id="runtime-responsible-agent">Director</strong>
-          <p id="runtime-responsible-agent-note">负责流程推进与质量门控。</p>
-        </article>
-        <article class="runtime-overview-card" data-runtime-metric="evidence-gap">
-          <span>证据缺口</span>
-          <strong id="runtime-evidence-gap">0 个缺口</strong>
-          <p id="runtime-evidence-gap-note">等待 Evidence Agent 校验来源边界。</p>
-        </article>
-        <article class="runtime-overview-card" data-runtime-metric="teacher-confirmation">
-          <span>教师确认</span>
-          <strong id="runtime-teacher-confirmation">暂无接管点</strong>
-          <p id="runtime-teacher-confirmation-note">如需人工判断，会进入右侧审校面板。</p>
-        </article>
-        <article class="runtime-overview-card" data-runtime-metric="artifacts">
-          <span>已形成产物</span>
-          <strong id="runtime-artifacts">0 类产物</strong>
-          <p id="runtime-artifacts-note">实践方案、量规、证据链和资产建议将逐步形成。</p>
-        </article>
-        <article class="runtime-overview-card" data-runtime-metric="next-dispatch">
-          <span>Director 下一步</span>
-          <strong id="runtime-next-dispatch">Practice Agent</strong>
-          <p id="runtime-next-dispatch-note">启动后先生成教学实践流程。</p>
-        </article>
-      </section>
-
       <section class="practice-agent-workbench" aria-label="教学实践 Copilot 多智能体工作台">
         <aside id="agent-orchestration-panel" class="agent-orchestration-panel" aria-label="Agent 调度状态">
           <div class="workbench-panel-heading">
-            <span>专业 Agent 池</span>
-            <h2>Director 调度队列</h2>
-            <p>这里只显示底层专业 Agent；20 个教学环节在中间画布中作为状态节点呈现。</p>
+            <span>调度队列</span>
+            <h2>智能体调度</h2>
           </div>
           <div class="agent-card-list">
             <article class="agent-orchestration-card" data-agent-id="director" data-agent-status="waiting">
@@ -144,9 +110,9 @@
 
         <section id="practice-stage-canvas" class="practice-stage-canvas" aria-labelledby="practice-stage-canvas-title">
           <div class="workbench-panel-heading canvas-heading">
-            <span>20 环节状态画布</span>
-            <h2 id="practice-stage-canvas-title">教学实践状态轨道</h2>
-            <p>每个 STEP 是教学流程状态，不是独立 Agent。启动后，当前节点会显示负责 Agent、证据要求、教师确认点和后续调度。</p>
+            <span>主画布</span>
+            <h2 id="practice-stage-canvas-title">课堂实践三阶段轨道</h2>
+            <p>初始节点均为待运行。启动后，Practice Action 会写入当前节点、教师接管点和证据要求。</p>
           </div>
           <div class="practice-phase-tracks" aria-label="教学实践三阶段轨道">
             <section class="practice-phase-track" data-phase="pre" aria-labelledby="phase-pre-title">
@@ -189,7 +155,7 @@
             <div class="empty-state-block">
               <span>当前节点</span>
               <h3>等待 Copilot 启动</h3>
-              <p>启动后，这里会展开当前教学节点的负责 Agent、教学意图、教师动作、学生活动、课堂产出、评价证据、教师判断事项和 Director 下一步调度。</p>
+              <p>启动后，这里会展开当前教学节点的教学意图、教师动作、学生活动、课堂产出、评价证据和教师判断事项。</p>
             </div>
           </article>
         </section>

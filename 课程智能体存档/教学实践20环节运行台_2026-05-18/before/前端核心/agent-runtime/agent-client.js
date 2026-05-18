@@ -64,7 +64,6 @@
         setWorkbenchStatus("running", "运行中", event.reason || "Director 正在分析运行状态。");
         window.AgentActionEngine?.setAgentStatus("director", "running", event.reason || "正在判断下一位 Agent。");
         appendEventLog(`Director：${event.reason || "正在判断下一位 Agent。"}`);
-        window.AgentActionEngine?.updateRuntimeOverview?.();
         break;
       case Events.AGENT_START:
         window.AgentRuntimeStore?.setCurrentAgent({
@@ -76,7 +75,6 @@
         window.AgentActionEngine?.setAgentStatus(event.agentId, "running", event.role || "正在执行。");
         setWorkbenchStatus("running", "运行中", `${event.agentName} 正在推进任务。`);
         appendEventLog(`${event.agentName} 开始执行。`);
-        window.AgentActionEngine?.updateRuntimeOverview?.();
         break;
       case Events.TEXT_DELTA:
         appendEventLog(event.delta || "");
@@ -87,16 +85,11 @@
       case Events.AGENT_END:
         window.AgentActionEngine?.setAgentStatus(event.agentId, "done", "本轮输出已写入工作台。");
         appendEventLog(`${event.summary?.agentName || event.agentId} 完成本轮输出。`);
-        window.AgentActionEngine?.updateRuntimeOverview?.();
         break;
       case Events.SESSION_STATE:
-        var existingState = window.AgentRuntimeStore?.getState() || {};
         window.AgentRuntimeStore?.setState({
-          artifacts: {
-            ...(existingState.artifacts || {}),
-            ...(event.artifacts || {}),
-          },
-          evidenceGaps: event.storeState?.evidenceGaps || existingState.evidenceGaps || [],
+          artifacts: event.artifacts || {},
+          evidenceGaps: event.storeState?.evidenceGaps || [],
           directorState: event.directorState || {},
           runningStatus: window.AgentRuntimeStore?.getState().runningStatus,
         });
@@ -104,13 +97,11 @@
         if (event.maxTurnsReached) {
           setWorkbenchStatus("ready_for_review", "待审校", "已达到本轮最多 3 个 Agent turn，请先审校当前结果。");
         }
-        window.AgentActionEngine?.updateRuntimeOverview?.();
         break;
       case Events.ERROR:
         setWorkbenchStatus("error", "运行受阻", event.message || "Agent 运行失败。");
         window.AgentActionEngine?.setAgentStatus(window.AgentRuntimeStore?.getState()?.currentAgent?.id || "director", "blocked", event.message || "Agent 运行失败。");
         appendEventLog(event.message || "Agent 运行失败。");
-        window.AgentActionEngine?.updateRuntimeOverview?.();
         break;
     }
   }
@@ -120,10 +111,10 @@
       userId: "local-teacher",
       courseId: "management-principles-pharmacy",
       courseName: "管理学原理",
-      lessonTitle: "药品政策与机构管理课堂案例分析",
+      lessonTitle: "药事管理本科课堂教学实践",
       className: "药事管理本科教学班",
       program: "药事管理本科生",
-      learnerProfile: "已完成管理学基础概念预习，需要在药事管理场景中完成案例分析、证据化表达和管理建议论证。",
+      learnerProfile: "已完成管理学基础概念预习，需要在药事管理场景中完成概念迁移和证据化表达。",
       sourceBoundary: "等待教师上传材料 / 使用当前课程知识库",
     };
     return {
@@ -133,10 +124,8 @@
       prompt: [
         "请启动 PharmacoPilot 教学实践 Copilot。",
         "请输出可被前端 Teaching Action Engine 渲染的 JSON actions。",
-        "不要把 20 个教学环节生成 20 个真实 Agent；20 个环节只是教学实践流程中的状态节点。",
-        "底层只使用 Director、Practice Agent、Rubric Agent、Evidence Agent、Asset Agent 这些专业 Agent 职责。",
-        "practice.create_flow 的 steps 请尽量包含 phase、stepNo、title、status、ownerAgent、teachingIntent、teacherAction、studentActivity、studentOutput、evidence、reviewQuestion、nextAgent。",
-        "不要把教学导航中的 SWOT 示例知识点作为教学实践默认主题；教学实践应围绕管理学原理在药事管理本科课堂中的实施。",
+        "practice.create_flow 的 steps 请尽量包含 phase、stepNo、title、status、teachingIntent、teacherAction、studentActivity、studentOutput、evidence、reviewQuestion。",
+        "不要把教学导航中的示例知识点作为教学实践默认主题；教学实践应围绕管理学原理在药事管理本科课堂中的实施。",
       ].join("\\n"),
       courseContext,
       storeState: {
