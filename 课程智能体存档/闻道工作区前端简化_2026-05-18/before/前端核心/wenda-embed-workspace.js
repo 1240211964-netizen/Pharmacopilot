@@ -17275,44 +17275,67 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.WendaEmbedWorkspace = WendaEmbedWorkspace;
 const react_1 = __importStar(require("react"));
 const wenda_1 = require("../../lib/wenda");
+const DRAFT_STORAGE_KEY = "pharmacopilot:wenda-design-draft";
+function parseIdInput(value) {
+    return value
+        .split(/[\n,，、\s]+/)
+        .map((item) => item.trim())
+        .filter(Boolean);
+}
 function buildWorkspaceUrl(values) {
-    const searchText = values.searchText.trim();
-    if (!searchText)
-        throw new Error("请先填写检索问题。");
     return (0, wenda_1.buildWendaUrl)({
         domain: values.domain,
         route: "history",
         agentId: wenda_1.WENDA_DEFAULT_AGENT_ID,
         modelId: wenda_1.WENDA_DEFAULT_MODEL_ID,
-        searchText,
+        searchText: values.searchText,
         hd: wenda_1.WENDA_DEFAULT_HD,
         internetSearch: values.internetSearch,
-        datasetIds: [],
-        imageIds: [],
-        fileIds: [],
+        datasetIds: parseIdInput(values.datasetText),
+        imageIds: parseIdInput(values.imageText).slice(0, 1),
+        fileIds: parseIdInput(values.fileText).slice(0, 1),
+        exploreId: values.exploreId,
     });
 }
 function WendaEmbedWorkspace() {
-    const [domain] = (0, react_1.useState)(() => (0, wenda_1.getRuntimeWendaDomain)());
+    const [domain, setDomain] = (0, react_1.useState)((0, wenda_1.getRuntimeWendaDomain)());
     const [searchText, setSearchText] = (0, react_1.useState)(wenda_1.WENDA_DEFAULT_SEARCH_TEXT);
     const [internetSearch, setInternetSearch] = (0, react_1.useState)(false);
+    const [datasetText, setDatasetText] = (0, react_1.useState)("");
+    const [imageText, setImageText] = (0, react_1.useState)("");
+    const [fileText, setFileText] = (0, react_1.useState)("");
+    const [exploreId, setExploreId] = (0, react_1.useState)("");
+    const [draftText, setDraftText] = (0, react_1.useState)("");
+    const [savedAt, setSavedAt] = (0, react_1.useState)("");
     const [frameVersion, setFrameVersion] = (0, react_1.useState)(0);
     const [error, setError] = (0, react_1.useState)("");
     const [embedUrl, setEmbedUrl] = (0, react_1.useState)(() => {
         try {
             return buildWorkspaceUrl({
-                domain,
+                domain: (0, wenda_1.getRuntimeWendaDomain)(),
                 searchText: wenda_1.WENDA_DEFAULT_SEARCH_TEXT,
                 internetSearch: false,
+                datasetText: "",
+                imageText: "",
+                fileText: "",
+                exploreId: "",
             });
         }
         catch {
             return "";
         }
     });
+    const previewUrl = (0, react_1.useMemo)(() => {
+        try {
+            return buildWorkspaceUrl({ domain, searchText, internetSearch, datasetText, imageText, fileText, exploreId });
+        }
+        catch {
+            return "";
+        }
+    }, [datasetText, domain, exploreId, fileText, imageText, internetSearch, searchText]);
     function refreshFrame() {
         try {
-            const nextUrl = buildWorkspaceUrl({ domain, searchText, internetSearch });
+            const nextUrl = buildWorkspaceUrl({ domain, searchText, internetSearch, datasetText, imageText, fileText, exploreId });
             setEmbedUrl(nextUrl);
             setFrameVersion((value) => value + 1);
             setError("");
@@ -17321,34 +17344,78 @@ function WendaEmbedWorkspace() {
             setError(nextError instanceof Error ? nextError.message : "闻道链接生成失败。");
         }
     }
+    function saveDraft() {
+        const payload = {
+            source: "wenda-open-access",
+            savedAt: new Date().toISOString(),
+            embedUrl,
+            content: draftText,
+        };
+        window.localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(payload));
+        console.log("Wenda teaching design draft saved", payload);
+        setSavedAt(new Date(payload.savedAt).toLocaleString("zh-CN"));
+    }
     return (react_1.default.createElement("section", { className: "wenda-embed-workspace", "aria-labelledby": "wenda-embed-title" },
         react_1.default.createElement("div", { className: "wenda-embed-head" },
             react_1.default.createElement("div", null,
-                react_1.default.createElement("p", { className: "eyebrow" }, "\u5916\u90E8\u5B66\u672F\u670D\u52A1"),
+                react_1.default.createElement("p", { className: "eyebrow" }, "Wendao academic workspace"),
                 react_1.default.createElement("h2", { id: "wenda-embed-title" }, "\u95FB\u9053\u5B66\u672F\u670D\u52A1\u5E73\u53F0\u5185\u5D4C\u5DE5\u4F5C\u533A")),
-            react_1.default.createElement("p", null, "\u4EE5\u9875\u9762\u5185\u5D4C\u65B9\u5F0F\u63A5\u5165\u95FB\u9053\u5BF9\u8BDD\u9875\u3002\u6559\u5E08\u53EA\u9700\u8C03\u6574\u95EE\u9898\u5E76\u5237\u65B0\u5BF9\u8BDD\uFF1B\u5982\u679C\u5E73\u53F0\u9650\u5236\u5185\u5D4C\uFF0C\u53EF\u4F7F\u7528\u65B0\u7A97\u53E3\u6253\u5F00\u3002")),
+            react_1.default.createElement("p", null, "\u4EE5\u9875\u9762\u7EA7\u96C6\u6210\u65B9\u5F0F\u63A5\u5165\u95FB\u9053 openAccess \u666E\u901A\u5BF9\u8BDD\u9875\u3002\u5F53\u524D\u4E0D\u8BFB\u53D6 iframe \u5185\u5BB9\uFF0C\u4E5F\u4E0D\u5B9E\u73B0\u4E0A\u4F20\u63A5\u53E3\uFF1B\u6559\u5B66\u7ED3\u679C\u7531\u6559\u5E08\u590D\u5236\u540E\u6C89\u6DC0\u5230\u53F3\u4FA7\u8349\u7A3F\u533A\u3002")),
         react_1.default.createElement("div", { className: "wenda-embed-grid" },
             react_1.default.createElement("aside", { className: "wenda-embed-panel wenda-embed-params", "aria-label": "\u95FB\u9053\u4EFB\u52A1\u53C2\u6570" },
                 react_1.default.createElement("div", { className: "wenda-panel-card" },
                     react_1.default.createElement("span", null, "\u5F53\u524D\u667A\u80FD\u4F53"),
                     react_1.default.createElement("strong", null, "\u95FB\u9053\u533B\u5B66\u5F71\u50CF\u5B66\u667A\u80FD\u4F53"),
-                    react_1.default.createElement("p", null, "\u5DF2\u63A5\u5165\u5B66\u6821\u9ED8\u8BA4\u667A\u80FD\u4F53\u914D\u7F6E\uFF0C\u53EF\u76F4\u63A5\u7528\u4E8E\u8BFE\u5802\u4EFB\u52A1\u8BBE\u8BA1\u3002")),
+                    react_1.default.createElement("p", null,
+                        "Agent ID\uFF1A",
+                        wenda_1.WENDA_DEFAULT_AGENT_ID)),
+                react_1.default.createElement("label", null,
+                    react_1.default.createElement("span", null, "\u673A\u6784\u95FB\u9053\u57DF\u540D"),
+                    react_1.default.createElement("input", { value: domain, onChange: (event) => setDomain(event.target.value), placeholder: "\u7531 VITE_WENDAO_DOMAIN \u6CE8\u5165\uFF0C\u4F8B\u5982 xxx.libsp.net" })),
+                react_1.default.createElement("label", null,
+                    react_1.default.createElement("span", null, "\u6A21\u578B"),
+                    react_1.default.createElement("input", { value: "DeepSeek-R1", readOnly: true })),
                 react_1.default.createElement("label", null,
                     react_1.default.createElement("span", null, "\u68C0\u7D22\u95EE\u9898"),
                     react_1.default.createElement("textarea", { rows: 5, value: searchText, onChange: (event) => setSearchText(event.target.value) })),
                 react_1.default.createElement("label", { className: "wenda-toggle-row" },
                     react_1.default.createElement("input", { type: "checkbox", checked: internetSearch, onChange: (event) => setInternetSearch(event.target.checked) }),
                     react_1.default.createElement("span", null, "\u542F\u7528\u8054\u7F51\u68C0\u7D22")),
+                react_1.default.createElement("label", null,
+                    react_1.default.createElement("span", null, "\u77E5\u8BC6\u5E93 ID"),
+                    react_1.default.createElement("textarea", { rows: 3, value: datasetText, onChange: (event) => setDatasetText(event.target.value), placeholder: "\u6BCF\u884C\u4E00\u4E2A ID\uFF0C\u751F\u6210 datasetList JSON \u5B57\u7B26\u4E32" })),
+                react_1.default.createElement("div", { className: "wenda-id-grid" },
+                    react_1.default.createElement("label", null,
+                        react_1.default.createElement("span", null, "\u56FE\u7247 ID"),
+                        react_1.default.createElement("input", { value: imageText, onChange: (event) => setImageText(event.target.value), placeholder: "\u6700\u591A 1 \u4E2A" })),
+                    react_1.default.createElement("label", null,
+                        react_1.default.createElement("span", null, "\u6587\u4EF6 ID"),
+                        react_1.default.createElement("input", { value: fileText, onChange: (event) => setFileText(event.target.value), placeholder: "\u6700\u591A 1 \u4E2A" }))),
+                react_1.default.createElement("p", { className: "wenda-inline-note" }, "\u56FE\u7247\u548C\u6587\u4EF6\u540C\u65F6\u5B58\u5728\u65F6\uFF0C\u95FB\u9053\u6587\u6863\u8BF4\u660E\u56FE\u7247\u4F18\u5148\u7EA7\u9AD8\u4E8E\u6587\u4EF6\uFF1B\u5F53\u524D\u4EC5\u4F20\u5165\u5404 1 \u4E2A\u5DF2\u6709\u8D44\u6E90 ID\u3002"),
+                react_1.default.createElement("label", null,
+                    react_1.default.createElement("span", null, "Explore ID"),
+                    react_1.default.createElement("input", { value: exploreId, onChange: (event) => setExploreId(event.target.value), placeholder: "\u53EF\u9009\uFF0C\u6CA1\u6709\u503C\u65F6\u4E0D\u4F20\u5165" })),
                 error ? react_1.default.createElement("p", { className: "wenda-error" }, error) : null,
-                react_1.default.createElement("button", { className: "wenda-primary-action", type: "button", onClick: refreshFrame }, "\u5237\u65B0\u95FB\u9053\u5BF9\u8BDD")),
+                react_1.default.createElement("button", { className: "wenda-primary-action", type: "button", onClick: refreshFrame }, "\u751F\u6210\u5D4C\u5165\u94FE\u63A5 / \u5237\u65B0\u5BF9\u8BDD")),
             react_1.default.createElement("section", { className: "wenda-iframe-workspace", "aria-label": "\u95FB\u9053 iframe \u5DE5\u4F5C\u533A" },
                 react_1.default.createElement("div", { className: "wenda-iframe-toolbar" },
                     react_1.default.createElement("div", null,
-                        react_1.default.createElement("span", null, "\u95FB\u9053\u9875\u9762"),
-                        react_1.default.createElement("strong", null, "\u95FB\u9053\u5BF9\u8BDD\u5DE5\u4F5C\u533A")),
+                        react_1.default.createElement("span", null, "\u666E\u901A\u5BF9\u8BDD\u9875"),
+                        react_1.default.createElement("strong", null, "/api/openAccess/redirect/history")),
                     react_1.default.createElement("a", { className: `wenda-open-link ${embedUrl ? "" : "is-disabled"}`, href: embedUrl || "#", target: "_blank", rel: "noopener noreferrer", "aria-disabled": embedUrl ? "false" : "true" }, "\u5728\u65B0\u7A97\u53E3\u6253\u5F00\u95FB\u9053\u9875\u9762")),
                 react_1.default.createElement("p", { className: "wenda-frame-warning" }, "\u5982\u679C\u9875\u9762\u65E0\u6CD5\u663E\u793A\uFF0C\u53EF\u80FD\u662F\u95FB\u9053\u5E73\u53F0\u9650\u5236\u8DE8\u7AD9\u5185\u5D4C\uFF0C\u8BF7\u70B9\u51FB\u65B0\u7A97\u53E3\u6253\u5F00\u3002"),
-                react_1.default.createElement("iframe", { key: frameVersion, className: "wenda-embed-frame", title: "\u95FB\u9053\u5B66\u672F\u670D\u52A1\u5E73\u53F0", src: embedUrl || "about:blank", loading: "lazy", referrerPolicy: "strict-origin-when-cross-origin", sandbox: "allow-same-origin allow-scripts allow-forms allow-popups allow-downloads" })))));
+                react_1.default.createElement("iframe", { key: frameVersion, className: "wenda-embed-frame", title: "\u95FB\u9053\u5B66\u672F\u670D\u52A1\u5E73\u53F0", src: embedUrl || "about:blank", loading: "lazy", referrerPolicy: "strict-origin-when-cross-origin", sandbox: "allow-same-origin allow-scripts allow-forms allow-popups allow-downloads" }),
+                react_1.default.createElement("div", { className: "wenda-url-preview", title: previewUrl || "待生成" }, previewUrl || "请先配置 VITE_WENDAO_DOMAIN 或在左侧填写机构闻道域名。")),
+            react_1.default.createElement("aside", { className: "wenda-embed-panel wenda-embed-deposit", "aria-label": "PharmacoPilot \u7ED3\u679C\u6C89\u6DC0\u533A" },
+                react_1.default.createElement("div", { className: "wenda-panel-card" },
+                    react_1.default.createElement("span", null, "PharmacoPilot \u7ED3\u679C\u6C89\u6DC0\u533A"),
+                    react_1.default.createElement("strong", null, "\u9875\u9762\u7EA7\u96C6\u6210"),
+                    react_1.default.createElement("p", null, "\u5F53\u524D\u4E3A\u9875\u9762\u7EA7\u96C6\u6210\u3002\u8BF7\u5728\u95FB\u9053\u9875\u9762\u4E2D\u5B8C\u6210\u751F\u6210\u540E\uFF0C\u5C06\u5173\u952E\u7ED3\u679C\u590D\u5236\u5230\u6B64\u5904\u8FDB\u884C\u8BFE\u7A0B\u8BBE\u8BA1\u6C89\u6DC0\u3002")),
+                react_1.default.createElement("label", null,
+                    react_1.default.createElement("span", null, "\u95FB\u9053\u751F\u6210\u7ED3\u679C"),
+                    react_1.default.createElement("textarea", { rows: 16, value: draftText, onChange: (event) => setDraftText(event.target.value), placeholder: "\u5728\u8FD9\u91CC\u7C98\u8D34\u8BFE\u5802\u8BA8\u8BBA\u4EFB\u52A1\u3001\u6D3B\u52A8\u6D41\u7A0B\u3001\u8BC4\u4EF7\u5EFA\u8BAE\u6216\u5176\u4ED6\u6559\u5B66\u8BBE\u8BA1\u7ED3\u679C\u3002" })),
+                react_1.default.createElement("button", { className: "wenda-primary-action", type: "button", onClick: saveDraft }, "\u4FDD\u5B58\u4E3A\u6559\u5B66\u8BBE\u8BA1\u8349\u7A3F"),
+                react_1.default.createElement("p", { className: "wenda-inline-note" }, savedAt ? `已保存到本地浏览器：${savedAt}` : "当前按钮仅保存到前端 localStorage，并在控制台输出草稿对象。")))));
 }
 
 },

@@ -18515,7 +18515,6 @@ body[data-page="assets"] .academic-service-context-list dd {
 body[data-page="assets"] .wenda-embed-root {
   min-width: 0;
   margin-bottom: 24px;
-  scroll-margin-top: 112px;
 }
 
 body[data-page="assets"] .wenda-embed-workspace {
@@ -18559,9 +18558,9 @@ body[data-page="assets"] .wenda-embed-head p:last-child {
 
 body[data-page="assets"] .wenda-embed-grid {
   display: grid;
-  grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
+  grid-template-columns: minmax(260px, 0.68fr) minmax(0, 1.42fr) minmax(260px, 0.72fr);
   gap: 16px;
-  align-items: start;
+  align-items: stretch;
 }
 
 body[data-page="assets"] .wenda-embed-panel,
@@ -18606,6 +18605,7 @@ body[data-page="assets"] .wenda-panel-card strong {
 }
 
 body[data-page="assets"] .wenda-panel-card p,
+body[data-page="assets"] .wenda-inline-note,
 body[data-page="assets"] .wenda-frame-warning {
   margin: 8px 0 0;
   color: var(--text-soft);
@@ -18662,6 +18662,12 @@ body[data-page="assets"] .wenda-toggle-row input {
   padding: 0;
 }
 
+body[data-page="assets"] .wenda-id-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+}
+
 body[data-page="assets"] .wenda-error {
   margin: 0;
   border: 1px solid rgba(154, 59, 38, 0.2);
@@ -18713,7 +18719,7 @@ body[data-page="assets"] .wenda-open-link.is-disabled {
 
 body[data-page="assets"] .wenda-iframe-workspace {
   display: grid;
-  grid-template-rows: auto auto minmax(720px, 1fr);
+  grid-template-rows: auto auto minmax(720px, 1fr) auto;
   gap: 12px;
 }
 
@@ -18749,6 +18755,19 @@ body[data-page="assets"] .wenda-embed-frame {
   border: 1px solid rgba(77, 63, 49, 0.1);
   border-radius: 22px;
   background: #fffdf8;
+}
+
+body[data-page="assets"] .wenda-url-preview {
+  min-width: 0;
+  border: 1px solid rgba(77, 63, 49, 0.09);
+  border-radius: 16px;
+  background: rgba(255, 252, 246, 0.76);
+  color: var(--text-muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.74rem;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+  padding: 12px;
 }
 
 body[data-page="assets"] .fanya-knowledge-embed {
@@ -19106,8 +19125,12 @@ body[data-page="assets"] .fanya-context-list dd {
     justify-content: stretch;
   }
 
+  body[data-page="assets"] .wenda-id-grid {
+    grid-template-columns: 1fr;
+  }
+
   body[data-page="assets"] .wenda-iframe-workspace {
-    grid-template-rows: auto auto minmax(520px, 1fr);
+    grid-template-rows: auto auto minmax(520px, 1fr) auto;
   }
 
   body[data-page="assets"] .wenda-embed-workspace,
