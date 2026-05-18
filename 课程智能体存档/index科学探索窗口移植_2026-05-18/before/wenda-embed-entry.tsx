@@ -5,10 +5,9 @@ import { WendaEmbedWorkspace } from "./components/integrations/WendaEmbedWorkspa
 const rootElement = document.getElementById("wendaEmbedWorkspaceRoot");
 
 if (rootElement) {
-  const variant = rootElement.dataset.wendaVariant === "home-dialog" ? "home-dialog" : "workspace";
   createRoot(rootElement).render(
     <React.StrictMode>
-      <WendaEmbedWorkspace variant={variant} />
+      <WendaEmbedWorkspace />
     </React.StrictMode>,
   );
 }

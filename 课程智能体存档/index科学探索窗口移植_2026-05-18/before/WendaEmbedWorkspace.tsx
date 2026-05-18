@@ -25,12 +25,6 @@ interface WendaNavItem {
   description: string;
 }
 
-type WendaEmbedVariant = "workspace" | "home-dialog";
-
-interface WendaEmbedWorkspaceProps {
-  variant?: WendaEmbedVariant;
-}
-
 const WENDA_NAV_GROUPS: Array<{ title: WendaNavGroupTitle; items: WendaNavItem[] }> = [
   {
     title: "问道",
@@ -201,12 +195,11 @@ function buildWorkspaceUrl(domain: string, item: WendaNavItem): string {
   });
 }
 
-export function WendaEmbedWorkspace({ variant = "workspace" }: WendaEmbedWorkspaceProps) {
+export function WendaEmbedWorkspace() {
   const [domain] = useState(() => getRuntimeWendaDomain());
   const [activeItemId, setActiveItemId] = useState(DEFAULT_ITEM_ID);
   const [frameVersion, setFrameVersion] = useState(0);
-  const isHomeDialog = variant === "home-dialog";
-  const activeItem = useMemo(() => findNavItem(isHomeDialog ? DEFAULT_ITEM_ID : activeItemId), [activeItemId, isHomeDialog]);
+  const activeItem = useMemo(() => findNavItem(activeItemId), [activeItemId]);
   const urlState = useMemo(() => {
     try {
       return { error: "", url: buildWorkspaceUrl(domain, activeItem) };
@@ -225,38 +218,6 @@ export function WendaEmbedWorkspace({ variant = "workspace" }: WendaEmbedWorkspa
 
   function refreshFrame() {
     setFrameVersion((value) => value + 1);
-  }
-
-  if (isHomeDialog) {
-    return (
-      <section className="wenda-embed-workspace wenda-home-dialog-workspace" aria-labelledby="home-wenda-dialog-title">
-        <div className="wenda-home-dialog-toolbar">
-          <div>
-            <span>科学探索</span>
-            <strong id="home-wenda-dialog-title">闻道科学探索</strong>
-            <p>从首页对话窗口直接打开闻道首页，继续承接科学导航和智能体入口。</p>
-          </div>
-          <div className="wenda-toolbar-actions">
-            <button className="wenda-open-link" type="button" onClick={refreshFrame}>
-              刷新
-            </button>
-            <a className={`wenda-open-link ${urlState.url ? "" : "is-disabled"}`} href={urlState.url || "#"} target="_blank" rel="noopener noreferrer" aria-disabled={urlState.url ? "false" : "true"}>
-              新窗口打开
-            </a>
-          </div>
-        </div>
-        {urlState.error ? <p className="wenda-error">{urlState.error}</p> : <p className="wenda-frame-warning">如果页面无法显示，可能是闻道平台限制跨站内嵌，请点击新窗口打开。</p>}
-        <iframe
-          key={`${activeItem.id}-${frameVersion}`}
-          className="wenda-embed-frame"
-          title={`闻道 - ${activeItem.label}`}
-          src={urlState.url || "about:blank"}
-          loading="lazy"
-          referrerPolicy="strict-origin-when-cross-origin"
-          sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-downloads"
-        />
-      </section>
-    );
   }
 
   return (

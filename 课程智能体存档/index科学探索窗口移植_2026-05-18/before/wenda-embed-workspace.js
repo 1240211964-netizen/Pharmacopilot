@@ -17482,12 +17482,11 @@ function buildWorkspaceUrl(domain, item) {
         hd: item.route === "search_history" ? "1,1,1" : wenda_1.WENDA_DEFAULT_HD,
     });
 }
-function WendaEmbedWorkspace({ variant = "workspace" }) {
+function WendaEmbedWorkspace() {
     const [domain] = (0, react_1.useState)(() => (0, wenda_1.getRuntimeWendaDomain)());
     const [activeItemId, setActiveItemId] = (0, react_1.useState)(DEFAULT_ITEM_ID);
     const [frameVersion, setFrameVersion] = (0, react_1.useState)(0);
-    const isHomeDialog = variant === "home-dialog";
-    const activeItem = (0, react_1.useMemo)(() => findNavItem(isHomeDialog ? DEFAULT_ITEM_ID : activeItemId), [activeItemId, isHomeDialog]);
+    const activeItem = (0, react_1.useMemo)(() => findNavItem(activeItemId), [activeItemId]);
     const urlState = (0, react_1.useMemo)(() => {
         try {
             return { error: "", url: buildWorkspaceUrl(domain, activeItem) };
@@ -17505,19 +17504,6 @@ function WendaEmbedWorkspace({ variant = "workspace" }) {
     }
     function refreshFrame() {
         setFrameVersion((value) => value + 1);
-    }
-    if (isHomeDialog) {
-        return (react_1.default.createElement("section", { className: "wenda-embed-workspace wenda-home-dialog-workspace", "aria-labelledby": "home-wenda-dialog-title" },
-            react_1.default.createElement("div", { className: "wenda-home-dialog-toolbar" },
-                react_1.default.createElement("div", null,
-                    react_1.default.createElement("span", null, "\u79D1\u5B66\u63A2\u7D22"),
-                    react_1.default.createElement("strong", { id: "home-wenda-dialog-title" }, "\u95FB\u9053\u79D1\u5B66\u63A2\u7D22"),
-                    react_1.default.createElement("p", null, "\u4ECE\u9996\u9875\u5BF9\u8BDD\u7A97\u53E3\u76F4\u63A5\u6253\u5F00\u95FB\u9053\u9996\u9875\uFF0C\u7EE7\u7EED\u627F\u63A5\u79D1\u5B66\u5BFC\u822A\u548C\u667A\u80FD\u4F53\u5165\u53E3\u3002")),
-                react_1.default.createElement("div", { className: "wenda-toolbar-actions" },
-                    react_1.default.createElement("button", { className: "wenda-open-link", type: "button", onClick: refreshFrame }, "\u5237\u65B0"),
-                    react_1.default.createElement("a", { className: `wenda-open-link ${urlState.url ? "" : "is-disabled"}`, href: urlState.url || "#", target: "_blank", rel: "noopener noreferrer", "aria-disabled": urlState.url ? "false" : "true" }, "\u65B0\u7A97\u53E3\u6253\u5F00"))),
-            urlState.error ? react_1.default.createElement("p", { className: "wenda-error" }, urlState.error) : react_1.default.createElement("p", { className: "wenda-frame-warning" }, "\u5982\u679C\u9875\u9762\u65E0\u6CD5\u663E\u793A\uFF0C\u53EF\u80FD\u662F\u95FB\u9053\u5E73\u53F0\u9650\u5236\u8DE8\u7AD9\u5185\u5D4C\uFF0C\u8BF7\u70B9\u51FB\u65B0\u7A97\u53E3\u6253\u5F00\u3002"),
-            react_1.default.createElement("iframe", { key: `${activeItem.id}-${frameVersion}`, className: "wenda-embed-frame", title: `闻道 - ${activeItem.label}`, src: urlState.url || "about:blank", loading: "lazy", referrerPolicy: "strict-origin-when-cross-origin", sandbox: "allow-same-origin allow-scripts allow-forms allow-popups allow-downloads" })));
     }
     return (react_1.default.createElement("section", { className: "wenda-embed-workspace", "aria-labelledby": "wenda-embed-title" },
         react_1.default.createElement("div", { className: "wenda-embed-grid" },
@@ -17560,9 +17546,8 @@ const client_1 = require("react-dom/client");
 const WendaEmbedWorkspace_1 = require("./components/integrations/WendaEmbedWorkspace");
 const rootElement = document.getElementById("wendaEmbedWorkspaceRoot");
 if (rootElement) {
-    const variant = rootElement.dataset.wendaVariant === "home-dialog" ? "home-dialog" : "workspace";
     (0, client_1.createRoot)(rootElement).render(react_1.default.createElement(react_1.default.StrictMode, null,
-        react_1.default.createElement(WendaEmbedWorkspace_1.WendaEmbedWorkspace, { variant: variant })));
+        react_1.default.createElement(WendaEmbedWorkspace_1.WendaEmbedWorkspace, null)));
 }
 
 }
