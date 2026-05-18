@@ -14,7 +14,6 @@ export interface AppConfig {
   supabase: SupabaseConfig;
   openai: OpenAiConfig;
   rag: RagConfig;
-  wendaoAgent: WendaoAgentConfig;
 }
 
 export interface FanyaConfig {
@@ -57,14 +56,6 @@ export interface RagConfig {
   chunkMaxChars: number;
   chunkOverlapChars: number;
   matchCount: number;
-}
-
-export interface WendaoAgentConfig {
-  apiUrl: string;
-  apiKey: string;
-  agentId: string;
-  modelId: string;
-  timeoutMs: number;
 }
 
 export interface ApiContext {

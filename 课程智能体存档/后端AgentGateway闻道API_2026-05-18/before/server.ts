@@ -15,15 +15,10 @@ import { citationsFromChunks, ingestKnowledgeFiles, retrieveKnowledge, saveSourc
 import { parseSourceBoundary, sourceBoundarySummary } from "./source-boundary";
 import { runAgentSession } from "./agent/stream";
 import type { AgentRunRequest, AgentStreamEvent } from "./agent/types";
-import { callWendaoAgent, normalizeAgentChatRequest } from "./agent/wendao-chat";
 
 const rootDir = path.resolve(__dirname, "../..");
 
 async function handleApi(req: IncomingMessage, res: ServerResponse, pathname: string, config: AppConfig): Promise<void> {
-  if (req.method === "POST" && pathname === "/api/agent/chat") {
-    return handleAgentChat(req, res, config);
-  }
-
   if (req.method === "POST" && pathname === "/api/agent/run") {
     return handleAgentRun(req, res, config);
   }
@@ -198,20 +193,6 @@ async function handleApi(req: IncomingMessage, res: ServerResponse, pathname: st
   }
 
   return json(res, 404, { ok: false, message: "API route not found." });
-}
-
-async function handleAgentChat(req: IncomingMessage, res: ServerResponse, config: AppConfig): Promise<void> {
-  const abortController = new AbortController();
-  res.on("close", () => {
-    if (!res.writableEnded) abortController.abort();
-  });
-
-  const body = await readJsonBody(req);
-  const payload = normalizeAgentChatRequest(body);
-  // Future multi-agent orchestration can branch here before selecting Wendao,
-  // while keeping the browser contract fixed at /api/agent/chat.
-  const result = await callWendaoAgent(payload, config.wendaoAgent, abortController.signal);
-  return json(res, 200, result);
 }
 
 async function handleAgentRun(req: IncomingMessage, res: ServerResponse, config: AppConfig): Promise<void> {

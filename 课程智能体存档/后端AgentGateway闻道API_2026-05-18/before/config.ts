@@ -72,13 +72,6 @@ export function getConfig(rootDir: string): AppConfig {
       chunkOverlapChars: numberEnv("RAG_CHUNK_OVERLAP_CHARS", 120),
       matchCount: numberEnv("RAG_MATCH_COUNT", 8),
     },
-    wendaoAgent: {
-      apiUrl: env("WENDAO_AGENT_API_URL"),
-      apiKey: env("WENDAO_API_KEY"),
-      agentId: env("WENDAO_AGENT_ID"),
-      modelId: env("WENDAO_MODEL_ID"),
-      timeoutMs: numberEnv("WENDAO_AGENT_TIMEOUT_MS", 20000),
-    },
   };
 }
 

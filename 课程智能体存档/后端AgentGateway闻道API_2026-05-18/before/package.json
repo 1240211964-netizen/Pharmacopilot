@@ -5,9 +5,8 @@
   "type": "commonjs",
   "scripts": {
     "dev": "node 后端核心/启动入口/server.cjs",
-    "build": "npm run build:static && npm run build:server && npm run build:next",
+    "build": "npm run build:static && npm run build:server",
     "build:server": "tsc -p 后端核心/tsconfig.server.json",
-    "build:next": "next build",
     "start": "node 后端核心/启动入口/server.cjs",
     "start:static": "node 后端核心/启动入口/server.cjs",
     "build:wenda": "node scripts/build-wenda-embed.cjs",
