@@ -8097,19 +8097,6 @@ const MANAGEMENT_COURSE_GRAPH_NODES = [
 const FANYA_KNOWLEDGE_GRAPH_URL =
   "https://mooc2-ans.chaoxing.com/topic-ans/knowgraph/index.html#/knowledgeMap/frameDiagramTeacher?courseid=251769346&clazzid=131807646&courseId=251769346&classId=131807646&clazzId=131807646&cpi=18085305&enc=399a5e53fc07ceeee1367420f088ffd5&openc=fa9f34ffaedc53b0a54335cd85a002ac&t=1778920097391&ut=t&modeType=2&topicModelId=0";
 const FANYA_KNOWLEDGE_GRAPH_STATUS_URL = "/api/fanya/knowledge-graph/status";
-const ACADEMIC_SERVICE_ROUTES = {
-  chat: { label: "对话页面", path: "history", hd: "1,1", mode: "chat" },
-  deep_research: { label: "DeepResearch 对话", path: "deep_research_history", hd: "0,1,1", mode: "deepResearch" },
-  knowledge_base: { label: "知识星链", path: "knowledge_base", hd: "1,1", mode: "static" },
-  ai_knowledge_base: { label: "AI 知识库", path: "ai_knowledge_base", hd: "1,1", mode: "static" },
-  subscribe: { label: "学术追踪", path: "subscribe", hd: "1,1", mode: "static" },
-  project: { label: "课题页面", path: "project", hd: "1,1", mode: "static" },
-  home: { label: "闻道首页", path: "home", hd: "0,1,1", mode: "home" },
-  search_history: { label: "历史记录", path: "search_history", hd: "1,1,1", mode: "static" },
-  ai_applications: { label: "AI 应用", path: "ai_applications", hd: "1,1", mode: "static" },
-  ai_researcher: { label: "AI 研究员", path: "ai_researcher", hd: "1,1", mode: "static" },
-  ai_citation: { label: "AI 引证网络", path: "ai_citation", hd: "1,1", mode: "static" },
-};
 
 const MANAGEMENT_COURSE_GRAPH_LINKS = [
   ["course-core", "management-foundation"],
@@ -8345,166 +8332,6 @@ function renderManagementCoursePanels() {
   }
 }
 
-function getAcademicServiceRoute() {
-  const key = $("#academicServiceSurface")?.value || "chat";
-  return ACADEMIC_SERVICE_ROUTES[key] || ACADEMIC_SERVICE_ROUTES.chat;
-}
-
-function academicServiceValue(id) {
-  return $(`#${id}`)?.value.trim() || "";
-}
-
-function normalizeAcademicServiceDomain(value) {
-  const host = String(value || "")
-    .trim()
-    .replace(/^https?:\/\//i, "")
-    .replace(/\/.*$/, "")
-    .toLowerCase();
-  if (!host || host === "xxx.libsp.net") return "";
-  return /^[a-z0-9.-]+\.[a-z]{2,}$/i.test(host) ? host : "";
-}
-
-function formatAcademicServiceJsonList(value) {
-  const text = String(value || "").trim();
-  if (!text) return "";
-  try {
-    const parsed = JSON.parse(text);
-    if (Array.isArray(parsed)) {
-      const items = parsed.map((item) => String(item || "").trim()).filter(Boolean);
-      return items.length ? JSON.stringify(items) : "";
-    }
-  } catch {
-    // Fall back to comma-separated IDs.
-  }
-  const items = text.split(/[,，、\s]+/).map((item) => item.trim()).filter(Boolean);
-  return items.length ? JSON.stringify(items) : "";
-}
-
-function buildAcademicServiceEmbedUrl() {
-  const domain = normalizeAcademicServiceDomain(academicServiceValue("academicServiceDomain"));
-  const route = getAcademicServiceRoute();
-  if (!domain) {
-    return { url: "", route, error: "请输入机构对应的 xxx.libsp.net 域名。" };
-  }
-
-  const url = new URL(`/api/openAccess/redirect/${route.path}`, `https://${domain}`);
-  const params = new URLSearchParams();
-  const searchText = academicServiceValue("academicServiceSearchText");
-  const agentId = academicServiceValue("academicServiceAgentId");
-  const modelId = academicServiceValue("academicServiceModelId");
-
-  params.set("hd", route.hd);
-
-  if (route.mode === "chat") {
-    if (agentId) params.set("agentId", agentId);
-    if (modelId) params.set("modelId", modelId);
-    params.set("searchText", searchText);
-    params.set("internet_search", "false");
-    const datasetList = formatAcademicServiceJsonList(academicServiceValue("academicServiceDatasetList"));
-    if (datasetList) params.set("datasetList", datasetList);
-  }
-
-  if (route.mode === "deepResearch") {
-    const applicationId = academicServiceValue("academicServiceApplicationId") || agentId;
-    const promptId = academicServiceValue("academicServicePromptId");
-    const retrievalSources = academicServiceValue("academicServiceRetrievalSources");
-    if (applicationId) params.set("applicationId", applicationId);
-    params.set("searchText", searchText);
-    params.set("modeType", "exploration");
-    if (retrievalSources) params.set("retrievalSources", retrievalSources);
-    if (promptId) params.set("promptId", promptId);
-  }
-
-  if (route.mode === "home" && agentId) {
-    params.set("select_agent_id", agentId);
-  }
-
-  url.search = params.toString();
-  return { url: url.href, route, error: "" };
-}
-
-function setAcademicServiceEmbedState(state, title, description) {
-  const panel = $("#academicServiceEmbedPanel");
-  const placeholder = $("#academicServicePlaceholder");
-  const status = $("#academicServiceStatusText");
-  const statusDescription = $("#academicServiceStatusDescription");
-  if (panel) panel.dataset.embedState = state;
-  if (placeholder) {
-    const label = placeholder.querySelector("span");
-    const strong = placeholder.querySelector("strong");
-    const copy = placeholder.querySelector("p");
-    if (label) label.textContent = state === "loaded" ? "内嵌已加载" : state === "loading" ? "内嵌加载中" : "内嵌待加载";
-    if (strong) strong.textContent = title;
-    if (copy) copy.textContent = description;
-  }
-  if (status) status.textContent = title;
-  if (statusDescription) statusDescription.textContent = description;
-}
-
-function syncAcademicServiceEmbedUrl() {
-  const { url, route, error } = buildAcademicServiceEmbedUrl();
-  const routeLabel = $("#academicServiceRouteLabel");
-  const hdLabel = $("#academicServiceHdLabel");
-  const copyButton = $("#copyAcademicServiceUrl");
-  const openLink = $("#openAcademicServiceUrl");
-  if (routeLabel) routeLabel.textContent = route.label;
-  if (hdLabel) hdLabel.textContent = `hd=${route.hd}`;
-
-  if (copyButton) copyButton.disabled = !url;
-  if (openLink) {
-    openLink.href = url || "#";
-    openLink.setAttribute("aria-disabled", url ? "false" : "true");
-  }
-
-  if (error) {
-    setAcademicServiceEmbedState("idle", "待填写域名", error);
-  } else {
-    setAcademicServiceEmbedState("ready", "可嵌入本页", `${route.label} 的开放访问地址已生成。`);
-  }
-  return url;
-}
-
-function initAcademicServiceEmbedPanel() {
-  const panel = $("#academicServiceEmbedPanel");
-  if (!panel) return;
-  const form = $("#academicServiceEmbedForm");
-  const frame = $("#academicServiceFrame");
-  const copyButton = $("#copyAcademicServiceUrl");
-  const openLink = $("#openAcademicServiceUrl");
-
-  frame?.addEventListener("load", () => {
-    if (!frame.src || frame.src === "about:blank") return;
-    setAcademicServiceEmbedState("loaded", "已加载内嵌页面", "如果画面为空白，通常是平台未开放 iframe 白名单，可使用新窗口打开。");
-  });
-
-  form?.addEventListener("submit", (event) => {
-    event.preventDefault();
-    const url = syncAcademicServiceEmbedUrl();
-    if (!url || !frame) return;
-    setAcademicServiceEmbedState("loading", "正在加载内嵌页面", "正在请求学术服务平台开放访问地址。");
-    frame.src = url;
-  });
-
-  copyButton?.addEventListener("click", () => {
-    const url = syncAcademicServiceEmbedUrl();
-    if (!url) return;
-    copyText(url);
-  });
-
-  openLink?.addEventListener("click", (event) => {
-    if (openLink.getAttribute("aria-disabled") === "true") event.preventDefault();
-  });
-
-  $$(
-    "#academicServiceDomain, #academicServiceSurface, #academicServiceSearchText, #academicServiceAgentId, #academicServiceModelId, #academicServiceApplicationId, #academicServicePromptId, #academicServiceDatasetList, #academicServiceRetrievalSources",
-  ).forEach((field) => {
-    field.addEventListener("input", syncAcademicServiceEmbedUrl);
-    field.addEventListener("change", syncAcademicServiceEmbedUrl);
-  });
-
-  syncAcademicServiceEmbedUrl();
-}
-
 function setFanyaKnowledgeEmbedState(state, title, description) {
   const panel = $("#fanyaKnowledgeGraphPanel");
   const placeholder = $("#fanyaKnowledgePlaceholder");
@@ -8619,7 +8446,6 @@ function initManagementCourseGraphPage() {
   loadAssets();
   importTrainingAndPracticeAssets();
   renderManagementCourseGraph();
-  initAcademicServiceEmbedPanel();
   initFanyaKnowledgeGraphPanel();
   return true;
 }
