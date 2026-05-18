@@ -8,7 +8,7 @@ const HOME_TASK_ENTRY_KEY = "pharmacopilot-home-task-entry";
 const HOME_WENDA_RUN_KEY = "pharmacopilot-home-wenda-science-run";
 const HOME_WENDA_AGENT_ID = "6f5b49b6-5cb4-11f0-9ae8-fa163f087fa9";
 const HOME_WENDA_MODEL_ID = "12609df7-fee9-11ef-a29b-d039570c2aae";
-const HOME_WENDA_DEFAULT_PROMPT = "请基于药事管理本科课程的教学目标，帮助我设计一个 SWOT 分析的实际场景讨论任务。";
+const HOME_WENDA_DEFAULT_PROMPT = "请基于药事管理本科课程的教学目标，帮助我设计一个课堂讨论任务。";
 const HOME_WENDA_HD = "1,1";
 const FANYA_MOCK_ACCOUNT = {
   account: "teacher.demo@pharmacopilot.test",
@@ -2316,8 +2316,8 @@ function getHomeWendaRuntimeDomain() {
 function buildHomeWendaScienceUrl(searchText) {
   const domain = getHomeWendaRuntimeDomain();
   const prompt = String(searchText || "").trim();
-  if (!domain) throw new Error("暂时缺少闻道服务配置。");
-  if (!prompt) throw new Error("请先输入研究问题。");
+  if (!domain) throw new Error("请先配置 VITE_WENDAO_DOMAIN。");
+  if (!prompt) throw new Error("请先输入检索内容。");
 
   const url = new URL("/api/openAccess/redirect/history", `https://${domain}`);
   const params = new URLSearchParams();
@@ -2347,29 +2347,29 @@ function updateHomeWendaRunnerState(state, payload = {}) {
 
   const states = {
     idle: {
-      label: "待开始",
-      title: "准备一次探索",
-      copy: "输入研究问题后，可生成闻道结果入口。",
+      label: "待输入",
+      title: "后台未启动",
+      copy: "输入检索内容后，系统会在后台创建闻道科学探索页面。",
     },
     ready: {
       label: "可继续",
-      title: "上次结果已保留",
-      copy: "可继续查看上一次结果，也可以提交新问题。",
+      title: "已有上次探索入口",
+      copy: "可继续打开上一次闻道结果页，也可以输入新问题重新启动。",
     },
     running: {
-      label: "生成中",
-      title: "正在准备结果入口",
-      copy: "请稍候，入口生成后可直接查看结果。",
+      label: "运行中",
+      title: "闻道科学探索已在后台启动",
+      copy: "页面正在通过 openAccess 链接发起加载；如果平台限制内嵌，请使用新窗口查看。",
     },
     loaded: {
-      label: "已准备",
-      title: "结果入口已更新",
-      copy: "可打开结果页继续阅读与整理。",
+      label: "已发起",
+      title: "后台页面已完成一次加载尝试",
+      copy: "出于跨站安全限制，PharmacoPilot 不读取 iframe 内容；结果请在闻道页面继续查看。",
     },
     error: {
       label: "需配置",
-      title: "暂时无法启动探索",
-      copy: payload.message || "请检查闻道服务配置后再重试。",
+      title: "暂时无法启动闻道探索",
+      copy: payload.message || "请检查闻道域名配置后再重试。",
     },
   };
   const next = states[state] || states.idle;
@@ -2426,9 +2426,9 @@ function initHomeWendaRunner() {
         startedAt: new Date().toISOString(),
       });
       updateHomeWendaRunnerState("running");
-      showToast("闻道科学探索入口已准备");
+      showToast("闻道科学探索已在后台启动");
     } catch (error) {
-      const message = error instanceof Error ? error.message : "闻道结果入口生成失败。";
+      const message = error instanceof Error ? error.message : "闻道链接生成失败。";
       updateHomeWendaRunnerState("error", { message });
       showToast(message);
       input.focus();

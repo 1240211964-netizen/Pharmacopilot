@@ -125,21 +125,21 @@
         <section class="home-task-entry home-wenda-runner reveal-on-load" aria-labelledby="home-wenda-runner-title">
           <div class="home-wenda-runner-main">
             <div class="home-wenda-runner-copy">
-              <p class="eyebrow">教学研究入口</p>
-              <h2 id="home-wenda-runner-title">闻道科学探索</h2>
+              <p class="eyebrow">Wendao Scientific Exploration</p>
+              <h2 id="home-wenda-runner-title">闻道科学探索后台运行</h2>
               <p>
-                输入一个教学问题，快速准备可继续查看的研究结果入口，适合课堂讨论、政策案例与教学研究准备。
+                前端只保留检索入口。输入问题后，PharmacoPilot 会生成闻道 openAccess 对话链接并在后台发起加载；结果页可通过新窗口继续查看。
               </p>
             </div>
 
             <form class="home-wenda-runner-form" id="homeWendaRunnerForm">
-              <label for="homeWendaRunnerInput">研究问题</label>
+              <label for="homeWendaRunnerInput">检索内容</label>
               <textarea
                 id="homeWendaRunnerInput"
                 rows="4"
-                placeholder="例如：请基于药事管理本科课程目标，设计一个 SWOT 分析的课堂讨论任务。"
+                placeholder="例如：请梳理药事管理课程中医保支付改革的课堂讨论问题。"
               ></textarea>
-              <div class="home-wenda-preset-row" aria-label="常用研究问题">
+              <div class="home-wenda-preset-row" aria-label="常用检索内容">
                 <button type="button" data-home-wenda-preset="请围绕药事管理本科课程建设，梳理近年智能教学研究进展。">
                   智能教学研究
                 </button>
@@ -151,7 +151,7 @@
                 </button>
               </div>
               <div class="home-wenda-runner-actions">
-                <button class="primary-action" type="submit">启动探索</button>
+                <button class="primary-action" type="submit">启动科学探索</button>
                 <a
                   class="secondary-action is-disabled"
                   id="homeWendaRunnerOpen"
@@ -160,22 +160,22 @@
                   rel="noreferrer"
                   aria-disabled="true"
                 >
-                  查看结果
+                  打开闻道结果
                 </a>
               </div>
             </form>
           </div>
 
           <aside class="home-wenda-runner-state" id="homeWendaRunnerState" data-state="idle" aria-live="polite">
-            <span id="homeWendaRunnerStatusLabel">待开始</span>
-            <strong id="homeWendaRunnerStatusTitle">准备一次探索</strong>
-            <p id="homeWendaRunnerStatusCopy">输入研究问题后，可生成闻道结果入口。</p>
+            <span id="homeWendaRunnerStatusLabel">待输入</span>
+            <strong id="homeWendaRunnerStatusTitle">后台未启动</strong>
+            <p id="homeWendaRunnerStatusCopy">输入检索内容后，系统会在后台创建闻道科学探索页面。</p>
           </aside>
 
           <iframe
             id="homeWendaRunnerFrame"
             class="home-wenda-runner-frame"
-            title="闻道科学探索结果页"
+            title="闻道科学探索后台运行页"
             src="about:blank"
             referrerpolicy="no-referrer-when-downgrade"
             aria-hidden="true"
