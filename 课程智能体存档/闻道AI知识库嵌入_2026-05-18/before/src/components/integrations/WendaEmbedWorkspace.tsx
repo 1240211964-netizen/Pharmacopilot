@@ -4,15 +4,26 @@ import {
   getRuntimeWendaDomain,
   WENDA_DEFAULT_AGENT_ID,
   WENDA_DEFAULT_HD,
+  WENDA_DEFAULT_MODEL_ID,
+  WENDA_DEFAULT_SEARCH_TEXT,
 } from "../../lib/wenda";
 
-function buildWorkspaceUrl(domain: string): string {
+function buildWorkspaceUrl(values: {
+  domain: string;
+  searchText: string;
+  internetSearch: boolean;
+}): string {
+  const searchText = values.searchText.trim();
+  if (!searchText) throw new Error("请先填写检索问题。");
+
   return buildWendaUrl({
-    domain,
-    route: "ai_knowledge_base",
+    domain: values.domain,
+    route: "history",
     agentId: WENDA_DEFAULT_AGENT_ID,
+    modelId: WENDA_DEFAULT_MODEL_ID,
+    searchText,
     hd: WENDA_DEFAULT_HD,
-    internetSearch: false,
+    internetSearch: values.internetSearch,
     datasetIds: [],
     imageIds: [],
     fileIds: [],
@@ -21,11 +32,17 @@ function buildWorkspaceUrl(domain: string): string {
 
 export function WendaEmbedWorkspace() {
   const [domain] = useState(() => getRuntimeWendaDomain());
+  const [searchText, setSearchText] = useState(WENDA_DEFAULT_SEARCH_TEXT);
+  const [internetSearch, setInternetSearch] = useState(false);
   const [frameVersion, setFrameVersion] = useState(0);
   const [error, setError] = useState("");
   const [embedUrl, setEmbedUrl] = useState(() => {
     try {
-      return buildWorkspaceUrl(domain);
+      return buildWorkspaceUrl({
+        domain,
+        searchText: WENDA_DEFAULT_SEARCH_TEXT,
+        internetSearch: false,
+      });
     } catch {
       return "";
     }
@@ -33,7 +50,7 @@ export function WendaEmbedWorkspace() {
 
   function refreshFrame() {
     try {
-      const nextUrl = buildWorkspaceUrl(domain);
+      const nextUrl = buildWorkspaceUrl({ domain, searchText, internetSearch });
       setEmbedUrl(nextUrl);
       setFrameVersion((value) => value + 1);
       setError("");
@@ -47,24 +64,34 @@ export function WendaEmbedWorkspace() {
       <div className="wenda-embed-head">
         <div>
           <p className="eyebrow">外部学术服务</p>
-          <h2 id="wenda-embed-title">闻道 AI 知识库内嵌工作区</h2>
+          <h2 id="wenda-embed-title">闻道学术服务平台内嵌工作区</h2>
         </div>
         <p>
-          以页面内嵌方式接入闻道 AI 知识库页面。知识库维护和资源查看仍在闻道页面内完成；如果平台限制内嵌，可使用新窗口打开。
+          以页面内嵌方式接入闻道对话页。教师只需调整问题并刷新对话；如果平台限制内嵌，可使用新窗口打开。
         </p>
       </div>
 
       <div className="wenda-embed-grid">
-        <aside className="wenda-embed-panel wenda-embed-params" aria-label="闻道 AI 知识库入口">
+        <aside className="wenda-embed-panel wenda-embed-params" aria-label="闻道任务参数">
           <div className="wenda-panel-card">
-            <span>当前入口</span>
-            <strong>AI 知识库</strong>
-            <p>用于进入闻道知识库工作区，查看、维护和组织课程相关知识资源。</p>
+            <span>当前智能体</span>
+            <strong>闻道医学影像学智能体</strong>
+            <p>已接入学校默认智能体配置，可直接用于课堂任务设计。</p>
           </div>
+
+          <label>
+            <span>检索问题</span>
+            <textarea rows={5} value={searchText} onChange={(event) => setSearchText(event.target.value)} />
+          </label>
+
+          <label className="wenda-toggle-row">
+            <input type="checkbox" checked={internetSearch} onChange={(event) => setInternetSearch(event.target.checked)} />
+            <span>启用联网检索</span>
+          </label>
 
           {error ? <p className="wenda-error">{error}</p> : null}
           <button className="wenda-primary-action" type="button" onClick={refreshFrame}>
-            刷新知识库页面
+            刷新闻道对话
           </button>
         </aside>
 
@@ -72,17 +99,17 @@ export function WendaEmbedWorkspace() {
           <div className="wenda-iframe-toolbar">
             <div>
               <span>闻道页面</span>
-              <strong>AI 知识库工作区</strong>
+              <strong>闻道对话工作区</strong>
             </div>
             <a className={`wenda-open-link ${embedUrl ? "" : "is-disabled"}`} href={embedUrl || "#"} target="_blank" rel="noopener noreferrer" aria-disabled={embedUrl ? "false" : "true"}>
-              在新窗口打开 AI 知识库
+              在新窗口打开闻道页面
             </a>
           </div>
           <p className="wenda-frame-warning">如果页面无法显示，可能是闻道平台限制跨站内嵌，请点击新窗口打开。</p>
           <iframe
             key={frameVersion}
             className="wenda-embed-frame"
-            title="闻道 AI 知识库"
+            title="闻道学术服务平台"
             src={embedUrl || "about:blank"}
             loading="lazy"
             referrerPolicy="strict-origin-when-cross-origin"

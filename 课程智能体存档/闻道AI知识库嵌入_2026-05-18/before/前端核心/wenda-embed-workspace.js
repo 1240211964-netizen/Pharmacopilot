@@ -17275,13 +17275,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.WendaEmbedWorkspace = WendaEmbedWorkspace;
 const react_1 = __importStar(require("react"));
 const wenda_1 = require("../../lib/wenda");
-function buildWorkspaceUrl(domain) {
+function buildWorkspaceUrl(values) {
+    const searchText = values.searchText.trim();
+    if (!searchText)
+        throw new Error("请先填写检索问题。");
     return (0, wenda_1.buildWendaUrl)({
-        domain,
-        route: "ai_knowledge_base",
+        domain: values.domain,
+        route: "history",
         agentId: wenda_1.WENDA_DEFAULT_AGENT_ID,
+        modelId: wenda_1.WENDA_DEFAULT_MODEL_ID,
+        searchText,
         hd: wenda_1.WENDA_DEFAULT_HD,
-        internetSearch: false,
+        internetSearch: values.internetSearch,
         datasetIds: [],
         imageIds: [],
         fileIds: [],
@@ -17289,11 +17294,17 @@ function buildWorkspaceUrl(domain) {
 }
 function WendaEmbedWorkspace() {
     const [domain] = (0, react_1.useState)(() => (0, wenda_1.getRuntimeWendaDomain)());
+    const [searchText, setSearchText] = (0, react_1.useState)(wenda_1.WENDA_DEFAULT_SEARCH_TEXT);
+    const [internetSearch, setInternetSearch] = (0, react_1.useState)(false);
     const [frameVersion, setFrameVersion] = (0, react_1.useState)(0);
     const [error, setError] = (0, react_1.useState)("");
     const [embedUrl, setEmbedUrl] = (0, react_1.useState)(() => {
         try {
-            return buildWorkspaceUrl(domain);
+            return buildWorkspaceUrl({
+                domain,
+                searchText: wenda_1.WENDA_DEFAULT_SEARCH_TEXT,
+                internetSearch: false,
+            });
         }
         catch {
             return "";
@@ -17301,7 +17312,7 @@ function WendaEmbedWorkspace() {
     });
     function refreshFrame() {
         try {
-            const nextUrl = buildWorkspaceUrl(domain);
+            const nextUrl = buildWorkspaceUrl({ domain, searchText, internetSearch });
             setEmbedUrl(nextUrl);
             setFrameVersion((value) => value + 1);
             setError("");
@@ -17314,24 +17325,30 @@ function WendaEmbedWorkspace() {
         react_1.default.createElement("div", { className: "wenda-embed-head" },
             react_1.default.createElement("div", null,
                 react_1.default.createElement("p", { className: "eyebrow" }, "\u5916\u90E8\u5B66\u672F\u670D\u52A1"),
-                react_1.default.createElement("h2", { id: "wenda-embed-title" }, "\u95FB\u9053 AI \u77E5\u8BC6\u5E93\u5185\u5D4C\u5DE5\u4F5C\u533A")),
-            react_1.default.createElement("p", null, "\u4EE5\u9875\u9762\u5185\u5D4C\u65B9\u5F0F\u63A5\u5165\u95FB\u9053 AI \u77E5\u8BC6\u5E93\u9875\u9762\u3002\u77E5\u8BC6\u5E93\u7EF4\u62A4\u548C\u8D44\u6E90\u67E5\u770B\u4ECD\u5728\u95FB\u9053\u9875\u9762\u5185\u5B8C\u6210\uFF1B\u5982\u679C\u5E73\u53F0\u9650\u5236\u5185\u5D4C\uFF0C\u53EF\u4F7F\u7528\u65B0\u7A97\u53E3\u6253\u5F00\u3002")),
+                react_1.default.createElement("h2", { id: "wenda-embed-title" }, "\u95FB\u9053\u5B66\u672F\u670D\u52A1\u5E73\u53F0\u5185\u5D4C\u5DE5\u4F5C\u533A")),
+            react_1.default.createElement("p", null, "\u4EE5\u9875\u9762\u5185\u5D4C\u65B9\u5F0F\u63A5\u5165\u95FB\u9053\u5BF9\u8BDD\u9875\u3002\u6559\u5E08\u53EA\u9700\u8C03\u6574\u95EE\u9898\u5E76\u5237\u65B0\u5BF9\u8BDD\uFF1B\u5982\u679C\u5E73\u53F0\u9650\u5236\u5185\u5D4C\uFF0C\u53EF\u4F7F\u7528\u65B0\u7A97\u53E3\u6253\u5F00\u3002")),
         react_1.default.createElement("div", { className: "wenda-embed-grid" },
-            react_1.default.createElement("aside", { className: "wenda-embed-panel wenda-embed-params", "aria-label": "\u95FB\u9053 AI \u77E5\u8BC6\u5E93\u5165\u53E3" },
+            react_1.default.createElement("aside", { className: "wenda-embed-panel wenda-embed-params", "aria-label": "\u95FB\u9053\u4EFB\u52A1\u53C2\u6570" },
                 react_1.default.createElement("div", { className: "wenda-panel-card" },
-                    react_1.default.createElement("span", null, "\u5F53\u524D\u5165\u53E3"),
-                    react_1.default.createElement("strong", null, "AI \u77E5\u8BC6\u5E93"),
-                    react_1.default.createElement("p", null, "\u7528\u4E8E\u8FDB\u5165\u95FB\u9053\u77E5\u8BC6\u5E93\u5DE5\u4F5C\u533A\uFF0C\u67E5\u770B\u3001\u7EF4\u62A4\u548C\u7EC4\u7EC7\u8BFE\u7A0B\u76F8\u5173\u77E5\u8BC6\u8D44\u6E90\u3002")),
+                    react_1.default.createElement("span", null, "\u5F53\u524D\u667A\u80FD\u4F53"),
+                    react_1.default.createElement("strong", null, "\u95FB\u9053\u533B\u5B66\u5F71\u50CF\u5B66\u667A\u80FD\u4F53"),
+                    react_1.default.createElement("p", null, "\u5DF2\u63A5\u5165\u5B66\u6821\u9ED8\u8BA4\u667A\u80FD\u4F53\u914D\u7F6E\uFF0C\u53EF\u76F4\u63A5\u7528\u4E8E\u8BFE\u5802\u4EFB\u52A1\u8BBE\u8BA1\u3002")),
+                react_1.default.createElement("label", null,
+                    react_1.default.createElement("span", null, "\u68C0\u7D22\u95EE\u9898"),
+                    react_1.default.createElement("textarea", { rows: 5, value: searchText, onChange: (event) => setSearchText(event.target.value) })),
+                react_1.default.createElement("label", { className: "wenda-toggle-row" },
+                    react_1.default.createElement("input", { type: "checkbox", checked: internetSearch, onChange: (event) => setInternetSearch(event.target.checked) }),
+                    react_1.default.createElement("span", null, "\u542F\u7528\u8054\u7F51\u68C0\u7D22")),
                 error ? react_1.default.createElement("p", { className: "wenda-error" }, error) : null,
-                react_1.default.createElement("button", { className: "wenda-primary-action", type: "button", onClick: refreshFrame }, "\u5237\u65B0\u77E5\u8BC6\u5E93\u9875\u9762")),
+                react_1.default.createElement("button", { className: "wenda-primary-action", type: "button", onClick: refreshFrame }, "\u5237\u65B0\u95FB\u9053\u5BF9\u8BDD")),
             react_1.default.createElement("section", { className: "wenda-iframe-workspace", "aria-label": "\u95FB\u9053 iframe \u5DE5\u4F5C\u533A" },
                 react_1.default.createElement("div", { className: "wenda-iframe-toolbar" },
                     react_1.default.createElement("div", null,
                         react_1.default.createElement("span", null, "\u95FB\u9053\u9875\u9762"),
-                        react_1.default.createElement("strong", null, "AI \u77E5\u8BC6\u5E93\u5DE5\u4F5C\u533A")),
-                    react_1.default.createElement("a", { className: `wenda-open-link ${embedUrl ? "" : "is-disabled"}`, href: embedUrl || "#", target: "_blank", rel: "noopener noreferrer", "aria-disabled": embedUrl ? "false" : "true" }, "\u5728\u65B0\u7A97\u53E3\u6253\u5F00 AI \u77E5\u8BC6\u5E93")),
+                        react_1.default.createElement("strong", null, "\u95FB\u9053\u5BF9\u8BDD\u5DE5\u4F5C\u533A")),
+                    react_1.default.createElement("a", { className: `wenda-open-link ${embedUrl ? "" : "is-disabled"}`, href: embedUrl || "#", target: "_blank", rel: "noopener noreferrer", "aria-disabled": embedUrl ? "false" : "true" }, "\u5728\u65B0\u7A97\u53E3\u6253\u5F00\u95FB\u9053\u9875\u9762")),
                 react_1.default.createElement("p", { className: "wenda-frame-warning" }, "\u5982\u679C\u9875\u9762\u65E0\u6CD5\u663E\u793A\uFF0C\u53EF\u80FD\u662F\u95FB\u9053\u5E73\u53F0\u9650\u5236\u8DE8\u7AD9\u5185\u5D4C\uFF0C\u8BF7\u70B9\u51FB\u65B0\u7A97\u53E3\u6253\u5F00\u3002"),
-                react_1.default.createElement("iframe", { key: frameVersion, className: "wenda-embed-frame", title: "\u95FB\u9053 AI \u77E5\u8BC6\u5E93", src: embedUrl || "about:blank", loading: "lazy", referrerPolicy: "strict-origin-when-cross-origin", sandbox: "allow-same-origin allow-scripts allow-forms allow-popups allow-downloads" })))));
+                react_1.default.createElement("iframe", { key: frameVersion, className: "wenda-embed-frame", title: "\u95FB\u9053\u5B66\u672F\u670D\u52A1\u5E73\u53F0", src: embedUrl || "about:blank", loading: "lazy", referrerPolicy: "strict-origin-when-cross-origin", sandbox: "allow-same-origin allow-scripts allow-forms allow-popups allow-downloads" })))));
 }
 
 },
