@@ -232,28 +232,25 @@
         class="practice-fanya-editor-embed"
         id="chaoxingEditorEmbedPanel"
         data-embed-state="idle"
-        data-editor-url="https://stat2-ans.chaoxing.com/stat2/study-ai/index?courseid=251769346&amp;clazzid=131807646&amp;cpi=18085305"
-        data-active-step="2"
-        data-active-step-title="学情分析与学习起点诊断"
-        data-active-step-status="pending"
+        data-editor-url="https://mooc2-ans.chaoxing.com/mooc2-ans/mycourse/tch?courseid=251769346&amp;clazzid=131807646&amp;cpi=18085305&amp;enc=399a5e53fc07ceeee1367420f088ffd5&amp;t=1778920097391&amp;pageHeader=-1&amp;v=2&amp;hideHead=0&amp;perspectiveType=%E5%B9%B3%E5%8F%B0%E5%8F%AF%E4%BB%A5%E6%8F%90%E4%BE%9B%E7%9A%84ai%E5%AE%9E%E8%B7%B5"
         aria-labelledby="chaoxing-editor-title"
       >
         <div class="practice-fanya-editor-head">
           <div>
-            <p class="eyebrow">Chaoxing AI learning analysis</p>
-            <h2 id="chaoxing-editor-title">AI 学情分析嵌入</h2>
-            <p>“学情分析与学习起点诊断”环节嵌入超星 AI 学情分析界面。登录、课程权限和页面可嵌入性仍由超星平台决定。</p>
+            <p class="eyebrow">Chaoxing platform AI practice</p>
+            <h2 id="chaoxing-editor-title">20 环节平台 AI 实践嵌入</h2>
+            <p>点击上方任意 STEP，可将该环节绑定到超星课程平台的 AI 实践页面。登录、课程权限和页面可嵌入性仍由超星平台决定。</p>
           </div>
           <div class="practice-fanya-editor-actions">
-            <button class="primary-action" id="loadChaoxingEditorEmbed" type="button">嵌入 AI 学情分析</button>
+            <button class="primary-action" id="loadChaoxingEditorEmbed" type="button">嵌入当前环节</button>
             <a
               class="secondary-action"
               id="openChaoxingEditor"
-              href="https://stat2-ans.chaoxing.com/stat2/study-ai/index?courseid=251769346&amp;clazzid=131807646&amp;cpi=18085305"
+              href="https://mooc2-ans.chaoxing.com/mooc2-ans/mycourse/tch?courseid=251769346&amp;clazzid=131807646&amp;cpi=18085305&amp;enc=399a5e53fc07ceeee1367420f088ffd5&amp;t=1778920097391&amp;pageHeader=-1&amp;v=2&amp;hideHead=0&amp;perspectiveType=%E5%B9%B3%E5%8F%B0%E5%8F%AF%E4%BB%A5%E6%8F%90%E4%BE%9B%E7%9A%84ai%E5%AE%9E%E8%B7%B5"
               target="_blank"
               rel="noopener noreferrer"
             >
-              新窗口打开 AI 学情分析
+              新窗口打开当前环节
             </a>
           </div>
         </div>
@@ -261,31 +258,31 @@
           <div class="practice-fanya-editor-frame-shell">
             <iframe
               id="chaoxingEditorFrame"
-              title="超星 AI 学情分析"
+              title="超星平台 AI 实践"
               src="about:blank"
               loading="lazy"
               referrerpolicy="strict-origin-when-cross-origin"
               sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-downloads allow-top-navigation-by-user-activation"
             ></iframe>
             <div class="practice-fanya-editor-placeholder" id="chaoxingEditorPlaceholder" aria-live="polite">
-              <span>AI 学情分析待加载</span>
-              <strong>点击嵌入 AI 学情分析</strong>
-              <p>系统会在下方 iframe 加载超星 AI 学情分析界面；如果登录后画面为空白，请使用新窗口打开同一地址。</p>
+              <span>平台 AI 实践待加载</span>
+              <strong>点击 20 环节中的任一 STEP</strong>
+              <p>系统会把选中的教学实践环节映射到下方 iframe；如果登录后画面为空白，请使用新窗口打开同一地址。</p>
             </div>
           </div>
-          <aside class="practice-fanya-editor-status" aria-label="超星 AI 学情分析嵌入状态">
+          <aside class="practice-fanya-editor-status" aria-label="超星平台 AI 实践嵌入状态">
             <span>当前状态</span>
             <strong id="chaoxingEditorStatusText">待加载</strong>
-            <p id="chaoxingEditorStatusDescription">尚未请求第三方页面，加载后会在本区域显示超星登录页或 AI 学情分析页面。</p>
+            <p id="chaoxingEditorStatusDescription">尚未请求第三方页面，加载后会在本区域显示超星登录页或课程 AI 实践页面。</p>
             <div class="practice-ai-step-context" aria-label="当前绑定教学环节">
               <span id="chaoxingEditorActiveStep">未选择</span>
-              <strong id="chaoxingEditorActiveStepTitle">学情分析与学习起点诊断</strong>
+              <strong id="chaoxingEditorActiveStepTitle">请先点击 20 环节状态画布中的任一节点。</strong>
             </div>
             <dl>
               <div><dt>课程 ID</dt><dd>251769346</dd></div>
               <div><dt>班级 ID</dt><dd>131807646</dd></div>
-              <div><dt>平台页面</dt><dd>AI 学情分析</dd></div>
-              <div><dt>接入方式</dt><dd>前端 iframe 嵌入</dd></div>
+              <div><dt>视角参数</dt><dd>平台可以提供的 ai 实践</dd></div>
+              <div><dt>接入方式</dt><dd>前端 iframe 试验</dd></div>
             </dl>
           </aside>
         </div>
