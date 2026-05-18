@@ -311,7 +311,7 @@
 
   function renderStageNode(step) {
     const stepLabel = `STEP ${String(step.stepNo).padStart(2, "0")} · ${step.title}`;
-    return `<article class="practice-stage-node" data-stage-node="${escapeHtml(step.stepNo)}" data-node-status="${escapeHtml(step.status)}" data-responsible-agent="${escapeHtml(step.ownerAgent || inferStepAgent(step.stepNo))}" data-ai-practice-ready="true" role="button" tabindex="0" aria-label="${escapeHtml(stepLabel)}，点击后直接显示超星页面">
+    return `<article class="practice-stage-node" data-stage-node="${escapeHtml(step.stepNo)}" data-node-status="${escapeHtml(step.status)}" data-responsible-agent="${escapeHtml(step.ownerAgent || inferStepAgent(step.stepNo))}" data-ai-practice-ready="true" role="button" tabindex="0" aria-label="${escapeHtml(stepLabel)}，嵌入平台 AI 实践">
       <span>STEP ${String(step.stepNo).padStart(2, "0")}</span>
       <strong>${escapeHtml(step.title)}</strong>
       <div class="stage-node-meta">

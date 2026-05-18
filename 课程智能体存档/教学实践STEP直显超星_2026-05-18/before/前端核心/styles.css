@@ -22490,8 +22490,7 @@ body[data-page="practice"] .practice-fanya-editor-actions {
   justify-content: flex-end;
 }
 
-body[data-page="practice"] .practice-fanya-editor-actions .primary-action:disabled,
-body[data-page="practice"] .practice-fanya-editor-actions .secondary-action:disabled {
+body[data-page="practice"] .practice-fanya-editor-actions .primary-action:disabled {
   cursor: wait;
   opacity: 0.66;
 }

@@ -241,11 +241,11 @@
         <div class="practice-fanya-editor-head">
           <div>
             <p class="eyebrow">Chaoxing AI learning analysis</p>
-            <h2 id="chaoxing-editor-title">超星 AI 学情分析</h2>
-            <p>点击上方任一教学 STEP 后，本区域会直接切换并显示超星 AI 学情分析页面；登录与课程权限仍由超星平台决定。</p>
+            <h2 id="chaoxing-editor-title">AI 学情分析嵌入</h2>
+            <p>“学情分析与学习起点诊断”环节嵌入超星 AI 学情分析界面。登录、课程权限和页面可嵌入性仍由超星平台决定。</p>
           </div>
           <div class="practice-fanya-editor-actions">
-            <button class="secondary-action" id="loadChaoxingEditorEmbed" type="button">刷新当前 STEP</button>
+            <button class="primary-action" id="loadChaoxingEditorEmbed" type="button">嵌入 AI 学情分析</button>
             <a
               class="secondary-action"
               id="openChaoxingEditor"
@@ -253,7 +253,7 @@
               target="_blank"
               rel="noopener noreferrer"
             >
-              新窗口打开超星
+              新窗口打开 AI 学情分析
             </a>
           </div>
         </div>
@@ -268,15 +268,15 @@
               sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-downloads allow-top-navigation-by-user-activation"
             ></iframe>
             <div class="practice-fanya-editor-placeholder" id="chaoxingEditorPlaceholder" aria-live="polite">
-              <span>等待 STEP 选择</span>
-              <strong>点击任一 STEP 后直接显示超星</strong>
-              <p>选择教学实践环节后，系统会在当前区域打开超星 AI 学情分析页面。</p>
+              <span>AI 学情分析待加载</span>
+              <strong>点击嵌入 AI 学情分析</strong>
+              <p>系统会在下方 iframe 加载超星 AI 学情分析界面；如果登录后画面为空白，请使用新窗口打开同一地址。</p>
             </div>
           </div>
           <aside class="practice-fanya-editor-status" aria-label="超星 AI 学情分析嵌入状态">
             <span>当前状态</span>
-            <strong id="chaoxingEditorStatusText">等待点击 STEP</strong>
-            <p id="chaoxingEditorStatusDescription">点击任一教学环节后，本区域会直接显示超星页面。</p>
+            <strong id="chaoxingEditorStatusText">待加载</strong>
+            <p id="chaoxingEditorStatusDescription">尚未请求第三方页面，加载后会在本区域显示超星登录页或 AI 学情分析页面。</p>
             <div class="practice-ai-step-context" aria-label="当前绑定教学环节">
               <span id="chaoxingEditorActiveStep">未选择</span>
               <strong id="chaoxingEditorActiveStepTitle">学情分析与学习起点诊断</strong>
@@ -285,7 +285,7 @@
               <div><dt>课程 ID</dt><dd>251769346</dd></div>
               <div><dt>班级 ID</dt><dd>131807646</dd></div>
               <div><dt>平台页面</dt><dd>AI 学情分析</dd></div>
-              <div><dt>显示方式</dt><dd>STEP 点击后自动显示</dd></div>
+              <div><dt>接入方式</dt><dd>前端 iframe 嵌入</dd></div>
             </dl>
           </aside>
         </div>

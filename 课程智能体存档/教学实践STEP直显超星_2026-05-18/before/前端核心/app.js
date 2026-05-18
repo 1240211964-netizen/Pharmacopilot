@@ -7059,7 +7059,7 @@ function updateChaoxingPracticeOpenLink(stepInfo = getSelectedChaoxingPracticeSt
   const url = getChaoxingAiPracticeUrl();
   if (!openLink || !url) return;
   openLink.href = url;
-  openLink.setAttribute("aria-label", `新窗口打开${formatChaoxingPracticeStep(stepInfo)}的超星页面`);
+  openLink.setAttribute("aria-label", `新窗口打开${formatChaoxingPracticeStep(stepInfo)}的平台 AI 实践`);
 }
 
 function applyChaoxingPracticeNodeAffordances() {
@@ -7068,7 +7068,7 @@ function applyChaoxingPracticeNodeAffordances() {
     const stepInfo = getChaoxingPracticeStepFromNode(node);
     node.setAttribute("role", "button");
     node.setAttribute("tabindex", "0");
-    node.setAttribute("aria-label", `${formatChaoxingPracticeStep(stepInfo)}，点击后直接显示超星页面`);
+    node.setAttribute("aria-label", `${formatChaoxingPracticeStep(stepInfo)}，嵌入平台 AI 实践`);
     node.dataset.aiPracticeReady = "true";
     node.dataset.aiPracticeSelected = selected?.stepNo === stepInfo.stepNo ? "true" : "false";
   });
@@ -7087,14 +7087,14 @@ function selectChaoxingPracticeStep(stepInfo, options = {}) {
   }
   if (activeStep) activeStep.textContent = `STEP ${String(stepInfo.stepNo).padStart(2, "0")}`;
   if (activeStepTitle) activeStepTitle.textContent = stepInfo.title || "教学实践环节";
-  if (loadButton) loadButton.textContent = `刷新 STEP ${String(stepInfo.stepNo).padStart(2, "0")}`;
+  if (loadButton) loadButton.textContent = `嵌入 STEP ${String(stepInfo.stepNo).padStart(2, "0")}`;
   updateChaoxingPracticeOpenLink(stepInfo);
   applyChaoxingPracticeNodeAffordances();
   if (options.updateIdle !== false && panel?.dataset.embedState !== "loaded" && panel?.dataset.embedState !== "loading") {
     setChaoxingEditorEmbedState(
       "idle",
-      "等待点击 STEP",
-      `${formatChaoxingPracticeStep(stepInfo)} 已选中。点击任一 STEP 后，本区域会直接显示超星页面。`,
+      "已选择环节",
+      `${formatChaoxingPracticeStep(stepInfo)} 已绑定到下方平台 AI 实践窗口。`,
       stepInfo,
     );
   }
@@ -7119,14 +7119,14 @@ function setChaoxingEditorEmbedState(state, title, description, stepInfo = getSe
     if (label) {
       label.textContent =
         state === "loaded"
-          ? "超星已显示"
+          ? "内嵌已加载"
           : state === "loading"
-            ? "正在显示超星"
+            ? "内嵌加载中"
             : state === "blocked"
-              ? "当前页显示可能受限"
+              ? "内嵌可能受限"
               : state === "error"
-                ? "配置异常"
-                : "等待 STEP 选择";
+                ? "内嵌配置异常"
+                : "内嵌待加载";
     }
     if (strong) strong.textContent = title;
     if (copy) copy.textContent = description;
@@ -7138,44 +7138,23 @@ function setChaoxingEditorEmbedState(state, title, description, stepInfo = getSe
   if (loadButton) {
     loadButton.disabled = state === "loading";
     const stepLabel = stepInfo?.stepNo ? `STEP ${String(stepInfo.stepNo).padStart(2, "0")}` : "当前环节";
-    loadButton.textContent = state === "loading" ? "正在显示" : `刷新 ${stepLabel}`;
+    loadButton.textContent = state === "loaded" ? `重新加载 ${stepLabel}` : state === "loading" ? "正在加载" : `嵌入 ${stepLabel}`;
   }
 }
 
-function loadChaoxingAiPracticeEmbed(stepInfo = getSelectedChaoxingPracticeStep(), options = {}) {
+function loadChaoxingAiPracticeEmbed(stepInfo = getSelectedChaoxingPracticeStep()) {
   const panel = $("#chaoxingEditorEmbedPanel");
   const frame = $("#chaoxingEditorFrame");
   const url = getChaoxingAiPracticeUrl();
   if (!frame || !url) {
     setChaoxingEditorEmbedState("error", "缺少平台 AI 实践地址", "请检查页面上的 data-editor-url 配置。", stepInfo);
-    return "error";
+    return;
   }
   const finalStep = stepInfo || getSelectedChaoxingPracticeStep();
   if (finalStep) selectChaoxingPracticeStep(finalStep, { updateIdle: false });
-  const currentSrc = frame.getAttribute("src") || "";
-  const resolvedCurrentSrc = frame.src || "";
-  const isCurrentUrl = currentSrc === url || resolvedCurrentSrc === url;
-  if (isCurrentUrl && !options.forceReload) {
-    setChaoxingEditorEmbedState(
-      "loaded",
-      "超星页面已显示",
-      `${formatChaoxingPracticeStep(finalStep)} 已切换到当前超星显示区域。`,
-      finalStep,
-    );
-    if (panel) panel.dataset.lastLoadedStep = finalStep?.stepNo ? String(finalStep.stepNo) : "";
-    return "loaded";
-  }
-  setChaoxingEditorEmbedState("loading", "正在显示超星页面", `${formatChaoxingPracticeStep(finalStep)} 已触发，当前区域正在打开超星页面。`, finalStep);
-  if (isCurrentUrl && options.forceReload) {
-    frame.src = "about:blank";
-    window.setTimeout(() => {
-      frame.src = url;
-    }, 0);
-  } else {
-    frame.src = url;
-  }
+  setChaoxingEditorEmbedState("loading", "正在加载平台 AI 实践", `${formatChaoxingPracticeStep(finalStep)} 正在请求超星课程页面，未登录时会先出现超星登录页。`, finalStep);
+  frame.src = url;
   if (panel) panel.dataset.lastLoadedStep = finalStep?.stepNo ? String(finalStep.stepNo) : "";
-  return "loading";
 }
 
 function initChaoxingEditorEmbedPanel() {
@@ -7187,16 +7166,15 @@ function initChaoxingEditorEmbedPanel() {
   const stageCanvas = $("#practice-stage-canvas");
   const url = panel.dataset.editorUrl || openLink?.href || CHAOXING_AI_PRACTICE_URL;
   let loadingTimer = null;
-  const startStepEmbed = (stepInfo, options = {}) => {
+  const startStepEmbed = (stepInfo) => {
     if (loadingTimer) window.clearTimeout(loadingTimer);
-    const loadState = loadChaoxingAiPracticeEmbed(stepInfo, options);
-    if (loadState !== "loading") return;
+    loadChaoxingAiPracticeEmbed(stepInfo);
     loadingTimer = window.setTimeout(() => {
       if (panel.dataset.embedState === "loading") {
         setChaoxingEditorEmbedState(
           "blocked",
-          "当前页显示可能受限",
-          "若画面长时间空白，请用新窗口打开当前环节；这通常说明平台限制了当前页内显示或登录状态。",
+          "可能受到平台嵌入限制",
+          "若画面长时间空白，请用新窗口打开当前环节；这通常说明第三方页面限制了 iframe 或登录态。",
           stepInfo,
         );
       }
@@ -7230,15 +7208,15 @@ function initChaoxingEditorEmbedPanel() {
     const stepInfo = getSelectedChaoxingPracticeStep();
     setChaoxingEditorEmbedState(
       "loaded",
-      "超星页面已显示",
-      `${formatChaoxingPracticeStep(stepInfo)} 已在当前区域打开。若登录后画面为空白，请使用新窗口打开当前环节。`,
+      "已加载平台 AI 实践",
+      `${formatChaoxingPracticeStep(stepInfo)} 已写入 iframe。若登录后画面为空白，通常是超星登录态、浏览器第三方 Cookie 或 iframe 白名单限制。`,
       stepInfo,
     );
   });
 
   loadButton?.addEventListener("click", () => {
     const stepInfo = getSelectedChaoxingPracticeStep();
-    startStepEmbed(stepInfo, { forceReload: true });
+    startStepEmbed(stepInfo);
   });
 
   window.applyChaoxingPracticeNodeAffordances = applyChaoxingPracticeNodeAffordances;
