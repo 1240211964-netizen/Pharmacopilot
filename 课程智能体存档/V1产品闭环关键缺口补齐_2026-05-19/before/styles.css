@@ -12391,9 +12391,7 @@ body[data-page="home"] .agent-output-metrics dd {
   z-index: 1;
   display: grid;
   gap: 16px;
-  width: min(760px, 100%);
-  max-height: min(86vh, 860px);
-  overflow: auto;
+  width: min(560px, 100%);
   padding: 28px;
   border-color: rgba(255, 248, 238, 0.24);
   border-radius: 28px;
@@ -12451,38 +12449,6 @@ body[data-page="home"] .agent-output-metrics dd {
   grid-template-columns: 1fr 1fr;
   gap: 12px;
   margin-top: 16px;
-}
-
-.route-task-sheet-modal-form {
-  padding: 14px;
-}
-
-.route-task-sheet-modal-form h3 {
-  margin: 0;
-  font-size: 1rem;
-}
-
-.route-modal-output-preview {
-  display: grid;
-  gap: 10px;
-  padding: 12px;
-  border: 1px solid rgba(77, 63, 49, 0.1);
-  border-radius: 14px;
-  background: rgba(255, 252, 247, 0.82);
-}
-
-.route-modal-output-preview pre {
-  max-height: 220px;
-  margin: 0;
-  overflow: auto;
-  white-space: pre-wrap;
-  color: var(--text-soft);
-  font-size: 0.82rem;
-  line-height: 1.55;
-}
-
-.route-task-sheet-modal-actions {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 @keyframes routeNodePulse {

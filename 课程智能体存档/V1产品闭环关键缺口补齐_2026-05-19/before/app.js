@@ -2647,7 +2647,7 @@ function getHomeWendaRuntimeDomain() {
 function buildHomeWendaScienceUrl(searchText) {
   const domain = getHomeWendaRuntimeDomain();
   const prompt = String(searchText || "").trim();
-  if (!domain) throw new Error("未配置机构域名，请先进入配置服务填写闻道域名。");
+  if (!domain) throw new Error("暂时缺少闻道服务配置。");
   if (!prompt) throw new Error("请先输入研究问题。");
 
   const url = new URL("/api/openAccess/redirect/history", `https://${domain}`);
@@ -2784,7 +2784,7 @@ function renderWendaoConfigNotice() {
       `
       : `
         <div>
-          <strong>未配置机构域名</strong>
+          <strong>闻道暂未配置</strong>
           <p>请在配置服务中填写 VITE_WENDAO_DOMAIN / WENDAO_DOMAIN。未配置时不会展示空 iframe。</p>
         </div>
         <a class="primary-action" href="./settings.html">去配置</a>
@@ -3379,7 +3379,7 @@ function getIntegrationStatusCopy(store = loadClientStore()) {
   return {
     wendao: {
       state: domain ? "configured" : "error",
-      label: domain ? "已配置" : "未配置机构域名",
+      label: domain ? "已配置" : "未配置",
       detail: domain ? domain : "请到配置服务填写 VITE_WENDAO_DOMAIN / WENDAO_DOMAIN。",
     },
     fanya: {
@@ -3484,12 +3484,12 @@ function renderSettingsPage() {
 
 function resetDemoDataStore() {
   const previous = loadClientStore();
+  const preservedSession = previous.accountSession || makeEmptyAccountSession();
   const preservedIntegration = {
     ...makeDefaultIntegrationConfig(),
     ...(previous.integrationConfig || {}),
   };
   [
-    ACCOUNT_SESSION_KEY,
     TRAINING_STATE_KEY,
     NAVIGATION_TRAINING_KEY,
     PRACTICE_WORKFLOW_KEY,
@@ -3504,10 +3504,9 @@ function resetDemoDataStore() {
   currentAssetStore = null;
   saveClientStore({
     ...makeDefaultClientStore(),
-    accountSession: makeEmptyAccountSession(),
+    accountSession: preservedSession,
     integrationConfig: preservedIntegration,
   });
-  saveToLocalStorage(ACCOUNT_SESSION_KEY, makeEmptyAccountSession());
 }
 
 function initSettingsPage() {
@@ -3544,8 +3543,7 @@ function initSettingsPage() {
   $("#resetDemoData")?.addEventListener("click", () => {
     resetDemoDataStore();
     renderSettingsPage();
-    renderGlobalAccountActions(makeEmptyAccountSession());
-    showToast("演示数据已重置，账号会话已清空，服务配置已保留");
+    showToast("演示数据已重置，已保留本地账号与服务配置");
   });
 }
 
@@ -3696,6 +3694,7 @@ function renderOutputDetail(item) {
 function saveOutputToTeachingAssets(id) {
   const item = findOutputItem(id);
   if (!item) return;
+  const store = loadAssets();
   const saved = {
     id: `output-asset-${Date.now()}`,
     title: item.title || "输出汇总产物",
@@ -3712,14 +3711,14 @@ function saveOutputToTeachingAssets(id) {
     content: item.content || item.summary || "",
     relatedFiles: [],
   };
-  const targetKey = saved.type.includes("量规") || item.outputType === "评价量规"
+  const targetKey = saved.type.includes("量规")
     ? "generatedRubrics"
-    : item.outputType === "课堂任务" || saved.type.includes("任务")
-      ? "generatedTasks"
-      : saved.source.includes("教学实践") || saved.type.includes("实践") || item.outputType === "实践方案"
+    : saved.source.includes("教学实践") || saved.type.includes("实践") || saved.type.includes("任务")
       ? "practiceReports"
       : "trainingReports";
-  addAsset(saved, targetKey);
+  store[targetKey] = [saved, ...(store[targetKey] || [])];
+  store.tags = Array.from(new Set([...(store.tags || []), ...saved.tags]));
+  saveAssets(store);
   showToast("输出已保存到教学资产");
   renderOutputsPage();
 }
@@ -5369,7 +5368,7 @@ function buildNavigationTaskSheetMarkdown(sheet, stepId, node, step) {
 }
 
 function readRouteTaskSheetForm(stepId) {
-  const root = $(`#trainingModal.is-open [data-route-task-sheet="${stepId}"]`) || $(`[data-route-task-sheet="${stepId}"]`);
+  const root = $(`[data-route-task-sheet="${stepId}"]`);
   if (!root) return null;
   const value = (name) => $(`[name="${name}"]`, root)?.value.trim() || "";
   return {
@@ -5422,66 +5421,6 @@ function renderRouteTaskSheetForm(stepId, node, step, preview) {
   `;
 }
 
-function renderRouteTaskSheetModalForm(stepId, node, step, preview) {
-  const sheet = getRouteTaskSheetDraft(stepId, node, step, preview);
-  const previewMarkdown = buildNavigationTaskSheetMarkdown({ ...sheet, savedAt: new Date().toISOString() }, stepId, node, step);
-  return `
-    <section class="route-task-sheet-form route-task-sheet-modal-form" data-route-task-sheet="${stepId}" aria-labelledby="route-modal-task-sheet-title-${stepId}">
-      <div class="route-block-head">
-        <div>
-          <p class="eyebrow">Task sheet</p>
-          <h3 id="route-modal-task-sheet-title-${stepId}">填写本环节任务单</h3>
-        </div>
-        <span>本地演示产物</span>
-      </div>
-      <label>
-        <span>教师输入</span>
-        <textarea name="teacherNotes" rows="3" placeholder="写下本班学情、课堂限制、材料边界或需要智能体重点处理的问题。">${escapeHtml(sheet.teacherNotes)}</textarea>
-      </label>
-      <label>
-        <span>当前任务</span>
-        <textarea name="currentTask" rows="3">${escapeHtml(sheet.currentTask)}</textarea>
-      </label>
-      <label>
-        <span>教师需要确认的信息</span>
-        <textarea name="teacherConfirmations" rows="4">${escapeHtml(sheet.teacherConfirmations)}</textarea>
-      </label>
-      <label>
-        <span>智能体建议区</span>
-        <textarea name="agentSuggestion" rows="5">${escapeHtml(sheet.agentSuggestion)}</textarea>
-      </label>
-      <label>
-        <span>评价维度区</span>
-        <textarea name="evaluationDimensions" rows="4">${escapeHtml(sheet.evaluationDimensions)}</textarea>
-      </label>
-      <section class="route-modal-output-preview" aria-label="产物预览区">
-        <div class="route-block-head">
-          <div>
-            <p class="eyebrow">Preview</p>
-            <h3>产物预览区</h3>
-          </div>
-          <span>Markdown</span>
-        </div>
-        <pre id="trainingRouteModalOutputPreview">${escapeHtml(previewMarkdown)}</pre>
-      </section>
-      <div class="training-route-modal-actions route-task-sheet-modal-actions">
-        <button class="secondary-action" type="button" data-route-modal-generate>生成本环节产物</button>
-        <button class="primary-action" type="button" data-route-modal-save>保存为教学资产</button>
-        <button class="secondary-action" type="button" data-route-modal-confirm-next>确认并推进下一环节</button>
-        <button class="secondary-action" type="button" data-close-training-modal>返回路线图</button>
-      </div>
-    </section>
-  `;
-}
-
-function renderTrainingModalOutputPreview(stepId, node, step) {
-  const sheet = readRouteTaskSheetForm(stepId) || getRouteTaskSheetDraft(stepId, node, step, createStepPreview(stepId, "", "training"));
-  const content = buildNavigationTaskSheetMarkdown({ ...sheet, savedAt: new Date().toISOString() }, stepId, node, step);
-  const preview = $("#trainingRouteModalOutputPreview");
-  if (preview) preview.textContent = content;
-  return content;
-}
-
 function renderRouteTaskSheetBrief(stepId, node, step, preview) {
   const sheet = getRouteTaskSheetDraft(stepId, node, step, preview);
   const dimensions = sheet.evaluationDimensions
@@ -5520,7 +5459,7 @@ function renderRouteTaskSheetBrief(stepId, node, step, preview) {
   `;
 }
 
-function saveRouteTaskSheet(options = {}) {
+function saveRouteTaskSheet() {
   const stepId = Number(selectedRouteNodeId);
   const node = getRouteNode(stepId);
   const step = getContextualTrainingStep(getTrainingStep(stepId));
@@ -5536,6 +5475,7 @@ function saveRouteTaskSheet(options = {}) {
   trainingState.currentStepId = Math.min(Math.max(Number(trainingState.currentStepId || 1), stepId + 1), trainingSteps.length);
   const content = buildNavigationTaskSheetMarkdown(sheet, stepId, node, step);
   const phaseTitle = getTeachingPhaseTitle(getTeachingPhaseIdByNodeId(stepId));
+  const store = loadAssets();
   const item = {
     id: `navigation-task-sheet-${stepId}-${Date.now()}`,
     title: `${String(stepId).padStart(2, "0")} ${step.title}｜教学导航任务单`,
@@ -5553,16 +5493,15 @@ function saveRouteTaskSheet(options = {}) {
     content,
     relatedFiles: [],
   };
-  addAsset(item, "trainingReports");
+  store.trainingReports = [item, ...(store.trainingReports || [])];
+  store.tags = Array.from(new Set([...(store.tags || []), ...item.tags]));
+  saveAssets(store);
   saveTrainingState();
-  if (!options.skipRender) {
-    routeNodeCardOpen = true;
-    routeNodeCardMode = "explain";
-    routeNodeRecommendationMessage = `任务单已保存为教学资产，可进入教学实践生成课堂任务和评价量规。`;
-    renderTeachingNavigationPage();
-  }
-  if (!options.silent) showToast("任务单已保存到教学资产");
-  return item;
+  routeNodeCardOpen = true;
+  routeNodeCardMode = "explain";
+  routeNodeRecommendationMessage = `任务单已保存为教学资产，可进入教学实践生成课堂任务和评价量规。`;
+  renderTeachingNavigationPage();
+  showToast("任务单已保存到教学资产");
 }
 
 function renderNodeDetailPanel() {
@@ -5750,8 +5689,11 @@ function startRouteNodeTraining() {
     showToast("请先完成前序环节，再进入本环节设计");
     return;
   }
+  routeNodeCardOpen = true;
+  routeNodeCardMode = "task-sheet";
   routeNodeRecommendationMessage = "";
-  openTrainingRouteModal(getRouteNode(selectedRouteNodeId));
+  renderNodeDetailPanel();
+  focusRouteNodeDetailPanel();
 }
 
 function collapseRouteNodeCard() {
@@ -5910,44 +5852,24 @@ function openTrainingRouteModal(node) {
   const title = $("#trainingModalTitle");
   const body = $("#trainingModalBody");
   if (!modal || !body || !title) return;
-  if (!trainingState) loadTrainingState();
-  const stepId = Number(node.id);
-  selectedRouteNodeId = stepId;
-  routeNodeCardOpen = true;
-  routeNodeCardMode = "task-sheet";
-  const step = getContextualTrainingStep(getTrainingStep(stepId));
-  const selectedOptionId = trainingState.currentSelections?.[String(stepId)] || trainingState.choices?.[String(stepId)]?.primary || "";
-  const preview = createStepPreview(stepId, selectedOptionId, "training");
-  title.textContent = `${String(stepId).padStart(2, "0")} ${node.title}`;
-  body.innerHTML = renderRouteTaskSheetModalForm(stepId, node, step, preview);
-  $("[data-route-modal-generate]", body)?.addEventListener("click", () => {
-    renderTrainingModalOutputPreview(stepId, node, step);
-    showToast("本环节产物预览已生成");
-  });
-  $("[data-route-modal-save]", body)?.addEventListener("click", () => {
-    renderTrainingModalOutputPreview(stepId, node, step);
-    const item = saveRouteTaskSheet({ silent: true, skipRender: true });
-    if (!item) return;
-    renderTeachingNavigationPage();
-    showToast("任务单已保存到教学资产");
-  });
-  $("[data-route-modal-confirm-next]", body)?.addEventListener("click", () => {
-    renderTrainingModalOutputPreview(stepId, node, step);
-    const item = saveRouteTaskSheet({ silent: true, skipRender: true });
-    if (!item) return;
-    const nextStep = Math.min(stepId + 1, trainingSteps.length);
-    selectedRouteNodeId = nextStep;
-    trainingState.currentStepId = nextStep;
-    routeNodeCardOpen = true;
-    routeNodeCardMode = "explain";
-    routeNodeRecommendationMessage =
-      nextStep > stepId
-        ? `已保存 ${String(stepId).padStart(2, "0")} 任务单，推荐继续 ${String(nextStep).padStart(2, "0")}：${getRouteNode(nextStep).title}。`
-        : "已完成全部环节任务单，可进入教学实践生成课堂任务和评价量规。";
-    saveTrainingState();
+  title.textContent = `${String(node.id).padStart(2, "0")} ${node.title}`;
+  body.innerHTML = `
+    <dl class="training-route-modal-list">
+      <div><dt>当前任务</dt><dd>${escapeHtml(node.task)}</dd></div>
+      <div><dt>需要提交的产出物</dt><dd>${escapeHtml(node.output)}</dd></div>
+      <div><dt>评价维度</dt><dd>${escapeHtml(node.rubric)}</dd></div>
+    </dl>
+    <div class="training-route-modal-actions">
+      <button class="primary-action" type="button" data-route-modal-start>开始填写任务单</button>
+      <button class="secondary-action" type="button" data-close-training-modal>先返回路线图</button>
+    </div>
+  `;
+  $("[data-route-modal-start]", body)?.addEventListener("click", () => {
     closeTrainingRouteModal();
+    selectedRouteNodeId = Number(node.id);
+    routeNodeCardOpen = true;
+    routeNodeCardMode = "task-sheet";
     renderTeachingNavigationPage();
-    showToast("已保存任务单并推进到下一环节");
     focusRouteNodeDetailPanel();
   });
   modal.classList.add("is-open");
@@ -9936,122 +9858,6 @@ function saveAssets(store = currentAssetStore) {
   });
 }
 
-function inferAssetCollection(item = {}) {
-  const text = `${item.outputType || ""} ${item.type || ""} ${item.title || ""} ${item.source || ""}`;
-  if (/量规|rubric|评分标准/i.test(text)) return "generatedRubrics";
-  if (/课堂任务|任务单|generated task|作业说明/i.test(text)) return "generatedTasks";
-  if (/实践方案|教学实践|practice/i.test(text)) return "practiceReports";
-  if (/泛雅|同步|复制/.test(text)) return "fanyaSyncRecords";
-  return "trainingReports";
-}
-
-function addAsset(item = {}, collectionKey = "") {
-  const assets = loadAssets();
-  const targetKey = collectionKey || inferAssetCollection(item);
-  const nextItem = {
-    id: item.id || `${targetKey}-${Date.now()}`,
-    updatedAt: item.updatedAt || new Date().toISOString(),
-    boundary: item.boundary || "本地演示产物，正式使用前需教师复核。",
-    relatedFiles: item.relatedFiles || [],
-    ...item,
-  };
-  assets[targetKey] = [nextItem, ...(assets[targetKey] || [])];
-  assets.tags = Array.from(new Set([...(assets.tags || []), ...(nextItem.tags || [])]));
-  saveAssets(assets);
-  return nextItem;
-}
-
-function getCurrentWorkspace() {
-  return loadClientStore().currentWorkspace || makeDefaultWorkspace();
-}
-
-function saveCurrentWorkspace(workspace = {}) {
-  return updateClientStore((store) => {
-    store.currentWorkspace = {
-      ...store.currentWorkspace,
-      ...(workspace && typeof workspace === "object" ? workspace : {}),
-      updatedAt: new Date().toISOString(),
-    };
-  }).currentWorkspace;
-}
-
-function getNavigationState() {
-  if (!trainingState) loadTrainingState();
-  return {
-    ...trainingState,
-    stepStates: loadClientStore().navigationStepStates || {},
-  };
-}
-
-function saveNavigationState(state = {}) {
-  trainingState = {
-    ...createDefaultTrainingState(),
-    ...(state && typeof state === "object" ? state : {}),
-  };
-  saveTrainingState();
-  return getNavigationState();
-}
-
-function getPracticeState() {
-  return practiceWorkflowState || loadFromLocalStorage(PRACTICE_WORKFLOW_KEY, null) || makeEmptyPracticeWorkflowState();
-}
-
-function savePracticeState(state = {}) {
-  practiceWorkflowState = {
-    ...makeEmptyPracticeWorkflowState(),
-    ...(state && typeof state === "object" ? state : {}),
-  };
-  savePracticeWorkflowState();
-  return practiceWorkflowState;
-}
-
-function getAssets() {
-  return loadAssets();
-}
-
-function getIntegrationConfig() {
-  return loadClientStore().integrationConfig || makeDefaultIntegrationConfig();
-}
-
-function saveIntegrationConfig(config = {}) {
-  return updateClientStore((store) => {
-    store.integrationConfig = {
-      ...store.integrationConfig,
-      ...(config && typeof config === "object" ? config : {}),
-      wendao: {
-        ...store.integrationConfig?.wendao,
-        ...(config?.wendao || {}),
-      },
-      fanya: {
-        ...store.integrationConfig?.fanya,
-        ...(config?.fanya || {}),
-      },
-      data: {
-        ...store.integrationConfig?.data,
-        ...(config?.data || {}),
-      },
-    };
-    store.integrationConfig.wendao.domain = normalizeServiceDomain(store.integrationConfig.wendao.domain || "");
-    store.integrationConfig.wendao.status = store.integrationConfig.wendao.domain ? "configured" : "not_configured";
-  }).integrationConfig;
-}
-
-const PharmacoPilotStore = {
-  getAccountSession: loadAccountSession,
-  saveAccountSession,
-  getCurrentWorkspace,
-  saveCurrentWorkspace,
-  getNavigationState,
-  saveNavigationState,
-  getPracticeState,
-  savePracticeState,
-  getAssets,
-  saveAssets,
-  addAsset,
-  getIntegrationConfig,
-  saveIntegrationConfig,
-};
-
 const MANAGEMENT_COURSE_GRAPH_NODES = [
   {
     id: "course-core",
@@ -12756,7 +12562,6 @@ window.loadFromLocalStorage = loadFromLocalStorage;
 window.loadClientStore = loadClientStore;
 window.saveClientStore = saveClientStore;
 window.updateClientStore = updateClientStore;
-window.PharmacoPilotStore = PharmacoPilotStore;
 window.renderHorizontalBarChart = renderHorizontalBarChart;
 window.renderStepHeatmap = renderStepHeatmap;
 window.renderBulletChart = renderBulletChart;
@@ -12836,9 +12641,6 @@ window.saveFinalPracticePlanToAssets = saveFinalPracticePlanToAssets;
 window.initAssetsPage = initAssetsPage;
 window.loadAssets = loadAssets;
 window.renderAssetOverview = renderAssetOverview;
-window.getAssets = getAssets;
-window.saveAssets = saveAssets;
-window.addAsset = addAsset;
 window.renderAssetUpload = renderAssetUpload;
 window.handleAssetUpload = handleAssetUpload;
 window.renderAssetList = renderAssetList;
