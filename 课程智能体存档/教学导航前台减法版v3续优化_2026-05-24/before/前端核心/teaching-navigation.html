@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PharmacoPilot | 面向新教师的药事管理课程教学导航工作台</title>
+    <meta name="description" content="面向新教师的药事管理课程教学导航工作台，按课前、课中、课后推进证据化教学设计、实施与复盘。" />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./pharmacopilot-design-system.css" />
+    <link rel="stylesheet" href="./teaching-navigation-productized.css" />
+    <script defer src="./wenda-env.js"></script>
+    <script defer src="./teaching-navigation-contract.js"></script>
+    <script defer src="./teaching-navigation-productized.js"></script>
+  </head>
+  <body data-page="teaching-navigation">
+    <header class="site-header app-header">
+      <div class="topbar">
+        <a class="brand" href="./index.html" aria-label="PharmacoPilot 课程智能体首页">
+          <span class="brand-mark" aria-hidden="true"><span class="brand-monogram">P</span></span>
+          <span class="brand-lockup">
+            <span class="brand-wordmark">PharmacoPilot</span>
+            <span class="brand-submark">课程智能体</span>
+          </span>
+        </a>
+        <button
+          class="nav-menu-toggle"
+          id="navMenuToggle"
+          type="button"
+          aria-label="打开导航菜单"
+          aria-controls="homeNavGroup"
+          aria-expanded="false"
+        >
+          <span aria-hidden="true"></span>
+        </button>
+        <div class="home-nav-group" id="homeNavGroup">
+          <nav class="topnav" id="primaryNav" aria-label="页面导航">
+            <a class="nav-link" data-nav="home" href="./index.html">首页</a>
+            <a class="nav-link active" data-nav="teaching-navigation" href="./teaching-navigation.html">教学导航</a>
+            <a class="nav-link" data-nav="practice" href="./practice.html">教学实践</a>
+            <a class="nav-link" data-nav="assets" href="./teaching-data.html">教学数据</a>
+            <a class="nav-link" data-nav="docs" href="https://github.com/1240211964-netizen/Pharmacopilot" target="_blank" rel="noreferrer">文档</a>
+          </nav>
+          <div class="top-actions home-auth-actions" aria-label="账号与授权入口">
+            <a class="nav-outline-action" href="./auth.html?mode=login">登录</a>
+            <a class="nav-outline-action" href="./auth.html?provider=github" data-auth-provider="github">GitHub</a>
+            <a class="nav-primary-action nav-fanya-action" href="about:blank" target="_blank" rel="noreferrer" data-wenda-platform-auth aria-label="泛雅，暂时打开闻道平台授权界面">泛雅</a>
+          </div>
+        </div>
+      </div>
+
+      <section class="routebar station-hero" aria-label="三时段十任务站课程教学导航">
+        <article class="course-card station-context-card">
+          <span class="label">新教师药事管理课程工作台</span>
+          <strong>课前、课中、课后 · 十个任务站</strong>
+          <p>以药事管理课程准备、课堂实施和课后复盘为主线；SWOT 只是管理学原理中的示例知识点。</p>
+          <div class="progress-track" aria-label="课程设计节点完成进度"><span id="progressFill"></span></div>
+        </article>
+        <article class="flow-card station-route-card">
+          <div class="flow-head">
+            <div>
+              <span class="label">证据化教学设计路径</span>
+              <strong>三时段教学导航路线</strong>
+            </div>
+            <div class="legend" aria-label="课程设计节点状态">
+              <span><i class="legend-dot done"></i>已保存</span>
+              <span><i class="legend-dot active"></i>当前</span>
+              <span><i class="legend-dot ready"></i>可进入</span>
+            </div>
+          </div>
+          <div id="phaseRoute" class="phase-route" aria-label="课前课中课后三时段路线"></div>
+          <div id="stationRoute" class="station-route" aria-label="十个教学导航任务站"></div>
+        </article>
+      </section>
+    </header>
+
+    <main class="page-shell">
+      <section class="workspace">
+        <section class="center-stage" aria-label="当前课程设计节点">
+          <article id="activeStation" class="active-station-card step-brief-card">
+            <div class="step-cover">
+              <div class="step-title-block">
+                <span id="phasePill" class="phase-pill"></span>
+                <h1 id="activeTitle"></h1>
+                <p id="activePurpose"></p>
+              </div>
+              <div class="step-score-card" aria-label="课程设计节点成熟度">
+                <span>成熟度</span>
+                <strong id="maturityScore">2.8</strong>
+                <em>证据阈值 3.2</em>
+              </div>
+            </div>
+            <div id="activeStationMeta" class="station-meta-grid" aria-label="课程设计节点任务信息"></div>
+          </article>
+
+          <article class="scenario-card">
+            <div class="panel-head">
+              <div>
+                <span class="eyebrow">药事管理情境</span>
+                <h2>切换本轮案例语境</h2>
+              </div>
+              <span id="scenarioEvidence" class="scenario-evidence"></span>
+            </div>
+            <div id="scenarioSwitcher" class="scenario-switcher" aria-label="药事情境切换"></div>
+          </article>
+
+          <section class="workbench-grid" aria-label="证据图、教学判断题与产物生成工作台">
+            <div class="workbench-main">
+              <section class="evidence-decision-grid" aria-label="一图一题工作区">
+                <article id="evidenceFigure" class="evidence-figure" aria-label="课程设计节点证据图"></article>
+                <article id="decisionQuestion" class="decision-question" aria-label="课程设计节点判断题"></article>
+              </section>
+
+              <article id="systemFeedback" class="system-feedback" aria-live="polite"></article>
+
+              <article class="artifact-card">
+                <div class="panel-head">
+                  <div>
+                    <span class="eyebrow">节点产物</span>
+                    <h2 id="artifactTitle">生成证据化教案片段</h2>
+                  </div>
+                  <div class="artifact-actions">
+                    <button id="generateArtifactBtn" class="ghost-btn" type="button">生成产物草稿</button>
+                    <button id="writeAssetBtn" class="ghost-btn" type="button">保存教学资产</button>
+                    <button id="nextFrontStepBtn" class="primary-btn" type="button">下一节点</button>
+                    <button id="exportSummaryBtn" class="ghost-btn" type="button">导出摘要</button>
+                  </div>
+                </div>
+                <div id="requirementRow" class="requirement-row" aria-label="产物必备部分"></div>
+                <textarea id="artifactText" aria-label="当前课程设计节点产物草稿"></textarea>
+              </article>
+
+              <section class="radar-asset-grid">
+                <article id="qualityRadar" class="quality-radar" aria-label="质量雷达"></article>
+                <article id="assetShelf" class="asset-shelf" aria-label="已保存教学资产"></article>
+              </section>
+            </div>
+
+            <aside class="workbench-side" aria-label="运行状态与证据链">
+              <article id="agentStatusPanel" class="agent-status-panel" aria-label="系统运行状态面板"></article>
+              <article id="artifactPreview" class="generated-artifact-preview" aria-label="产物审校预览"></article>
+              <article id="evidenceChain" class="evidence-chain-card" aria-label="课程证据链"></article>
+            </aside>
+          </section>
+
+          <article id="summaryExport" class="summary-export" aria-label="导出摘要预览" hidden></article>
+        </section>
+      </section>
+    </main>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>

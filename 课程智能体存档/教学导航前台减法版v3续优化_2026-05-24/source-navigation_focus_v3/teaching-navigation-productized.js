@@ -136,7 +136,6 @@
     });
 
     $("generateArtifactBtn")?.addEventListener("click", () => {
-      if (!requireDecisionFirst()) return;
       generateArtifact();
       renderArtifact();
       const drawer = $("artifactDrawer");
@@ -145,11 +144,6 @@
     });
 
     $("saveAssetBtn")?.addEventListener("click", () => {
-      if (!requireDecisionFirst()) return;
-      if (!canSaveAsset()) {
-        toast("请先生成或填写本站产物，再保存资产。", 2200);
-        return;
-      }
       saveAsset();
     });
 
@@ -157,10 +151,6 @@
       const station = currentStation();
       if (!state.decisions[station.id]) {
         toast("请先完成本站判断，再进入下一站。", 2200);
-        return;
-      }
-      if (!hasSavedAsset(station)) {
-        toast("请先保存本站教学资产，再进入下一站。", 2200);
         return;
       }
       state.stationIndex = Math.min(stations.length - 1, state.stationIndex + 1);
@@ -198,28 +188,6 @@
 
   function completedCount() {
     return new Set(state.assets.map((asset) => String(asset.stationId))).size;
-  }
-
-  function hasDraft(station = currentStation()) {
-    return Boolean(String(state.drafts[station.id] || "").trim());
-  }
-
-  function hasSavedAsset(station = currentStation()) {
-    return stationAssets(station.id).length > 0;
-  }
-
-  function canGenerateArtifact(station = currentStation()) {
-    return Boolean(selectedOption(station));
-  }
-
-  function canSaveAsset(station = currentStation()) {
-    return canGenerateArtifact(station) && hasDraft(station);
-  }
-
-  function requireDecisionFirst(station = currentStation()) {
-    if (canGenerateArtifact(station)) return true;
-    toast("请先完成本站教学判断，再生成产物。", 2200);
-    return false;
   }
 
   function render() {
@@ -312,7 +280,7 @@
     target.innerHTML = `
       <div class="panel-head">
         <div>
-          <span class="eyebrow">证据图</span>
+          <span class="eyebrow">Evidence figure</span>
           <h2>${esc(model.title)}</h2>
         </div>
         <span class="figure-type">${esc(model.type)}</span>
@@ -329,26 +297,22 @@
     target.innerHTML = `
       <div class="panel-head">
         <div>
-          <span class="eyebrow">教学判断题</span>
+          <span class="eyebrow">One decision</span>
           <h2>${esc(station.decisionQuestion || "当前最重要的教学判断是什么？")}</h2>
         </div>
       </div>
       <div class="decision-options">
         ${decisionOptions(station).map((option, index) => `<button type="button" class="decision-option ${selected?.id === option.id ? "active" : ""}" data-option="${esc(option.id)}">
           <span class="option-index">${index + 1}</span>
-          <span><strong>${esc(option.label)}</strong></span>
+          <span><strong>${esc(option.label)}</strong><small>${esc(option.rationale)}</small></span>
         </button>`).join("")}
       </div>`;
     target.querySelectorAll("[data-option]").forEach((button) => {
       button.addEventListener("click", () => {
-        const previous = state.decisions[station.id];
         state.decisions[station.id] = button.dataset.option;
-        if (previous !== button.dataset.option) {
-          delete state.drafts[station.id];
-          state.assets = state.assets.filter((asset) => String(asset.stationId) !== String(station.id));
-        }
         saveState();
-        render();
+        renderDecision();
+        renderFeedback();
       });
     });
   }
@@ -369,7 +333,7 @@
       .join("、");
     panel.classList.add("show");
     panel.innerHTML = `
-      <span class="eyebrow">系统反馈</span>
+      <span class="eyebrow">System feedback</span>
       <h2>${option.score >= 3.4 ? "建议采用这个判断" : option.score >= 2.5 ? "可以推进，但要补证据" : "不建议作为主路径"}</h2>
       <p>${esc(option.rationale)} 当前判断主要影响：${esc(dimensionText || "教学质量") }。</p>
       <div class="feedback-next">下一步：点击“生成”，把这个判断转为「${esc(station.artifactType)}」。</div>`;
@@ -382,33 +346,14 @@
     if (textarea) textarea.value = draft;
     const summary = $("artifactSummary");
     if (summary) summary.textContent = draft ? `查看 / 编辑：${station.artifactType}` : "生成后查看 / 编辑产物草稿";
-    const generateBtn = $("generateArtifactBtn");
-    if (generateBtn) {
-      generateBtn.disabled = !canGenerateArtifact(station);
-      generateBtn.setAttribute("aria-disabled", String(generateBtn.disabled));
-      generateBtn.title = generateBtn.disabled ? "请先完成本站教学判断" : "把判断转为本站产物草稿";
-    }
-    const saveBtn = $("saveAssetBtn");
-    if (saveBtn) {
-      saveBtn.disabled = !canSaveAsset(station);
-      saveBtn.setAttribute("aria-disabled", String(saveBtn.disabled));
-      saveBtn.title = saveBtn.disabled ? "请先生成或填写产物草稿" : "保存为教学资产";
-    }
-    const nextBtn = $("nextStationBtn");
-    if (nextBtn) {
-      nextBtn.disabled = !hasSavedAsset(station);
-      nextBtn.setAttribute("aria-disabled", String(nextBtn.disabled));
-      nextBtn.title = nextBtn.disabled ? "请先保存本站教学资产" : "进入下一站";
-    }
   }
 
   function generateArtifact() {
     const station = currentStation();
     const scenario = currentScenario();
     const option = selectedOption(station);
-    if (!option) return "";
     const model = figureModel(station, scenario);
-    const decision = option.label;
+    const decision = option?.label || "尚未完成判断，请先选择一个教学判断。";
     const draft = [
       `【图表观察】\n${model.insight}`,
       `【教学判断】\n本站选择“${decision}”。该判断服务于“${station.userMindset || station.title}”。`,
@@ -424,7 +369,7 @@
   function saveAsset() {
     const station = currentStation();
     let draft = $("artifactText")?.value?.trim() || state.drafts[station.id] || "";
-    if (!draft) return;
+    if (!draft) draft = generateArtifact();
     state.drafts[station.id] = draft;
     const exists = state.assets.some((asset) => String(asset.stationId) === String(station.id));
     if (!exists) {
