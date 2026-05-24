@@ -125,41 +125,15 @@
     },
   };
 
-  const state = loadState();
-
-  const supportToolLabels = [
-    "导学问题",
-    "判断流程卡",
-    "案例阅读提示",
-    "证据提取模板",
-    "概念边界卡",
-    "分层帮助卡",
-    "课堂任务单",
-    "示例与反例",
-    "追问提示",
-    "导学支持线",
-    "需帮助卡",
-  ];
-
-  const stationSupportTools = {
-    1: ["判断流程卡", "示例与反例"],
-    2: ["导学问题", "案例阅读提示", "证据提取模板", "导学支持线", "需帮助卡"],
-    3: ["判断流程卡", "分层帮助卡"],
-    4: ["概念边界卡", "示例与反例"],
-    5: ["案例阅读提示", "证据提取模板"],
-    6: ["课堂任务单", "判断流程卡"],
-    7: ["课堂任务单", "证据提取模板"],
-    8: ["追问提示", "分层帮助卡"],
-    9: ["示例与反例", "判断流程卡"],
-    10: ["追问提示", "课堂任务单"],
-  };
+  const learnerProfileList = Object.values(learnerProfiles);
+  const positioningModeList = Object.values(positioningModes);
 
   const decisionBank = {
     1: [
-      ["comprehensive", "综合决策型定位", positioningModes.comprehensive.rationale, 3.8],
-      ["research", "证据研究型定位", positioningModes.research.rationale, 3.7],
-      ["service", "服务运营型定位", positioningModes.service.rationale, 3.7],
-      ["policy", "政策治理型定位", positioningModes.policy.rationale, 3.7],
+      ["comprehensive", "综合决策型定位", "平衡研究、服务与治理三类迁移。", 3.8],
+      ["research", "证据研究型定位", "强调证据提取、变量解释与分析表达。", 3.8],
+      ["service", "服务运营型定位", "面向药事服务流程改进和岗位行动。", 3.8],
+      ["policy", "政策治理型定位", "面向医保、监管与制度约束判断。", 3.8],
     ],
     2: [
       ["evidence", "学生会填表，但证据链表达不足", "这是最容易被忽略的高风险问题，应前置证据引用训练。", 3.7],
@@ -208,6 +182,8 @@
     ],
   };
 
+  const state = loadState();
+
   document.addEventListener("DOMContentLoaded", () => {
     renderSharedPrimaryNav();
     bindChrome();
@@ -218,7 +194,7 @@
     const fallback = {
       stationIndex: 0,
       scenarioId: scenarios[0]?.id || "",
-      learnerProfileId: "balanced",
+      positioningProfileId: learnerProfileList[0]?.id || "balanced",
       syllabus: { ...syllabusMock },
       decisions: {},
       drafts: {},
@@ -232,8 +208,15 @@
         ...parsed,
         stationIndex: Math.max(0, Math.min(stations.length - 1, Number(parsed.stationIndex) || 0)),
         scenarioId: scenarioById[parsed.scenarioId] ? parsed.scenarioId : fallback.scenarioId,
-        learnerProfileId: learnerProfiles[parsed.learnerProfileId] ? parsed.learnerProfileId : fallback.learnerProfileId,
-        syllabus: parsed.syllabus && typeof parsed.syllabus === "object" ? { ...syllabusMock, ...parsed.syllabus } : fallback.syllabus,
+        positioningProfileId: learnerProfileList.some((profile) => profile.id === parsed.positioningProfileId) ? parsed.positioningProfileId : fallback.positioningProfileId,
+        syllabus: parsed.syllabus && typeof parsed.syllabus === "object"
+          ? {
+            ...syllabusMock,
+            ...parsed.syllabus,
+            loaded: Boolean(parsed.syllabus.loaded),
+            fileName: String(parsed.syllabus.fileName || ""),
+          }
+          : { ...syllabusMock },
         decisions: parsed.decisions && typeof parsed.decisions === "object" ? parsed.decisions : {},
         drafts: parsed.drafts && typeof parsed.drafts === "object" ? parsed.drafts : {},
         assets: Array.isArray(parsed.assets) ? parsed.assets : [],
@@ -336,32 +319,23 @@
   }
 
   function currentSyllabus() {
-    return { ...syllabusMock, ...(state.syllabus || {}) };
-  }
-
-  function currentLearnerProfile() {
-    return learnerProfiles[state.learnerProfileId] || learnerProfiles.balanced;
-  }
-
-  function currentPositioningMode(modeId) {
-    return positioningModes[modeId] || positioningModes[currentLearnerProfile().recommended] || positioningModes.comprehensive;
-  }
-
-  function recommendedPositioningMode() {
-    return currentPositioningMode(currentLearnerProfile().recommended);
-  }
-
-  function positioningStatement(mode = recommendedPositioningMode()) {
-    const scenario = currentScenario();
-    const topic = "SWOT";
-    const scenarioTitle = scenario.title || "药事管理";
-    const statements = {
-      comprehensive: `本节课将 ${topic} 定位为${scenarioTitle}情境中的综合决策训练。学生需要同时识别证据、服务、政策与资源约束，形成有依据的策略取舍。`,
-      research: `本节课将 ${topic} 定位为${scenarioTitle}情境中的证据研究与分析表达训练。学生需要提取关键事实，解释内外部因素分类，并形成可论证的分析结论。`,
-      service: `本节课将 ${topic} 定位为${scenarioTitle}情境中的服务运营与改进决策训练。学生需要识别流程、资源、患者需求和服务质量因素，并提出可执行的改进建议。`,
-      policy: `本节课将 ${topic} 定位为${scenarioTitle}情境中的政策治理判断训练。学生需要识别政策目标、制度约束与利益相关者影响，形成兼顾公平、效率与安全的判断。`,
+    return {
+      ...syllabusMock,
+      ...(state.syllabus && typeof state.syllabus === "object" ? state.syllabus : {}),
     };
-    return statements[mode.id] || statements.comprehensive;
+  }
+
+  function currentPositioningProfile() {
+    return learnerProfileList.find((profile) => profile.id === state.positioningProfileId) || learnerProfileList[0];
+  }
+
+  function recommendedPositioningMode(profile = currentPositioningProfile()) {
+    return positioningModes[profile.recommended] || positioningModeList[0];
+  }
+
+  function selectedPositioningMode(station = currentStation()) {
+    const selectedId = state.decisions[station.id];
+    return positioningModes[selectedId] || null;
   }
 
   function stationAssets(stationId) {
@@ -374,6 +348,9 @@
   }
 
   function decisionOptions(station = currentStation()) {
+    if (Number(station.id) === 1) {
+      return positioningModeList.map((mode) => ({ ...mode, rationale: mode.rationale, score: 3.8 }));
+    }
     const entries = decisionBank[String(station.id)] || [];
     return entries.map((item) => ({ id: item[0], label: item[1], rationale: item[2], score: item[3] }));
   }
@@ -413,16 +390,16 @@
   }
 
   function renderContext() {
+    const syllabus = currentSyllabus();
     document.querySelector("[data-example-course]")?.replaceChildren(document.createTextNode("管理学原理"));
     document.querySelector("[data-example-topic]")?.replaceChildren(document.createTextNode("SWOT 分析"));
     document.querySelector("[data-example-class]")?.replaceChildren(document.createTextNode("药事管理本科班"));
-
-    const syllabus = currentSyllabus();
-    const status = $("syllabusImportBtn");
-    if (status) {
-      status.textContent = syllabus.loaded ? "大纲已载入" : "示例大纲";
-      status.classList.toggle("is-loaded", Boolean(syllabus.loaded));
-      status.title = syllabus.loaded ? syllabus.fileName || "课程大纲已载入" : "点击导入课程大纲；当前使用示例大纲摘要";
+    const syllabusButton = $("syllabusImportBtn");
+    if (syllabusButton) {
+      syllabusButton.textContent = syllabus.loaded ? "已载入大纲" : "示例大纲";
+      syllabusButton.title = syllabus.loaded && syllabus.fileName
+        ? `已载入：${syllabus.fileName}`
+        : "载入课程大纲 mock 输入";
     }
   }
 
@@ -474,33 +451,43 @@
     const station = currentStation();
     const phase = currentPhase(station);
     const scenario = currentScenario();
-    const syllabus = currentSyllabus();
-    const profile = currentLearnerProfile();
-
     $("phasePill").textContent = `${phase.title || "教学导航"} · 第 ${state.stationIndex + 1} / ${stations.length} 站`;
     $("activeTitle").textContent = Number(station.id) === 1 ? "教学定位模拟器" : station.displayName || station.title;
-    $("artifactTitle").textContent = Number(station.id) === 1 ? "定位产物" : station.artifactType || "生成本站产物";
-
-    const chips = $("stationInputChips");
-    if (!chips) return;
-
-    if (Number(station.id) === 1) {
-      chips.innerHTML = `
-        <span><b>大纲目标</b>${esc(syllabus.courseGoal)}</span>
-        <span><b>班级画像</b>${esc(profile.tag)}</span>
-        <span><b>案例语境</b>${esc(scenario.title || "药事管理")}</span>`;
-      return;
-    }
-
-    chips.innerHTML = `
-      <span><b>当前任务</b>${esc(station.title || station.displayName || "教学判断")}</span>
-      <span><b>产物</b>${esc(station.artifactType || "教学资产")}</span>
-      <span><b>语境</b>${esc(scenario.title || "药事管理")}</span>`;
+    renderStationInputChips(scenario);
+    $("artifactTitle").textContent = Number(station.id) === 1 ? "课程定位详细内容" : station.artifactType || "生成本站产物";
   }
 
-  function supportToolsForStation(station = currentStation()) {
-    return stationSupportTools[station.id] || supportToolLabels.slice(0, 3);
+  function exampleContextText(selector, fallback) {
+    const text = document.querySelector(selector)?.textContent?.trim();
+    return text || fallback;
   }
+
+  function renderStationInputChips(scenario = currentScenario()) {
+    const target = $("stationInputChips");
+    if (!target) return;
+
+    const profile = currentPositioningProfile();
+    const syllabus = currentSyllabus();
+    const recommended = recommendedPositioningMode(profile);
+    const chips = [
+      ["课程", exampleContextText("[data-example-course]", "管理学原理")],
+      ["知识点", exampleContextText("[data-example-topic]", "SWOT 分析")],
+      ["班级", exampleContextText("[data-example-class]", "药事管理本科班")],
+      ["大纲", syllabus.loaded ? `已载入 ${syllabus.fileName || "课程大纲"}` : "mock 输入"],
+      ["课程目标", syllabus.courseGoal],
+      ["学生去向", `${profile.label} · ${profile.tag}`],
+      ["推荐定位", recommended.label],
+      Number(currentStation().id) === 1 ? null : ["药事情境", scenario.title || "药事管理"],
+    ].filter((item) => item && item[1]);
+
+    target.innerHTML = chips
+      .map(([label, value]) => `<span class="station-input-chip"><strong>${esc(label)}</strong>${esc(value)}</span>`)
+      .join("");
+  }
+
+  window.refreshPharmacopilotStationInputs = function refreshPharmacopilotStationInputs() {
+    renderStationInputChips(currentScenario());
+  };
 
   function renderFigure() {
     const station = currentStation();
@@ -563,127 +550,144 @@
   }
 
   function renderPositioningLab(station, selected) {
+    const profile = currentPositioningProfile();
     const syllabus = currentSyllabus();
-    const profile = currentLearnerProfile();
-    const scenario = currentScenario();
-    const recommended = recommendedPositioningMode();
-    const selectedMode = selected ? currentPositioningMode(selected.id) : null;
-    const outputVisible = Boolean(selectedMode);
-
-    return `<section class="pp-positioning-simulator" id="positioningLab" aria-labelledby="positioningTitle">
-      <div class="pp-sim-grid">
-        <article class="pp-sim-card pp-sim-profile">
-          <div class="pp-sim-card-head">
-            <span>01 看班级画像</span>
-            <strong>${esc(profile.label)}</strong>
-          </div>
-          <div class="pp-profile-switch" aria-label="切换班级画像">
-            ${Object.values(learnerProfiles).map((item) => `<button type="button" class="pp-profile-pill${item.id === profile.id ? " is-active" : ""}" data-profile-id="${esc(item.id)}">${esc(item.label)}</button>`).join("")}
-          </div>
-          <div class="pp-career-bars" aria-label="职业规划分布">
-            ${profile.distribution.map(([label, value]) => `<div class="pp-career-bar">
-              <span>${esc(label)}</span>
-              <i><b style="width:${Math.max(4, Math.min(100, value))}%"></b></i>
-              <em>${value}%</em>
-            </div>`).join("")}
-          </div>
-        </article>
-
-        <article class="pp-sim-card pp-sim-logic">
-          <div class="pp-sim-card-head">
-            <span>02 理解定位</span>
-            <strong id="positioningTitle">大纲 × 学情 × 情境</strong>
-          </div>
-          <div class="pp-logic-triad" aria-label="教学定位三项输入">
-            <div><span>大纲</span><strong>${esc(syllabus.courseGoal)}</strong></div>
-            <div><span>学情</span><strong>${esc(profile.tag)}</strong></div>
-            <div><span>情境</span><strong>${esc(scenario.title || "药事管理")}</strong></div>
-          </div>
-          <div class="pp-recommend-strip">
-            <span>推荐定位</span>
-            <strong>${esc(recommended.label)}</strong>
-          </div>
-        </article>
-
-        <article class="pp-sim-card pp-sim-choice">
-          <div class="pp-sim-card-head">
-            <span>03 做定位</span>
-            <strong>选择本课主线</strong>
-          </div>
-          <div class="pp-mode-options" role="radiogroup" aria-label="教学定位选择">
-            ${decisionOptions(station).map((option) => {
-              const mode = currentPositioningMode(option.id);
-              const isSelected = selected?.id === mode.id;
-              const isRecommended = recommended.id === mode.id;
-              return `<button type="button" role="radio" aria-checked="${isSelected ? "true" : "false"}" class="pp-mode-option${isSelected ? " is-selected" : ""}${isRecommended ? " is-recommended" : ""}" data-positioning-answer="${esc(mode.id)}">
-                <span>${esc(mode.label)}</span>
-                <small>${esc(mode.short)}</small>
-                ${isRecommended ? `<em>推荐</em>` : ""}
-              </button>`;
-            }).join("")}
-          </div>
-        </article>
+    const recommended = recommendedPositioningMode(profile);
+    const selectedMode = selected && positioningModes[selected.id];
+    return `<section class="pp-positioning-lab pp-positioning-simulator" id="positioningLab" aria-labelledby="positioningTitle">
+  <div class="pp-sim-grid">
+  <article class="pp-positioning-panel pp-sim-card pp-profile-panel">
+    <div class="pp-positioning-kicker">看班级画像</div>
+    <div class="pp-positioning-head">
+      <div>
+        <h2 id="positioningTitle">学生去向分布</h2>
       </div>
+      <span class="pp-positioning-badge">${esc(profile.tag)}</span>
+    </div>
 
-      <div class="pp-sim-feedback${selectedMode ? " is-visible" : ""}" id="positioningFeedback" aria-live="polite">
-        ${renderPositioningFeedback(selected)}
-      </div>
+    <div class="pp-profile-switcher" aria-label="班级画像">
+      ${learnerProfileList.map((item) => `<button class="pp-profile-card${item.id === profile.id ? " is-active" : ""}" type="button" data-profile-id="${esc(item.id)}" aria-pressed="${item.id === profile.id ? "true" : "false"}">
+        <strong>${esc(item.label)}</strong>
+        <span>${esc(item.tag)}</span>
+      </button>`).join("")}
+    </div>
 
-      <div class="pp-positioning-output" id="positioningOutput"${outputVisible ? "" : " hidden"}>
-        <div class="pp-output-header">
-          <div>
-            <span>定位产物</span>
-            <h3>本节课定位句</h3>
-          </div>
-          <button class="pp-copy-btn" type="button" id="copyPositioningStatement">复制</button>
-        </div>
-        <p id="positioningStatement">${esc(selectedMode ? positioningStatement(selectedMode) : "")}</p>
-        <div class="pp-constraints">
-          <h4>后续设计约束</h4>
-          <ul>${(selectedMode?.constraints || []).map((rule) => `<li>${esc(rule)}</li>`).join("")}</ul>
-        </div>
-      </div>
-    </section>`;
+    <div class="pp-profile-chart" aria-label="${esc(profile.label)}去向分布">
+      ${profile.distribution.map(([label, value]) => {
+        return `<div class="pp-profile-bar pp-career-bar" data-axis="${esc(profileAxisId(label))}">
+          <span>${esc(label)}</span>
+          <i><b style="width: ${value}%"></b></i>
+          <strong>${value}%</strong>
+        </div>`;
+      }).join("")}
+    </div>
+  </article>
+
+  <article class="pp-positioning-panel pp-sim-card pp-understanding-panel">
+    <div class="pp-positioning-kicker">理解定位</div>
+    <div class="pp-definition-card">
+      <span>${esc(syllabus.loaded ? "已载入课程大纲" : "课程大纲 mock 输入")}</span>
+      <strong>同一知识点，在不同班级中服务不同教学产出。</strong>
+    </div>
+
+    <div class="pp-positioning-flow" aria-label="定位形成路径">
+      <div><span>课程目标</span><strong>${esc(syllabus.courseGoal)}</strong></div>
+      <div><span>大纲位置</span><strong>${esc(syllabus.syllabusPoint)}</strong></div>
+      <div><span>评价重点</span><strong>${esc(syllabus.assessmentFocus)}</strong></div>
+    </div>
+
+    <div class="pp-positioning-tags" aria-label="定位作用">
+      <span>目标收束</span>
+      <span>案例筛选</span>
+      <span>任务定型</span>
+      <span>评价对齐</span>
+    </div>
+
+    <div class="pp-profile-cue">
+      <strong>当前判断</strong>
+      <span>${esc(profile.reason)}</span>
+    </div>
+  </article>
+
+  <article class="pp-positioning-panel pp-sim-card pp-action-panel">
+    <div class="pp-positioning-kicker">做定位</div>
+
+    <div class="pp-option-group" role="radiogroup" aria-label="SWOT 课程定位判断">
+      ${decisionOptions(station).map((option, index) => {
+        const isSelected = selectedMode?.id === option.id;
+        const isRecommended = recommended.id === option.id;
+        return `<button class="pp-positioning-option${isSelected ? " is-selected" : ""}${isRecommended ? " is-recommended" : ""}" type="button" role="radio" aria-checked="${isSelected ? "true" : "false"}" data-positioning-answer="${esc(option.id)}">
+        <span class="pp-option-number">${index + 1}</span>
+        <span>
+          <strong>${esc(option.label)}${isRecommended ? `<small>系统推荐</small>` : ""}</strong>
+          <em>${esc(option.short || option.rationale)}</em>
+        </span>
+      </button>`;
+      }).join("")}
+    </div>
+
+    <div class="pp-feedback-box pp-sim-feedback${selected ? " is-visible" : ""}" id="positioningFeedback" aria-live="polite"${selected ? "" : " hidden"}>
+      ${renderPositioningFeedback(selectedMode, profile)}
+    </div>
+  </article>
+  </div>
+</section>`;
   }
 
-  function renderPositioningFeedback(selected) {
-    const profile = currentLearnerProfile();
-    const recommended = recommendedPositioningMode();
+  function renderPositioningFeedback(selected, profile = currentPositioningProfile()) {
     if (!selected) {
-      return `<strong>等待定位</strong><span>当前推荐：${esc(recommended.label)}</span>`;
+      return `<strong>等待定位</strong>
+      <p>先看画像分布，再选择本节课主要训练什么。</p>`;
     }
-
-    const selectedMode = currentPositioningMode(selected.id);
-    if (selectedMode.id === recommended.id) {
-      return `<strong>定位匹配</strong><span>${esc(recommended.short)}</span>`;
+    const recommended = recommendedPositioningMode(profile);
+    if (selected.id === recommended.id) {
+      return `<strong>定位匹配</strong>
+      <p>${esc(profile.label)}推荐${esc(recommended.label)}，后续设计会围绕同一产出收束。</p>`;
     }
-
-    return `<strong>可用，但需补偿</strong><span>当前画像更接近“${esc(recommended.label)}”。若采用“${esc(selectedMode.label)}”，后续活动需补足“${esc(recommended.short)}”。</span>`;
+    return `<strong>可用，但需补偿</strong>
+      <p>当前画像更推荐${esc(recommended.label)}；若采用${esc(selected.label)}，请补足相应证据或任务支架。</p>`;
   }
 
   function bindPositioningLab(target, station) {
     target.querySelectorAll("[data-profile-id]").forEach((button) => {
       button.addEventListener("click", () => {
-        const profileId = button.dataset.profileId;
-        if (!learnerProfiles[profileId]) return;
-        state.learnerProfileId = profileId;
-        delete state.drafts[station.id];
-        state.assets = state.assets.filter((asset) => String(asset.stationId) !== String(station.id));
-        saveState();
-        render();
+        setPositioningProfile(button.dataset.profileId);
       });
     });
-
     target.querySelectorAll("[data-positioning-answer]").forEach((button) => {
       button.addEventListener("click", () => {
         setDecision(station, button.dataset.positioningAnswer);
       });
     });
+  }
 
-    target.querySelector("#copyPositioningStatement")?.addEventListener("click", () => {
-      const option = selectedOption(station);
-      copyTextToClipboard(positioningStatement(currentPositioningMode(option?.id)));
-    });
+  function profileAxisId(label = "") {
+    if (label.includes("考研")) return "exam";
+    if (label.includes("实习")) return "internship";
+    return "regulator";
+  }
+
+  function positioningStatementFor(mode, profile = currentPositioningProfile(), syllabus = currentSyllabus()) {
+    return `面向${profile.label}，本节课将 SWOT 定位为${mode.label}：${mode.rationale} 该定位服务于“${syllabus.courseGoal}”，围绕“${syllabus.syllabusPoint}”形成“${syllabus.assessmentFocus}”产出。`;
+  }
+
+  function positioningConstraintsFor(mode, profile = currentPositioningProfile(), syllabus = currentSyllabus()) {
+    return [
+      ...mode.constraints,
+      `班级画像校准：${profile.reason}`,
+      `大纲输入校准：课程目标为${syllabus.courseGoal}`,
+    ];
+  }
+
+  function setPositioningProfile(profileId) {
+    const nextProfile = learnerProfileList.find((profile) => profile.id === profileId);
+    if (!nextProfile || nextProfile.id === state.positioningProfileId) return;
+    state.positioningProfileId = nextProfile.id;
+    delete state.decisions[1];
+    delete state.drafts[1];
+    state.assets = state.assets.filter((asset) => String(asset.stationId) !== "1");
+    saveState();
+    render();
   }
 
   function setDecision(station, optionId) {
@@ -692,13 +696,6 @@
     if (previous !== optionId) {
       delete state.drafts[station.id];
       state.assets = state.assets.filter((asset) => String(asset.stationId) !== String(station.id));
-    }
-    if (Number(station.id) === 1) {
-      if (positioningModes[optionId]) {
-        state.drafts[station.id] = positioningArtifactDraft();
-      } else {
-        delete state.drafts[station.id];
-      }
     }
     saveState();
     render();
@@ -780,8 +777,36 @@
       target.className = "";
       return;
     }
-    target.innerHTML = "";
-    target.className = "";
+    target.className = "positioning-product-panel";
+    target.innerHTML = renderPositioningProductPreview();
+  }
+
+  function renderPositioningProductPreview() {
+    const station = currentStation();
+    const profile = currentPositioningProfile();
+    const syllabus = currentSyllabus();
+    const selected = selectedPositioningMode(station);
+    if (!selected) {
+      return `<div class="positioning-product-empty">
+        <span>待生成</span>
+        <strong>先完成定位判断，再生成课程定位详细内容。</strong>
+      </div>`;
+    }
+    const recommended = recommendedPositioningMode(profile);
+    const isMatched = selected.id === recommended.id;
+    return `<div class="positioning-product-card">
+      <div class="positioning-product-meta">
+        <span>班级画像：${esc(profile.label)}</span>
+        <span>大纲输入：${esc(syllabus.loaded ? "已载入" : "mock")}</span>
+        <span>教师判断：${esc(selected.label)}</span>
+        <span>系统推荐：${esc(recommended.label)}</span>
+        <span>${isMatched ? "判断匹配" : "需补偿设计"}</span>
+      </div>
+      <p>${esc(positioningStatementFor(selected, profile, syllabus))}</p>
+      <div class="positioning-product-constraints">
+        ${positioningConstraintsFor(selected, profile, syllabus).map((rule) => `<span>${esc(rule)}</span>`).join("")}
+      </div>
+    </div>`;
   }
 
   function generateArtifact() {
@@ -811,15 +836,28 @@
 
   function positioningArtifactDraft() {
     const station = currentStation();
-    const option = selectedOption(station);
-    const mode = currentPositioningMode(option?.id);
+    const mode = selectedPositioningMode(station);
+    const profile = currentPositioningProfile();
     const syllabus = currentSyllabus();
-    const profile = currentLearnerProfile();
-    const scenario = currentScenario();
+    if (!mode) return "";
+    const recommended = recommendedPositioningMode(profile);
+    const matchStatus = mode.id === recommended.id ? "教师判断与系统推荐一致" : `教师判断与系统推荐不一致，建议补足“${recommended.label}”所需的证据或任务支架`;
     return [
-      `【定位句】\n${positioningStatement(mode)}`,
-      `【定位依据】\n- 大纲目标：${syllabus.courseGoal}\n- 大纲位置：${syllabus.syllabusPoint}\n- 班级画像：${profile.label}（${profile.distribution.map(([label, value]) => `${label}${value}%`).join("、")}）\n- 案例语境：${scenario.title || "药事管理"}`,
-      `【后续设计约束】\n${mode.constraints.map((rule) => `- ${rule}`).join("\n")}`,
+      `【课程定位详细内容】`,
+      `课程：管理学原理`,
+      `知识点：SWOT 分析`,
+      `课程大纲：${syllabus.loaded ? `已载入 ${syllabus.fileName || "课程大纲"}` : "使用 mock 上游输入"}`,
+      `课程目标：${syllabus.courseGoal}`,
+      `大纲位置：${syllabus.syllabusPoint}`,
+      `评价重点：${syllabus.assessmentFocus}`,
+      `班级画像：${profile.label}（${profile.tag}）`,
+      `画像判断：${profile.reason}`,
+      `教师判断：${mode.label}`,
+      `系统推荐：${recommended.label}`,
+      `匹配状态：${matchStatus}`,
+      `\n【课程定位句】\n${positioningStatementFor(mode, profile, syllabus)}`,
+      `【后续设计约束】\n${positioningConstraintsFor(mode, profile, syllabus).map((rule) => `- ${rule}`).join("\n")}`,
+      `【后续产出要求】\n- 案例必须围绕当前定位筛选，不再只服务概念讲解。\n- 课堂任务必须让学生产出可评价的判断或方案。\n- 评价量规必须能检查定位句中的核心能力。`,
     ].join("\n\n");
   }
 
@@ -1030,5 +1068,151 @@
     const selection = window.getSelection();
     selection.removeAllRanges();
     selection.addRange(range);
+  }
+})();
+
+/* === Pharmacopilot · Compact navigation brief and map === */
+
+(function initPharmacopilotCompactNav() {
+  const stageFirstStepMap = {
+    pre: "01",
+    in: "06",
+    post: "09",
+  };
+
+  function findTargetElement(targetId, stepId) {
+    if (targetId) {
+      const directTarget = document.getElementById(targetId);
+      if (directTarget) return directTarget;
+    }
+
+    if (stepId) {
+      const byDataStep = document.querySelector(`[data-step-id="${stepId}"]`);
+      if (byDataStep) return byDataStep;
+
+      const byId = document.getElementById(`step-${stepId}`);
+      if (byId) return byId;
+    }
+
+    return null;
+  }
+
+  function setActiveStage(root, stage) {
+    const stages = Array.from(root.querySelectorAll("[data-stage].pp-map-stage"));
+
+    stages.forEach((stageButton) => {
+      const isActive = stageButton.dataset.stage === stage;
+      stageButton.classList.toggle("is-active", isActive);
+      stageButton.setAttribute("aria-selected", isActive ? "true" : "false");
+    });
+  }
+
+  function setActiveStep(root, stepId, shouldScroll) {
+    const steps = Array.from(root.querySelectorAll(".pp-map-step[data-step]"));
+    const selectedStep = steps.find((step) => step.dataset.step === stepId);
+
+    if (!selectedStep) return;
+
+    steps.forEach((step) => {
+      step.classList.toggle("is-active", step === selectedStep);
+      step.setAttribute("aria-current", step === selectedStep ? "step" : "false");
+    });
+
+    setActiveStage(root, selectedStep.dataset.stage);
+
+    window.dispatchEvent(
+      new CustomEvent("pharmacopilot:navigation-step-change", {
+        detail: {
+          step: selectedStep.dataset.step,
+          stage: selectedStep.dataset.stage,
+          label: selectedStep.textContent.replace(/\s+/g, " ").trim(),
+        },
+      })
+    );
+
+    if (shouldScroll) {
+      const target = findTargetElement(
+        selectedStep.dataset.target,
+        selectedStep.dataset.step
+      );
+
+      if (target) {
+        target.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+    }
+  }
+
+  function initMapNavigation() {
+    const root = document.querySelector("[data-pp-map-nav]");
+    if (!root || root.dataset.initialized === "true") return;
+
+    root.dataset.initialized = "true";
+
+    const stageButtons = Array.from(root.querySelectorAll(".pp-map-stage[data-stage]"));
+    const stepButtons = Array.from(root.querySelectorAll(".pp-map-step[data-step]"));
+
+    stageButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const stage = button.dataset.stage;
+        const firstStep = stageFirstStepMap[stage];
+
+        setActiveStage(root, stage);
+
+        if (firstStep) {
+          setActiveStep(root, firstStep, false);
+        }
+      });
+    });
+
+    stepButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        setActiveStep(root, button.dataset.step, true);
+      });
+    });
+
+    window.setPharmacopilotNavigationStep = function setPharmacopilotNavigationStep(stepId) {
+      setActiveStep(root, String(stepId).padStart(2, "0"), false);
+    };
+  }
+
+  function initExampleContextUpdater() {
+    const brief = document.querySelector("[data-pp-nav-brief]");
+    if (!brief || brief.dataset.contextInitialized === "true") return;
+
+    brief.dataset.contextInitialized = "true";
+
+    window.updatePharmacopilotExampleContext = function updatePharmacopilotExampleContext(payload = {}) {
+      const course = brief.querySelector("[data-example-course]");
+      const topic = brief.querySelector("[data-example-topic]");
+      const className = brief.querySelector("[data-example-class]");
+
+      if (course && typeof payload.course === "string") {
+        course.textContent = payload.course;
+      }
+
+      if (topic && typeof payload.topic === "string") {
+        topic.textContent = payload.topic;
+      }
+
+      if (className && typeof payload.className === "string") {
+        className.textContent = payload.className;
+      }
+
+      window.refreshPharmacopilotStationInputs?.();
+    };
+  }
+
+  function init() {
+    initMapNavigation();
+    initExampleContextUpdater();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
   }
 })();
