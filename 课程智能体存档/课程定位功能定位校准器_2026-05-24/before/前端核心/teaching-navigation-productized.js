@@ -77,34 +77,11 @@
     10: ["追问提示", "课堂任务单"],
   };
 
-  const positioningEvidenceCards = [
-    {
-      title: "课程目标",
-      text: "管理学原理课程要求学生从理解工具走向分析管理问题。",
-    },
-    {
-      title: "药事管理任务",
-      text: "医保支付与药品可及性问题涉及多方约束，适合训练结构化判断。",
-    },
-    {
-      title: "学生产出",
-      text: "学生最终应形成 SWOT 分析表，并提出有依据的策略建议。",
-    },
-  ];
-
-  const positioningImpactRules = [
-    "案例必须来自药事管理真实情境。",
-    "课堂任务必须要求学生做判断，而不只是填表。",
-    "评价标准必须关注证据、专业相关性和策略合理性。",
-  ];
-
-  const positioningArtifactSentence = "本节课将 SWOT 定位为药事管理情境中的管理决策训练工具。学生将基于医保支付与药品可及性案例，识别内外部因素，形成有证据支撑的策略判断，而不是停留在 SWOT 四象限定义记忆。";
-
   const decisionBank = {
     1: [
-      ["decision", "药事管理情境中的管理决策训练", "A 是主线：它能把 SWOT 从概念工具转化为面向药事问题的结构化判断训练。", 3.8],
-      ["concept", "管理学工具概念讲授", "B 可以作为前置讲解，用来澄清 SWOT 四象限，但不能作为整节课主线。", 2.1],
-      ["exam", "期末考试知识点复习", "C 适合复习课，不适合新课主线；它会把学习目标压缩成定义记忆。", 1.8],
+      ["decision", "定位为药事管理情境中的管理决策训练", "让 SWOT 服务专业判断，而不是停留在工具介绍。", 3.8],
+      ["concept", "定位为管理学工具概念讲授", "可以讲清概念，但对专业迁移支持较弱。", 2.1],
+      ["exam", "定位为期末考试知识点复习", "适合复习课，不适合作为新课主线。", 1.8],
     ],
     2: [
       ["evidence", "学生会填表，但证据链表达不足", "这是最容易被忽略的高风险问题，应前置证据引用训练。", 3.7],
@@ -375,11 +352,9 @@
     const phase = currentPhase(station);
     const scenario = currentScenario();
     $("phasePill").textContent = `${phase.title || "教学导航"} · 第 ${state.stationIndex + 1} / ${stations.length} 站`;
-    $("activeTitle").textContent = Number(station.id) === 1 ? "知识点教学功能定位校准器" : station.displayName || station.title;
-    $("activeTask").textContent = Number(station.id) === 1
-      ? "先读课程目标、药事管理任务和学生产出，再判断 SWOT 在本节课中承担什么教学功能。"
-      : station.userMindset || station.how || "完成本站教学判断。";
-    $("artifactTitle").textContent = Number(station.id) === 1 ? "本环节产物" : station.artifactType || "生成本站产物";
+    $("activeTitle").textContent = station.displayName || station.title;
+    $("activeTask").textContent = station.userMindset || station.how || "完成本站教学判断。";
+    $("artifactTitle").textContent = station.artifactType || "生成本站产物";
     const rationale = $("stationRationale");
     if (rationale) {
       const tools = supportToolsForStation(station);
@@ -398,29 +373,9 @@
 
   function renderFigure() {
     const station = currentStation();
+    const model = figureModel(station, currentScenario());
     const target = $("evidenceFigure");
     if (!target) return;
-    if (Number(station.id) === 1) {
-      target.classList.add("positioning-evidence-panel");
-      target.innerHTML = `
-        <div class="panel-head">
-          <div>
-            <span class="eyebrow">定位依据</span>
-            <h2>知识点教学功能定位</h2>
-          </div>
-          <span class="figure-type">功能定位校准</span>
-        </div>
-        <div class="positioning-evidence-grid">
-          ${positioningEvidenceCards.map((card) => `<section class="positioning-evidence-card">
-            <span>${esc(card.title)}</span>
-            <p>${esc(card.text)}</p>
-          </section>`).join("")}
-        </div>
-        <p class="figure-caption">定位不是给知识点贴标签，而是判断它在本节课中承担的教学功能。</p>`;
-      return;
-    }
-    target.classList.remove("positioning-evidence-panel");
-    const model = figureModel(station, currentScenario());
     target.innerHTML = `
       <div class="panel-head">
         <div>
@@ -438,20 +393,17 @@
     const selected = selectedOption(station);
     const target = $("decisionPanel");
     if (!target) return;
-    const question = Number(station.id) === 1
-      ? "看到这三项证据，本节课的主线更应该是什么？"
-      : station.decisionQuestion || "当前最重要的教学判断是什么？";
     target.innerHTML = `
       <div class="panel-head">
         <div>
           <span class="eyebrow">教学判断题</span>
-          <h2>${esc(question)}</h2>
+          <h2>${esc(station.decisionQuestion || "当前最重要的教学判断是什么？")}</h2>
         </div>
       </div>
       <div class="decision-options">
         ${decisionOptions(station).map((option, index) => `<button type="button" class="decision-option ${selected?.id === option.id ? "active" : ""}" data-option="${esc(option.id)}">
-          <span class="option-index">${Number(station.id) === 1 ? ["A", "B", "C"][index] : index + 1}</span>
-          <span><strong>${esc(option.label)}</strong>${Number(station.id) === 1 ? "" : `<span class="option-rationale">${esc(option.rationale)}</span>`}</span>
+          <span class="option-index">${index + 1}</span>
+          <span><strong>${esc(option.label)}</strong><span class="option-rationale">${esc(option.rationale)}</span></span>
         </button>`).join("")}
       </div>`;
     target.querySelectorAll("[data-option]").forEach((button) => {
@@ -461,9 +413,6 @@
         if (previous !== button.dataset.option) {
           delete state.drafts[station.id];
           state.assets = state.assets.filter((asset) => String(asset.stationId) !== String(station.id));
-        }
-        if (Number(station.id) === 1) {
-          state.drafts[station.id] = positioningArtifactDraft();
         }
         saveState();
         render();
@@ -477,21 +426,10 @@
     const panel = $("feedbackPanel");
     if (!panel) return;
     if (!option) {
-      panel.classList.remove("show", "positioning-feedback");
+      panel.classList.remove("show");
       panel.innerHTML = "";
       return;
     }
-    if (Number(station.id) === 1) {
-      panel.classList.add("show", "positioning-feedback");
-      panel.innerHTML = `
-        <span class="eyebrow">定位反馈</span>
-        <h2>${option.id === "decision" ? "主线成立" : "需要调整主线"}</h2>
-        <div class="positioning-feedback-list">
-          ${decisionOptions(station).map((item) => `<p class="${item.id === option.id ? "active" : ""}">${esc(item.rationale)}</p>`).join("")}
-        </div>`;
-      return;
-    }
-    panel.classList.remove("positioning-feedback");
     const dimensionText = (station.qualityDimensions || [])
       .map((id) => dimensionById[id]?.shortLabel)
       .filter(Boolean)
@@ -529,30 +467,6 @@
       nextBtn.setAttribute("aria-disabled", String(nextBtn.disabled));
       nextBtn.title = nextBtn.disabled ? "请先保存本站教学资产" : "进入下一站";
     }
-    renderArtifactGuidance(station, draft);
-  }
-
-  function renderArtifactGuidance(station = currentStation(), draft = "") {
-    const target = $("artifactGuidance");
-    if (!target) return;
-    if (Number(station.id) !== 1) {
-      target.innerHTML = "";
-      target.className = "";
-      return;
-    }
-    const hasDecision = Boolean(selectedOption(station));
-    target.className = "positioning-artifact-guide";
-    target.innerHTML = `
-      <section class="positioning-product">
-        <span class="eyebrow">本环节产物</span>
-        <p>${esc(hasDecision ? positioningArtifactSentence : "完成右侧定位判断后，将自动生成本节课的定位句。")}</p>
-      </section>
-      <section class="positioning-impact">
-        <span class="eyebrow">定位对后续设计的影响</span>
-        <div>
-          ${positioningImpactRules.map((rule) => `<p>${esc(rule)}</p>`).join("")}
-        </div>
-      </section>`;
   }
 
   function generateArtifact() {
@@ -560,12 +474,6 @@
     const scenario = currentScenario();
     const option = selectedOption(station);
     if (!option) return "";
-    if (Number(station.id) === 1) {
-      const draft = positioningArtifactDraft();
-      state.drafts[station.id] = draft;
-      saveState();
-      return draft;
-    }
     const model = figureModel(station, scenario);
     const decision = option.label;
     const draft = [
@@ -578,13 +486,6 @@
     state.drafts[station.id] = draft;
     saveState();
     return draft;
-  }
-
-  function positioningArtifactDraft() {
-    return [
-      `【定位句】\n${positioningArtifactSentence}`,
-      `【后续设计约束】\n${positioningImpactRules.map((rule) => `- ${rule}`).join("\n")}`,
-    ].join("\n\n");
   }
 
   function saveAsset() {
@@ -616,7 +517,7 @@
       variant: id,
     };
     const titles = {
-      1: ["知识点教学功能定位", "课程目标、药事任务和学生产出共同决定本节课训练什么。"],
+      1: ["课程定位三角图", "课程目标、药事任务和学生产出需要形成一致定位。"],
       2: ["学情诊断图", "学生预习参与较高，但开放题中的证据引用率偏低。"],
       3: ["目标—证据对齐矩阵", "部分学习目标缺少可观察产出和评价证据。"],
       4: ["内容问题链", "教材内容需要转化为概念边界、证据判断和策略建议。"],
@@ -634,6 +535,7 @@
 
   function renderSvg(model) {
     const id = Number(model.variant);
+    if (id === 1) return triangleSvg();
     if (id === 2) return barSvg([72, 64, 42, 58], ["预习", "前测", "证据", "参与"], "证据引用偏低");
     if (id === 3) return matrixSvg();
     if (id === 4) return chainSvg();
@@ -656,6 +558,19 @@
       lines += `<line x1="${x}" y1="${yy}" x2="${x + w}" y2="${yy}" class="chart-grid" />`;
     }
     return lines;
+  }
+
+  function triangleSvg() {
+    return svgWrap(`
+      <text x="24" y="30" class="chart-title">把 SWOT 放回药事管理任务</text>
+      <polygon points="280,72 120,240 440,240" fill="rgba(217,119,87,.10)" stroke="#d97757" stroke-width="2" />
+      <circle cx="280" cy="72" r="34" fill="rgba(72,104,123,.18)" stroke="#48687b" />
+      <circle cx="120" cy="240" r="34" fill="rgba(77,98,87,.18)" stroke="#4d6257" />
+      <circle cx="440" cy="240" r="34" fill="rgba(179,132,66,.20)" stroke="#b38442" />
+      <text x="280" y="77" text-anchor="middle" class="chart-label">课程目标</text>
+      <text x="120" y="245" text-anchor="middle" class="chart-label">药事任务</text>
+      <text x="440" y="245" text-anchor="middle" class="chart-label">学生产出</text>
+      <text x="280" y="286" text-anchor="middle" class="chart-note">最优定位：工具学习 → 专业判断训练</text>`);
   }
 
   function barSvg(values, labels, note) {

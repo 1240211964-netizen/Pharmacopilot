@@ -84,7 +84,7 @@ for (const token of forbiddenHtmlTokens) {
   expect(!html.includes(token), `HTML should not restore constant backend/frontstage module: ${token}`);
 }
 
-expect(html.includes("依据/图表 → 判断题 → 反馈 → 产物 → 保存资产"), "HTML should state the required primary interaction order");
+expect(html.includes("证据图 → 判断题 → 反馈 → 产物 → 保存资产"), "HTML should state the required primary interaction order");
 expect(html.includes("<select id=\"scenarioSelect\""), "pharmacy scenario should be a lightweight select");
 expect(!html.includes("四张大卡"), "HTML should not frame pharmacy scenarios as card grids");
 
@@ -103,13 +103,6 @@ expect(js.includes("证据图"), "JS should use Chinese evidence figure label");
 expect(js.includes("教学判断题"), "JS should use Chinese decision question label");
 expect(js.includes("系统反馈"), "JS should use Chinese feedback label");
 expect(js.includes("保存资产"), "JS should keep the save-asset action");
-expect(js.includes("positioningEvidenceCards"), "station 1 should render concrete positioning evidence cards");
-expect(js.includes("知识点教学功能定位"), "station 1 should be retitled as a knowledge-point teaching function calibration step");
-expect(js.includes("看到这三项证据，本节课的主线更应该是什么？"), "station 1 decision question should use the new positioning prompt");
-expect(js.includes("本节课将 SWOT 定位为药事管理情境中的管理决策训练工具"), "station 1 should auto-generate the required positioning sentence");
-expect(js.includes("案例必须来自药事管理真实情境"), "station 1 should expose downstream design constraints");
-expect(!js.includes("课程定位三角图"), "station 1 should not keep the old abstract triangle chart title");
-expect(!js.includes("function triangleSvg"), "station 1 should not keep the old abstract triangle renderer");
 
 for (const className of [
   ".nav-shell",
@@ -127,9 +120,6 @@ for (const className of [
   ".evidence-figure",
   ".decision-panel",
   ".option-rationale",
-  ".positioning-evidence-grid",
-  ".positioning-feedback-list",
-  ".positioning-artifact-guide",
   ".feedback-panel",
   ".artifact-panel",
   ".artifact-drawer",

@@ -769,33 +769,6 @@ body[data-page="teaching-navigation"] .site-header.is-scrolled .topbar {
   line-height: 1.55;
 }
 
-.positioning-evidence-grid {
-  display: grid;
-  gap: 10px;
-}
-
-.positioning-evidence-card {
-  padding: 14px;
-  border: 1px solid rgba(31, 30, 29, 0.09);
-  border-radius: 14px;
-  background: #fffefa;
-}
-
-.positioning-evidence-card span {
-  display: block;
-  margin-bottom: 7px;
-  color: var(--nav-accent-dark);
-  font-size: 0.76rem;
-  font-weight: 800;
-}
-
-.positioning-evidence-card p {
-  margin: 0;
-  color: var(--nav-text);
-  font-size: 0.92rem;
-  line-height: 1.62;
-}
-
 .decision-options {
   display: grid;
   gap: 10px;
@@ -892,33 +865,6 @@ body[data-page="teaching-navigation"] .site-header.is-scrolled .topbar {
   font-weight: 720;
 }
 
-.positioning-feedback {
-  border-color: rgba(77, 98, 87, 0.2);
-}
-
-.positioning-feedback-list {
-  display: grid;
-  gap: 8px;
-}
-
-.positioning-feedback-list p {
-  margin: 0;
-  padding: 10px 12px;
-  border: 1px solid rgba(31, 30, 29, 0.08);
-  border-radius: 12px;
-  background: rgba(255, 253, 248, 0.68);
-  color: var(--nav-text);
-  font-size: 0.9rem;
-  line-height: 1.55;
-}
-
-.positioning-feedback-list p.active {
-  border-color: rgba(77, 98, 87, 0.24);
-  background: rgba(77, 98, 87, 0.10);
-  color: var(--nav-sage);
-  font-weight: 720;
-}
-
 .artifact-actions {
   display: flex;
   flex-wrap: wrap;
@@ -931,39 +877,6 @@ button[aria-disabled="true"] {
   cursor: not-allowed;
   opacity: 0.52;
   transform: none;
-}
-
-.positioning-artifact-guide {
-  display: grid;
-  gap: 12px;
-  margin: 14px 0;
-}
-
-.positioning-product,
-.positioning-impact {
-  padding: 14px;
-  border: 1px solid rgba(31, 30, 29, 0.08);
-  border-radius: 14px;
-  background: rgba(255, 253, 248, 0.64);
-}
-
-.positioning-product p,
-.positioning-impact p {
-  margin: 0;
-  color: var(--nav-text);
-  font-size: 0.92rem;
-  line-height: 1.62;
-}
-
-.positioning-impact div {
-  display: grid;
-  gap: 8px;
-  margin-top: 9px;
-}
-
-.positioning-impact p {
-  padding-left: 12px;
-  border-left: 3px solid rgba(157, 79, 47, 0.2);
 }
 
 .artifact-drawer {
