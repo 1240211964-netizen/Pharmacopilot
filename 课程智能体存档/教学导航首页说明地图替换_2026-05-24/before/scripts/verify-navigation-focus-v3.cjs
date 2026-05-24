@@ -75,7 +75,7 @@ expect(contract?.NAV_STATIONS?.length === 10, "contract should keep the complete
 expect(contract?.QUALITY_DIMENSIONS?.length === 6, "contract should keep the complete quality dimension structure");
 expect(contract?.PHARMACY_SCENARIOS?.length === 4, "contract should keep the complete pharmacy scenario structure");
 
-for (const token of ["site-header", "nav-shell", "pp-nav-brief", "pp-nav-brief-main", "pp-nav-example", "pp-map-nav", "pp-map-stage-row", "pp-map-step-row", "evidenceFigure", "decisionPanel", "feedbackPanel", "artifactDrawer", "saveAssetBtn"]) {
+for (const token of ["site-header", "nav-shell", "intro-card", "scenarioSelect", "phaseTabs", "stationChips", "station-map", "evidenceFigure", "decisionPanel", "feedbackPanel", "artifactDrawer", "saveAssetBtn"]) {
   expect(html.includes(token), `HTML should include focused v3 element: ${token}`);
 }
 expect(!html.includes("app-header"), "teaching navigation header should match index.html site-header markup");
@@ -84,17 +84,12 @@ for (const token of forbiddenHtmlTokens) {
   expect(!html.includes(token), `HTML should not restore constant backend/frontstage module: ${token}`);
 }
 
-for (const phrase of ["本页怎么用", "每个环节只完成一个关键判断", "读依据", "做判断", "生成产物", "当前示例", "管理学原理", "SWOT 分析", "药事管理本科班"]) {
-  expect(html.includes(phrase), `HTML should include the new brief/example copy: ${phrase}`);
-}
-for (const token of ['data-stage="pre"', 'data-stage="in"', 'data-stage="post"', 'data-step="01"', 'data-step="10"', 'data-target="positioningLab"']) {
-  expect(html.includes(token), `HTML should include new map attribute: ${token}`);
-}
-expect(!html.includes("<select id=\"scenarioSelect\""), "pharmacy scenario select should be removed from the new example card");
+expect(html.includes("依据/图表 → 判断题 → 反馈 → 产物 → 保存资产"), "HTML should state the required primary interaction order");
+expect(html.includes("<select id=\"scenarioSelect\""), "pharmacy scenario should be a lightweight select");
 expect(!html.includes("四张大卡"), "HTML should not frame pharmacy scenarios as card grids");
 
 expect(js.includes('const STORAGE_KEY = "pharmacopilot.navigation.focus.v3"'), "JS should use the focus v3 state key");
-for (const token of ["renderSharedPrimaryNav", "sharedNavItems", "data-example-course", "[data-pp-map-nav] .pp-map-stage", "[data-pp-map-nav] .pp-map-step", "scrollToWorkbench", "option-rationale", "decisionPanel", "feedbackPanel", "artifactDrawer", "generateArtifactBtn", "saveAssetBtn", "nextStationBtn"]) {
+for (const token of ["renderSharedPrimaryNav", "sharedNavItems", "stationShortLabels", "station-node", "station-number", "phase-subtitle", "option-rationale", "scenarioSelect", "decisionPanel", "feedbackPanel", "artifactDrawer", "generateArtifactBtn", "saveAssetBtn", "nextStationBtn"]) {
   expect(js.includes(token), `JS should bind focused v3 control: ${token}`);
 }
 for (const token of ["canGenerateArtifact", "canSaveAsset", "hasSavedAsset", "requireDecisionFirst"]) {
@@ -118,16 +113,14 @@ expect(!js.includes("function triangleSvg"), "station 1 should not keep the old 
 
 for (const className of [
   ".nav-shell",
-  ".pp-nav-brief",
-  ".pp-nav-brief-main",
-  ".pp-nav-reminders",
-  ".pp-nav-reminder",
-  ".pp-nav-example",
-  ".pp-map-nav",
-  ".pp-map-stage-row",
-  ".pp-map-stage",
-  ".pp-map-step-row",
-  ".pp-map-step",
+  ".intro-card",
+  ".flow-strip",
+  ".context-strip",
+  ".route-panel",
+  ".phase-tabs",
+  ".station-chips",
+  ".station-number",
+  ".phase-subtitle",
   ".station-cover",
   ".context-drawer",
   ".decision-workspace",

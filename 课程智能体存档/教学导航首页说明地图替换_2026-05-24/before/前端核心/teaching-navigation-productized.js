@@ -37,6 +37,19 @@
 
   const state = loadState();
 
+  const stationShortLabels = {
+    1: "定位",
+    2: "学情",
+    3: "目标",
+    4: "内容",
+    5: "案例",
+    6: "时间",
+    7: "探究",
+    8: "反馈",
+    9: "评价",
+    10: "复盘",
+  };
+
   const supportToolLabels = [
     "导学问题",
     "判断流程卡",
@@ -194,6 +207,12 @@
       });
     }
 
+    $("scenarioSelect")?.addEventListener("change", (event) => {
+      state.scenarioId = event.target.value;
+      saveState();
+      render();
+    });
+
     $("generateArtifactBtn")?.addEventListener("click", () => {
       if (!requireDecisionFirst()) return;
       generateArtifact();
@@ -266,6 +285,10 @@
     return entries.map((item) => ({ id: item[0], label: item[1], rationale: item[2], score: item[3] }));
   }
 
+  function completedCount() {
+    return new Set(state.assets.map((asset) => String(asset.stationId))).size;
+  }
+
   function hasDraft(station = currentStation()) {
     return Boolean(String(state.drafts[station.id] || "").trim());
   }
@@ -301,53 +324,58 @@
   }
 
   function renderContext() {
-    document.querySelector("[data-example-course]")?.replaceChildren(document.createTextNode("管理学原理"));
-    document.querySelector("[data-example-topic]")?.replaceChildren(document.createTextNode("SWOT 分析"));
-    document.querySelector("[data-example-class]")?.replaceChildren(document.createTextNode("药事管理本科班"));
+    const select = $("scenarioSelect");
+    if (select) {
+      select.innerHTML = scenarios.map((scenario) => `<option value="${esc(scenario.id)}" ${scenario.id === state.scenarioId ? "selected" : ""}>${esc(scenario.title)}</option>`).join("");
+    }
+    const progress = $("progressText");
+    if (progress) progress.textContent = `${completedCount()} / ${stations.length}`;
   }
 
   function renderRoute() {
-    const activeStation = currentStation();
-    const activePhase = String(activeStation?.phase || currentPhase().id || "");
-    const activeStep = String(activeStation?.id || state.stationIndex + 1).padStart(2, "0");
+    const activePhase = currentPhase().id;
+    const phaseTabs = $("phaseTabs");
+    if (phaseTabs) {
+      phaseTabs.innerHTML = phases.map((phase) => {
+        const phaseStations = stations.filter((station) => station.phase === phase.id);
+        const saved = phaseStations.filter((station) => stationAssets(station.id).length).length;
+        const status = phase.id === activePhase ? "active" : saved === phaseStations.length && saved > 0 ? "done" : "";
+        return `<button type="button" class="phase-tab ${status}" data-phase="${esc(phase.id)}">
+          <strong>${esc(phase.title)}</strong>
+          <span class="phase-subtitle">${esc(phase.subtitle || phase.outputPackage || "")}</span>
+          <em>${saved}/${phaseStations.length} 已保存 · ${esc(phase.outputPackage || "阶段产物")}</em>
+        </button>`;
+      }).join("");
+      phaseTabs.querySelectorAll("[data-phase]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const index = stations.findIndex((station) => station.phase === button.dataset.phase);
+          if (index >= 0) {
+            state.stationIndex = index;
+            saveState();
+            render();
+          }
+        });
+      });
+    }
 
-    document.querySelectorAll("[data-pp-map-nav] .pp-map-stage").forEach((button) => {
-      const isActive = button.dataset.stage === activePhase;
-      button.classList.toggle("is-active", isActive);
-      button.setAttribute("aria-selected", String(isActive));
-      button.onclick = () => {
-        const index = stations.findIndex((station) => station.phase === button.dataset.stage);
-        if (index < 0) return;
-        state.stationIndex = index;
-        saveState();
-        render();
-        scrollToWorkbench();
-      };
-    });
-
-    document.querySelectorAll("[data-pp-map-nav] .pp-map-step").forEach((button) => {
-      const step = String(button.dataset.step || "").padStart(2, "0");
-      const station = stations.find((item) => String(item.id).padStart(2, "0") === step);
-      const isActive = step === activeStep;
-      const isComplete = station ? hasSavedAsset(station) : false;
-      button.classList.toggle("is-active", isActive);
-      button.classList.toggle("is-complete", isComplete);
-      button.setAttribute("aria-current", isActive ? "step" : "false");
-      button.onclick = () => {
-        const index = stations.findIndex((item) => String(item.id).padStart(2, "0") === step);
-        if (index < 0) return;
-        const targetId = button.dataset.target;
-        state.stationIndex = index;
-        saveState();
-        render();
-        scrollToWorkbench(targetId);
-      };
-    });
-  }
-
-  function scrollToWorkbench(targetId = "") {
-    const target = targetId ? document.getElementById(targetId) : null;
-    (target || document.querySelector(".focus-workbench"))?.scrollIntoView({ block: "start", behavior: "smooth" });
+    const chips = $("stationChips");
+    if (chips) {
+      chips.innerHTML = stations.map((station, index) => {
+        const status = index === state.stationIndex ? "active" : stationAssets(station.id).length ? "done" : "";
+        const shortLabel = stationShortLabels[station.id] || station.title.slice(0, 2);
+        return `<button type="button" class="station-chip station-node ${status}" data-index="${index}" aria-current="${status === "active" ? "step" : "false"}">
+          <span class="station-number">${String(index + 1).padStart(2, "0")} ${esc(shortLabel)}</span>
+          <strong>${esc(station.title)}</strong>
+        </button>`;
+      }).join("");
+      chips.querySelectorAll("[data-index]").forEach((button) => {
+        button.addEventListener("click", () => {
+          state.stationIndex = Number(button.dataset.index) || 0;
+          saveState();
+          render();
+        });
+      });
+    }
   }
 
   function renderStationCover() {
