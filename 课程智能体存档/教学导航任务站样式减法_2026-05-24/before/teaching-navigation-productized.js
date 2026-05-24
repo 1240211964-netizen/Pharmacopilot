@@ -554,9 +554,8 @@
     const syllabus = currentSyllabus();
     const recommended = recommendedPositioningMode(profile);
     const selectedMode = selected && positioningModes[selected.id];
-    return `<section class="pp-positioning-lab pp-positioning-simulator" id="positioningLab" aria-labelledby="positioningTitle">
-  <div class="pp-sim-grid">
-  <article class="pp-positioning-panel pp-sim-card pp-profile-panel">
+    return `<section class="pp-positioning-lab" id="positioningLab" aria-labelledby="positioningTitle">
+  <article class="pp-positioning-panel pp-profile-panel">
     <div class="pp-positioning-kicker">看班级画像</div>
     <div class="pp-positioning-head">
       <div>
@@ -574,16 +573,16 @@
 
     <div class="pp-profile-chart" aria-label="${esc(profile.label)}去向分布">
       ${profile.distribution.map(([label, value]) => {
-        return `<div class="pp-profile-bar pp-career-bar" data-axis="${esc(profileAxisId(label))}">
+        return `<div class="pp-profile-bar" data-axis="${esc(profileAxisId(label))}">
           <span>${esc(label)}</span>
-          <i><b style="width: ${value}%"></b></i>
+          <div><i style="width: ${value}%"></i></div>
           <strong>${value}%</strong>
         </div>`;
       }).join("")}
     </div>
   </article>
 
-  <article class="pp-positioning-panel pp-sim-card pp-understanding-panel">
+  <article class="pp-positioning-panel pp-understanding-panel">
     <div class="pp-positioning-kicker">理解定位</div>
     <div class="pp-definition-card">
       <span>${esc(syllabus.loaded ? "已载入课程大纲" : "课程大纲 mock 输入")}</span>
@@ -609,7 +608,7 @@
     </div>
   </article>
 
-  <article class="pp-positioning-panel pp-sim-card pp-action-panel">
+  <article class="pp-positioning-panel pp-action-panel">
     <div class="pp-positioning-kicker">做定位</div>
 
     <div class="pp-option-group" role="radiogroup" aria-label="SWOT 课程定位判断">
@@ -626,11 +625,10 @@
       }).join("")}
     </div>
 
-    <div class="pp-feedback-box pp-sim-feedback${selected ? " is-visible" : ""}" id="positioningFeedback" aria-live="polite"${selected ? "" : " hidden"}>
+    <div class="pp-feedback-box${selected ? " is-visible" : ""}" id="positioningFeedback" aria-live="polite"${selected ? "" : " hidden"}>
       ${renderPositioningFeedback(selectedMode, profile)}
     </div>
   </article>
-  </div>
 </section>`;
   }
 

@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PharmacoPilot | 教学导航工作台</title>
+    <meta name="description" content="面向新教师的药事管理课程教学导航工作台，按课前、课中、课后推进证据化教学设计、实施与复盘。" />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./pharmacopilot-design-system.css" />
+    <link rel="stylesheet" href="./teaching-navigation-productized.css" />
+    <script defer src="./wenda-env.js"></script>
+    <script defer src="./teaching-navigation-contract.js"></script>
+    <script defer src="./teaching-navigation-productized.js"></script>
+  </head>
+  <body data-page="teaching-navigation">
+    <header class="site-header">
+      <div class="topbar">
+        <a class="brand" href="./index.html" aria-label="PharmacoPilot 课程智能体首页">
+          <span class="brand-mark" aria-hidden="true"><span class="brand-monogram">P</span></span>
+          <span class="brand-lockup">
+            <span class="brand-wordmark">PharmacoPilot</span>
+            <span class="brand-submark">课程智能体</span>
+          </span>
+        </a>
+        <button class="nav-menu-toggle" id="navMenuToggle" type="button" aria-label="打开导航菜单" aria-controls="homeNavGroup" aria-expanded="false"><span aria-hidden="true"></span></button>
+        <div class="home-nav-group" id="homeNavGroup">
+          <nav class="topnav" id="primaryNav" aria-label="页面导航">
+            <a class="nav-link" data-nav="home" href="./index.html">首页</a>
+            <a class="nav-link active" data-nav="teaching-navigation" href="./teaching-navigation.html">教学导航</a>
+            <a class="nav-link" data-nav="practice" href="./practice.html">教学实践</a>
+            <a class="nav-link" data-nav="assets" href="./teaching-data.html">教学数据</a>
+            <a class="nav-link" data-nav="docs" href="https://github.com/1240211964-netizen/Pharmacopilot" target="_blank" rel="noreferrer">文档</a>
+          </nav>
+          <div class="top-actions home-auth-actions" aria-label="账号与授权入口">
+            <a class="nav-outline-action" href="./auth.html?mode=login">登录</a>
+            <a class="nav-outline-action" href="./auth.html?provider=github" data-auth-provider="github">GitHub</a>
+            <a class="nav-primary-action nav-fanya-action" href="about:blank" target="_blank" rel="noreferrer" data-wenda-platform-auth aria-label="泛雅，暂时打开闻道平台授权界面">泛雅</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="nav-shell">
+      <section class="pp-nav-brief" data-pp-nav-brief aria-labelledby="ppNavBriefTitle">
+        <article class="pp-nav-brief-main">
+          <div class="pp-nav-eyebrow">教学导航</div>
+
+          <div class="pp-nav-brief-header">
+            <div>
+              <h1 id="ppNavBriefTitle">本页怎么用</h1>
+              <p>
+                每个环节只完成一个关键判断：先看依据，再做选择，最后生成可写入教学设计包的产物。
+              </p>
+            </div>
+          </div>
+
+          <div class="pp-nav-reminders" aria-label="本页操作提醒">
+            <div class="pp-nav-reminder is-current">
+              <span>01</span>
+              <strong>读依据</strong>
+              <p>先看本环节提供的图表、案例或课程线索。</p>
+            </div>
+
+            <div class="pp-nav-reminder">
+              <span>02</span>
+              <strong>做判断</strong>
+              <p>根据提示完成一个选择，不从零写长文。</p>
+            </div>
+
+            <div class="pp-nav-reminder">
+              <span>03</span>
+              <strong>生成产物</strong>
+              <p>确认后形成定位句、目标句、活动方案或评价要点。</p>
+            </div>
+          </div>
+        </article>
+
+        <aside class="pp-nav-example" aria-label="示例课程信息">
+          <div class="pp-nav-example-head">
+            <div class="pp-nav-example-title">当前示例</div>
+            <button class="pp-syllabus-chip" id="syllabusImportBtn" type="button" aria-label="导入或查看课程大纲状态">示例大纲</button>
+            <input id="syllabusFileInput" class="visually-hidden-file" type="file" accept=".pdf,.doc,.docx,.txt,.md" />
+          </div>
+
+          <dl class="pp-nav-example-list">
+            <div>
+              <dt>示例课程</dt>
+              <dd data-example-course>管理学原理</dd>
+            </div>
+
+            <div>
+              <dt>示例知识点</dt>
+              <dd data-example-topic>SWOT 分析</dd>
+            </div>
+
+            <div>
+              <dt>示例班级</dt>
+              <dd data-example-class>药事管理本科班</dd>
+            </div>
+          </dl>
+        </aside>
+      </section>
+
+      <section class="pp-map-nav" data-pp-map-nav aria-label="教学环节地图导航">
+        <div class="pp-map-stage-row" role="tablist" aria-label="教学阶段">
+          <button class="pp-map-stage is-active" type="button" data-stage="pre" role="tab" aria-selected="true">
+            课前设计与准备
+          </button>
+          <button class="pp-map-stage" type="button" data-stage="in" role="tab" aria-selected="false">
+            课中实施与调控
+          </button>
+          <button class="pp-map-stage" type="button" data-stage="post" role="tab" aria-selected="false">
+            课后评价与改进
+          </button>
+        </div>
+
+        <div class="pp-map-step-row" aria-label="10 个教学环节">
+          <button class="pp-map-step is-active" type="button" data-stage="pre" data-step="01" data-target="positioningLab">
+            <span>01</span>
+            <strong>定位</strong>
+          </button>
+
+          <button class="pp-map-step" type="button" data-stage="pre" data-step="02" data-target="step-02">
+            <span>02</span>
+            <strong>学情</strong>
+          </button>
+
+          <button class="pp-map-step" type="button" data-stage="pre" data-step="03" data-target="step-03">
+            <span>03</span>
+            <strong>目标</strong>
+          </button>
+
+          <button class="pp-map-step" type="button" data-stage="pre" data-step="04" data-target="step-04">
+            <span>04</span>
+            <strong>内容</strong>
+          </button>
+
+          <button class="pp-map-step" type="button" data-stage="pre" data-step="05" data-target="step-05">
+            <span>05</span>
+            <strong>案例</strong>
+          </button>
+
+          <button class="pp-map-step" type="button" data-stage="in" data-step="06" data-target="step-06">
+            <span>06</span>
+            <strong>时间</strong>
+          </button>
+
+          <button class="pp-map-step" type="button" data-stage="in" data-step="07" data-target="step-07">
+            <span>07</span>
+            <strong>探究</strong>
+          </button>
+
+          <button class="pp-map-step" type="button" data-stage="in" data-step="08" data-target="step-08">
+            <span>08</span>
+            <strong>反馈</strong>
+          </button>
+
+          <button class="pp-map-step" type="button" data-stage="post" data-step="09" data-target="step-09">
+            <span>09</span>
+            <strong>评价</strong>
+          </button>
+
+          <button class="pp-map-step" type="button" data-stage="post" data-step="10" data-target="step-10">
+            <span>10</span>
+            <strong>复盘</strong>
+          </button>
+        </div>
+      </section>
+
+      <section class="focus-workbench" aria-label="当前任务站工作台">
+        <article class="station-cover" aria-label="当前任务站">
+          <div class="station-cover-main">
+            <span id="phasePill" class="phase-pill"></span>
+            <h2 id="activeTitle"></h2>
+            <div id="stationInputChips" class="station-input-chips" aria-label="本站输入来源"></div>
+          </div>
+        </article>
+
+        <section class="decision-workspace" aria-label="一图一题工作区">
+          <article id="evidenceFigure" class="evidence-figure"></article>
+          <article id="decisionPanel" class="decision-panel"></article>
+        </section>
+
+        <article id="feedbackPanel" class="feedback-panel" aria-live="polite"></article>
+
+        <article class="artifact-panel" aria-label="生成教学产物">
+          <div class="panel-head compact">
+            <div>
+              <span class="eyebrow">节点产物</span>
+              <h2 id="artifactTitle">生成本站产物</h2>
+            </div>
+            <div class="artifact-actions">
+              <button id="generateArtifactBtn" class="ghost-btn" type="button">生成</button>
+              <button id="saveAssetBtn" class="ghost-btn" type="button">保存资产</button>
+              <button id="nextStationBtn" class="primary-btn" type="button">下一站</button>
+            </div>
+          </div>
+          <div id="artifactGuidance"></div>
+          <details id="artifactDrawer" class="artifact-drawer">
+            <summary id="artifactSummary">查看 / 编辑产物草稿</summary>
+            <textarea id="artifactText" aria-label="本站产物草稿"></textarea>
+          </details>
+        </article>
+      </section>
+    </main>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>

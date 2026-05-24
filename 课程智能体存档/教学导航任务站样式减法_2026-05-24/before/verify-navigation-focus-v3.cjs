@@ -183,37 +183,6 @@ for (const className of [
   expect(css.includes(className), `CSS should include focused layout class ${className}`);
 }
 
-for (const token of [
-  ".context-drawer {\n  display: none !important;",
-  "grid-template-columns: 1fr;",
-  "padding: 20px 22px;",
-  "margin: 10px 0 0;",
-  "font-size: clamp(1.45rem, 1.8vw, 1.95rem);",
-  "line-height: 1.18;",
-  ".station-input-chips span",
-  ".pp-positioning-simulator",
-  ".pp-sim-grid",
-  "grid-template-columns: minmax(260px, 0.95fr) minmax(260px, 0.9fr) minmax(300px, 1.05fr);",
-  ".pp-sim-card,",
-  ".pp-sim-feedback,",
-  ".pp-career-bar",
-  "grid-template-columns: 68px minmax(0, 1fr) 38px;",
-  "background: linear-gradient(90deg, rgba(217, 119, 87, 0.72), rgba(77, 98, 87, 0.68));",
-]) {
-  expect(css.includes(token), `CSS should include station-style reduction token: ${token}`);
-}
-
-for (const token of [
-  'class="pp-positioning-lab pp-positioning-simulator"',
-  '<div class="pp-sim-grid">',
-  'class="pp-positioning-panel pp-sim-card pp-profile-panel"',
-  'class="pp-feedback-box pp-sim-feedback',
-  'class="pp-profile-bar pp-career-bar"',
-  '<i><b style="width: ${value}%"></b></i>',
-]) {
-  expect(js.includes(token), `JS should render simulator token: ${token}`);
-}
-
 for (const className of [".workbench-side", ".radar-asset-grid", ".quality-radar", ".asset-shelf", ".evidence-chain-card", ".agent-status-panel"]) {
   expect(!css.includes(className), `CSS should not include removed constant module class ${className}`);
 }
