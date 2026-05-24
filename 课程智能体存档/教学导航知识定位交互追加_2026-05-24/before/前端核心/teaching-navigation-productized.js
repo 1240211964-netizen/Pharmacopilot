@@ -84,25 +84,19 @@
     },
     {
       title: "药事管理任务",
-      text: "医保支付与药品可及性问题涉及政策、机构、患者和企业等多方约束，适合训练结构化判断。",
+      text: "医保支付与药品可及性问题涉及多方约束，适合训练结构化判断。",
     },
     {
       title: "学生产出",
-      text: "学生最终应形成 SWOT 分析表，并提出一条有依据的药事管理策略建议。",
+      text: "学生最终应形成 SWOT 分析表，并提出有依据的策略建议。",
     },
   ];
 
   const positioningImpactRules = [
-    "案例必须来自药事管理真实情境；",
-    "课堂任务必须要求学生做判断，而不只是填表；",
+    "案例必须来自药事管理真实情境。",
+    "课堂任务必须要求学生做判断，而不只是填表。",
     "评价标准必须关注证据、专业相关性和策略合理性。",
   ];
-
-  const positioningOptionDetails = {
-    decision: "让 SWOT 服务专业判断，而不是停留在工具介绍。",
-    concept: "可以讲清概念，但专业迁移支撑较弱。",
-    review: "适合复习课，不适合作为新课主线。",
-  };
 
   const positioningArtifactSentence = "本节课将 SWOT 定位为药事管理情境中的管理决策训练工具。学生将基于医保支付与药品可及性案例，识别内外部因素，形成有证据支撑的策略判断，而不是停留在 SWOT 四象限定义记忆。";
 
@@ -110,7 +104,7 @@
     1: [
       ["decision", "药事管理情境中的管理决策训练", "A 是主线：它能把 SWOT 从概念工具转化为面向药事问题的结构化判断训练。", 3.8],
       ["concept", "管理学工具概念讲授", "B 可以作为前置讲解，用来澄清 SWOT 四象限，但不能作为整节课主线。", 2.1],
-      ["review", "期末考试知识点复习", "C 适合复习课，不适合新课主线；它会把学习目标压缩成定义记忆。", 1.8],
+      ["exam", "期末考试知识点复习", "C 适合复习课，不适合新课主线；它会把学习目标压缩成定义记忆。", 1.8],
     ],
     2: [
       ["evidence", "学生会填表，但证据链表达不足", "这是最容易被忽略的高风险问题，应前置证据引用训练。", 3.7],
@@ -298,9 +292,7 @@
   }
 
   function canGenerateArtifact(station = currentStation()) {
-    const selected = selectedOption(station);
-    if (Number(station.id) === 1) return selected?.id === "decision";
-    return Boolean(selected);
+    return Boolean(selectedOption(station));
   }
 
   function canSaveAsset(station = currentStation()) {
@@ -409,12 +401,25 @@
     const target = $("evidenceFigure");
     if (!target) return;
     if (Number(station.id) === 1) {
-      target.className = "evidence-figure positioning-lab-host";
-      target.innerHTML = renderPositioningLab(station, selectedOption(station));
-      bindPositioningLab(target, station);
+      target.classList.add("positioning-evidence-panel");
+      target.innerHTML = `
+        <div class="panel-head">
+          <div>
+            <span class="eyebrow">定位依据</span>
+            <h2>知识点教学功能定位</h2>
+          </div>
+          <span class="figure-type">功能定位校准</span>
+        </div>
+        <div class="positioning-evidence-grid">
+          ${positioningEvidenceCards.map((card) => `<section class="positioning-evidence-card">
+            <span>${esc(card.title)}</span>
+            <p>${esc(card.text)}</p>
+          </section>`).join("")}
+        </div>
+        <p class="figure-caption">定位不是给知识点贴标签，而是判断它在本节课中承担的教学功能。</p>`;
       return;
     }
-    target.className = "evidence-figure";
+    target.classList.remove("positioning-evidence-panel");
     const model = figureModel(station, currentScenario());
     target.innerHTML = `
       <div class="panel-head">
@@ -433,14 +438,6 @@
     const selected = selectedOption(station);
     const target = $("decisionPanel");
     if (!target) return;
-    if (Number(station.id) === 1) {
-      target.hidden = true;
-      target.className = "decision-panel";
-      target.innerHTML = "";
-      return;
-    }
-    target.hidden = false;
-    target.className = "decision-panel";
     const question = Number(station.id) === 1
       ? "看到这三项证据，本节课的主线更应该是什么？"
       : station.decisionQuestion || "当前最重要的教学判断是什么？";
@@ -459,128 +456,19 @@
       </div>`;
     target.querySelectorAll("[data-option]").forEach((button) => {
       button.addEventListener("click", () => {
-        setDecision(station, button.dataset.option);
+        const previous = state.decisions[station.id];
+        state.decisions[station.id] = button.dataset.option;
+        if (previous !== button.dataset.option) {
+          delete state.drafts[station.id];
+          state.assets = state.assets.filter((asset) => String(asset.stationId) !== String(station.id));
+        }
+        if (Number(station.id) === 1) {
+          state.drafts[station.id] = positioningArtifactDraft();
+        }
+        saveState();
+        render();
       });
     });
-  }
-
-  function renderPositioningLab(station, selected) {
-    const outputVisible = selected?.id === "decision";
-    return `<section class="pp-positioning-lab" id="positioningLab" aria-labelledby="positioningTitle">
-  <article class="pp-positioning-panel pp-positioning-evidence">
-    <div class="pp-positioning-kicker">一图一题 · 药事管理 · 教学判断</div>
-
-    <div class="pp-positioning-head">
-      <div>
-        <h2 id="positioningTitle">这节课到底要训练学生什么？</h2>
-        <p>
-          定位不是给知识点贴标签，而是判断 SWOT 在本节课中承担什么教学功能。
-        </p>
-      </div>
-      <span class="pp-positioning-badge">Step 1 · 看证据</span>
-    </div>
-
-    <div class="pp-positioning-rule">
-      <span>判断规则</span>
-      <strong>课程目标 × 药事管理任务 × 学生产出</strong>
-      <p>三项证据同时指向“专业判断”时，SWOT 才应该从工具讲解升级为决策训练。</p>
-    </div>
-
-    <div class="pp-evidence-grid" aria-label="定位判断证据">
-      ${positioningEvidenceCards.map((card, index) => `<div class="pp-evidence-card">
-        <div class="pp-evidence-index">${String(index + 1).padStart(2, "0")}</div>
-        <h3>${esc(card.title)}</h3>
-        <p>${esc(card.text)}</p>
-      </div>`).join("")}
-    </div>
-  </article>
-
-  <article class="pp-positioning-panel pp-positioning-decision">
-    <div class="pp-positioning-kicker">Step 2 · 作判断</div>
-
-    <div class="pp-positioning-question">
-      <h2>看到这三项证据，本节课的主线更应该是什么？</h2>
-      <p>请选择最能约束后续案例、任务和评价标准的定位。</p>
-    </div>
-
-    <div class="pp-option-group" role="radiogroup" aria-label="SWOT 课程定位判断">
-      ${decisionOptions(station).map((option, index) => `<button class="pp-positioning-option${selected?.id === option.id ? " is-selected" : ""}" type="button" role="radio" aria-checked="${selected?.id === option.id ? "true" : "false"}" data-positioning-answer="${esc(option.id)}">
-        <span class="pp-option-number">${["A", "B", "C"][index]}</span>
-        <span>
-          <strong>${esc(option.label)}</strong>
-          <em>${esc(positioningOptionDetails[option.id] || option.rationale)}</em>
-        </span>
-      </button>`).join("")}
-    </div>
-
-    <div class="pp-feedback-box${selected ? " is-visible" : ""}" id="positioningFeedback" aria-live="polite">
-      ${renderPositioningFeedback(selected)}
-    </div>
-
-    <div class="pp-positioning-output" id="positioningOutput"${outputVisible ? "" : " hidden"}>
-      <div class="pp-output-header">
-        <div>
-          <span>本环节产物</span>
-          <h3>本节课定位句</h3>
-        </div>
-        <button class="pp-copy-btn" type="button" id="copyPositioningStatement">复制</button>
-      </div>
-
-      <p id="positioningStatement">
-        ${esc(positioningArtifactSentence)}
-      </p>
-
-      <div class="pp-constraints">
-        <h4>对后续设计的约束</h4>
-        <ul>
-          ${positioningImpactRules.map((rule) => `<li>${esc(rule)}</li>`).join("")}
-        </ul>
-      </div>
-    </div>
-  </article>
-</section>`;
-  }
-
-  function renderPositioningFeedback(selected) {
-    if (!selected) {
-      return `<strong>等待判断</strong>
-      <p>先根据左侧三项证据判断：这节课究竟是在讲工具，还是在训练学生做药事管理判断？</p>`;
-    }
-    if (selected.id === "decision") {
-      return `<strong>判断成立</strong>
-      <p>${esc(selected.rationale)}</p>`;
-    }
-    return `<strong>需要调整</strong>
-      <p>${esc(selected.rationale)}</p>`;
-  }
-
-  function bindPositioningLab(target, station) {
-    target.querySelectorAll("[data-positioning-answer]").forEach((button) => {
-      button.addEventListener("click", () => {
-        setDecision(station, button.dataset.positioningAnswer);
-      });
-    });
-    target.querySelector("#copyPositioningStatement")?.addEventListener("click", () => {
-      copyTextToClipboard(positioningArtifactSentence);
-    });
-  }
-
-  function setDecision(station, optionId) {
-    const previous = state.decisions[station.id];
-    state.decisions[station.id] = optionId;
-    if (previous !== optionId) {
-      delete state.drafts[station.id];
-      state.assets = state.assets.filter((asset) => String(asset.stationId) !== String(station.id));
-    }
-    if (Number(station.id) === 1) {
-      if (optionId === "decision") {
-        state.drafts[station.id] = positioningArtifactDraft();
-      } else {
-        delete state.drafts[station.id];
-      }
-    }
-    saveState();
-    render();
   }
 
   function renderFeedback() {
@@ -588,13 +476,6 @@
     const option = selectedOption(station);
     const panel = $("feedbackPanel");
     if (!panel) return;
-    if (Number(station.id) === 1) {
-      panel.hidden = true;
-      panel.classList.remove("show", "positioning-feedback");
-      panel.innerHTML = "";
-      return;
-    }
-    panel.hidden = false;
     if (!option) {
       panel.classList.remove("show", "positioning-feedback");
       panel.innerHTML = "";
@@ -659,8 +540,19 @@
       target.className = "";
       return;
     }
-    target.innerHTML = "";
-    target.className = "";
+    const hasDecision = Boolean(selectedOption(station));
+    target.className = "positioning-artifact-guide";
+    target.innerHTML = `
+      <section class="positioning-product">
+        <span class="eyebrow">本环节产物</span>
+        <p>${esc(hasDecision ? positioningArtifactSentence : "完成右侧定位判断后，将自动生成本节课的定位句。")}</p>
+      </section>
+      <section class="positioning-impact">
+        <span class="eyebrow">定位对后续设计的影响</span>
+        <div>
+          ${positioningImpactRules.map((rule) => `<p>${esc(rule)}</p>`).join("")}
+        </div>
+      </section>`;
   }
 
   function generateArtifact() {
@@ -860,154 +752,4 @@
     clearTimeout(toast.timer);
     toast.timer = setTimeout(() => node.classList.remove("show"), timeout);
   }
-
-  function copyTextToClipboard(text) {
-    if (navigator.clipboard?.writeText) {
-      navigator.clipboard.writeText(text)
-        .then(() => toast("已复制定位句"))
-        .catch(() => fallbackCopyText(text));
-      return;
-    }
-    fallbackCopyText(text);
-  }
-
-  function fallbackCopyText(text) {
-    const helper = document.createElement("textarea");
-    helper.value = text;
-    helper.setAttribute("readonly", "");
-    helper.style.position = "fixed";
-    helper.style.top = "-999px";
-    document.body.appendChild(helper);
-    helper.select();
-    document.execCommand("copy");
-    helper.remove();
-    toast("已复制定位句");
-  }
-})();
-
-/* === Pharmacopilot · Knowledge positioning interaction === */
-
-(function initPositioningLabModule() {
-  const POSITIONING_STATEMENT =
-    "本节课将 SWOT 定位为药事管理情境中的管理决策训练工具。学生将基于医保支付与药品可及性案例，识别内外部因素，形成有证据支撑的策略判断，而不是停留在 SWOT 四象限定义记忆。";
-
-  const feedbackMap = {
-    decision: {
-      type: "correct",
-      title: "判断成立：这应该作为本节课主线",
-      text:
-        "三项证据都指向同一件事：本节课不能只讲 SWOT 概念，而要让学生把 SWOT 用到药事管理情境中，形成有证据支撑的策略判断。",
-    },
-    concept: {
-      type: "wrong",
-      title: "需要下调为前置讲解，而不是主线",
-      text:
-        "管理学工具概念讲授是必要的，但它只能解决“知道 SWOT 是什么”。如果停在这里，学生很难把工具迁移到医保支付、药品可及性等药事管理问题中。",
-    },
-    review: {
-      type: "wrong",
-      title: "这是复习课定位，不适合作为新课主线",
-      text:
-        "期末复习可以围绕知识点回顾和题型训练展开；但本节新课的任务是建立工具到专业判断的迁移路径，不能把主线降格为考点回忆。",
-    },
-  };
-
-  function emitPositioningComplete() {
-    window.dispatchEvent(
-      new CustomEvent("pharmacopilot:positioning-complete", {
-        detail: {
-          step: "knowledge-positioning",
-          course: "管理学原理",
-          topic: "SWOT 分析",
-          major: "药事管理",
-          positioningStatement: POSITIONING_STATEMENT,
-          constraints: [
-            "案例必须来自药事管理真实情境",
-            "课堂任务必须要求学生做判断，而不只是填表",
-            "评价标准必须关注证据使用、专业相关性和策略合理性",
-          ],
-        },
-      })
-    );
-  }
-
-  function initPositioningLab() {
-    const lab = document.getElementById("positioningLab");
-    if (!lab || lab.dataset.initialized === "true") return;
-
-    lab.dataset.initialized = "true";
-
-    const options = Array.from(
-      lab.querySelectorAll("[data-positioning-answer]")
-    );
-    const feedback = document.getElementById("positioningFeedback");
-    const output = document.getElementById("positioningOutput");
-    const copyButton = document.getElementById("copyPositioningStatement");
-    const statement = document.getElementById("positioningStatement");
-
-    if (!options.length || !feedback || !output) return;
-
-    options.forEach((option) => {
-      option.addEventListener("click", () => {
-        const answer = option.dataset.positioningAnswer;
-        const result = feedbackMap[answer];
-
-        if (!result) return;
-
-        options.forEach((item) => {
-          item.classList.remove("is-selected", "is-correct", "is-wrong");
-          item.setAttribute("aria-checked", "false");
-        });
-
-        option.classList.add("is-selected");
-        option.classList.add(
-          result.type === "correct" ? "is-correct" : "is-wrong"
-        );
-        option.setAttribute("aria-checked", "true");
-
-        feedback.classList.remove("is-correct", "is-wrong");
-        feedback.classList.add(
-          result.type === "correct" ? "is-correct" : "is-wrong"
-        );
-        feedback.innerHTML = `
-          <strong>${result.title}</strong>
-          <p>${result.text}</p>
-        `;
-
-        if (result.type === "correct") {
-          output.hidden = false;
-          emitPositioningComplete();
-        } else {
-          output.hidden = true;
-        }
-      });
-    });
-
-    if (copyButton && statement) {
-      copyButton.addEventListener("click", async () => {
-        const text = statement.textContent.trim();
-
-        try {
-          await navigator.clipboard.writeText(text);
-          copyButton.textContent = "已复制";
-          window.setTimeout(() => {
-            copyButton.textContent = "复制";
-          }, 1400);
-        } catch (error) {
-          copyButton.textContent = "请手动复制";
-          window.setTimeout(() => {
-            copyButton.textContent = "复制";
-          }, 1800);
-        }
-      });
-    }
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initPositioningLab);
-  } else {
-    initPositioningLab();
-  }
-
-  window.initPositioningLab = initPositioningLab;
 })();
