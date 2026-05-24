@@ -12,147 +12,7 @@
     .replaceAll("'", "&#039;");
 
   if (!contract) {
-
-
-  const stationSimulators = {
-    2: {
-      title: "学情诊断模拟器",
-      chipLabel: "学情证据",
-      evidenceTitle: "看班级进入状态",
-      evidenceNote: "先判断学生最可能卡在哪里，再决定导学支架。",
-      bars: [["预习", 72], ["前测", 64], ["证据", 42], ["参与", 58]],
-      flow: ["读数据", "判障碍", "定支架"],
-      outputTitle: "学情诊断与导学任务",
-      outputCue: "把首要障碍转成课前导学任务。",
-      artifactLines: {
-        evidence: "预习完成率较高，但开放题证据引用率偏低；部分学生能填写矩阵，却不能说明判断依据。",
-        action: "课前增加证据来源标注任务，并在课堂开头用典型误判完成边界校准。",
-        constraints: ["导学任务必须产生可查看证据", "课堂开头必须处理主要误区", "低参与学生需要低门槛进入任务"],
-      },
-    },
-    3: {
-      title: "目标证据生成器",
-      chipLabel: "学习目标",
-      evidenceTitle: "看目标是否可评价",
-      evidenceNote: "目标不能停在“理解”，必须能被学生产出证明。",
-      bars: [["行为", 46], ["情境", 68], ["产出", 52], ["评价", 38]],
-      flow: ["看缺口", "选补强", "生成目标"],
-      outputTitle: "学习目标与评价证据",
-      outputCue: "把目标改写成可观察、可评价的成果。",
-      artifactLines: {
-        evidence: "当前目标缺少可观察行为和评价证据，无法判断学生是否真正会用 SWOT 完成药事管理判断。",
-        action: "把目标改写为：学生基于药事管理案例完成有证据的 SWOT 矩阵，并说明策略建议与矩阵判断的匹配关系。",
-        constraints: ["目标必须包含行为动词", "目标必须指向学生产出", "评价证据必须能直接证明目标达成"],
-      },
-    },
-    4: {
-      title: "内容问题链生成器",
-      chipLabel: "内容主线",
-      evidenceTitle: "看教材内容如何转成问题链",
-      evidenceNote: "内容不是照搬章节，而是组织学生完成判断的路径。",
-      bars: [["概念", 70], ["边界", 44], ["证据", 48], ["策略", 52]],
-      flow: ["定概念", "排问题", "接任务"],
-      outputTitle: "内容结构与问题链",
-      outputCue: "把教材内容重构为课堂可推进的问题链。",
-      artifactLines: {
-        evidence: "教材顺序能覆盖概念，但不能自动形成学生的证据判断和策略表达。",
-        action: "按“概念边界—证据判断—策略建议”组织内容，让学生逐步完成从分类到管理建议的迁移。",
-        constraints: ["每个概念必须进入问题链", "每个问题必须指向学生动作", "内容顺序必须降低认知负荷"],
-      },
-    },
-    5: {
-      title: "案例证据筛选器",
-      chipLabel: "案例材料",
-      evidenceTitle: "看案例证据是否够用",
-      evidenceNote: "案例不是背景故事，而是学生判断的证据来源。",
-      bars: [["事实", 78], ["政策", 62], ["数据", 55], ["角色", 38], ["边界", 34]],
-      flow: ["看材料", "补证据", "定边界"],
-      outputTitle: "案例材料说明与证据边界",
-      outputCue: "把案例材料转成可提取、可追溯的证据包。",
-      artifactLines: {
-        evidence: "案例已有事实和政策线索，但角色立场与风险边界不足，学生容易凭常识填表。",
-        action: "为材料标注事实、政策、数据、角色和风险边界，并要求学生每项 SWOT 判断都引用至少一条材料证据。",
-        constraints: ["材料必须有可引用事实", "不能让学生凭个人经验完成判断", "案例边界必须写入任务说明"],
-      },
-    },
-    6: {
-      title: "课堂时间编排器",
-      chipLabel: "课堂流程",
-      evidenceTitle: "看 90 分钟如何分配",
-      evidenceNote: "时间线决定学生有没有机会完成高阶判断。",
-      bars: [["讲授", 48], ["分析", 24], ["协作", 10], ["反馈", 8]],
-      flow: ["压讲授", "扩分析", "留反馈"],
-      outputTitle: "90 分钟课堂流程",
-      outputCue: "把时间从教师讲授转向学生证据分析。",
-      artifactLines: {
-        evidence: "原始安排中讲授占比偏高，案例分析和反馈修正时间不足。",
-        action: "压缩概念讲授，增加证据分析、小组复核、展示追问和反馈修正时间。",
-        constraints: ["讲授只保留必要支架", "核心时间给学生产出", "每个活动必须留下评价证据"],
-      },
-    },
-    7: {
-      title: "探究任务组织器",
-      chipLabel: "协作任务",
-      evidenceTitle: "看小组是否真的协作",
-      evidenceNote: "协作不是分组讨论，而是每个角色都有证据产出。",
-      bars: [["资料员", 72], ["判断员", 66], ["质询员", 48], ["汇报员", 58]],
-      flow: ["分角色", "留证据", "互质询"],
-      outputTitle: "小组探究任务单",
-      outputCue: "把小组讨论改造成有角色、有证据的协作任务。",
-      artifactLines: {
-        evidence: "当前任务容易由组长包办，部分学生没有独立证据产出。",
-        action: "为每个角色设置独立证据产出，并用同伴质询检查判断依据。",
-        constraints: ["每名学生必须有可见贡献", "小组产出必须可追溯", "教师追问聚焦证据质量"],
-      },
-    },
-    8: {
-      title: "即时反馈触发器",
-      chipLabel: "形成性反馈",
-      evidenceTitle: "看何时需要打断与反馈",
-      evidenceNote: "反馈要发生在学生带着误区进入核心任务之前。",
-      bars: [["边界", 44], ["证据", 46], ["策略", 62], ["表达", 58]],
-      flow: ["设触发点", "给反馈", "再修正"],
-      outputTitle: "形成性反馈触发点",
-      outputCue: "把课堂反馈前置到关键误区出现的位置。",
-      artifactLines: {
-        evidence: "概念边界和证据引用是进入案例探究前的高风险点。",
-        action: "在案例探究前设置概念边界即时判断，并用错误样例完成快速纠偏。",
-        constraints: ["反馈必须足够早", "反馈必须覆盖主要误区", "反馈后要让学生修正原判断"],
-      },
-    },
-    9: {
-      title: "评价量规校准器",
-      chipLabel: "评价证据",
-      evidenceTitle: "看学生作品如何评分",
-      evidenceNote: "评价不能只看矩阵完整，还要看证据和策略质量。",
-      bars: [["分类", 82], ["证据", 46], ["策略", 68], ["风险", 40]],
-      flow: ["看作品", "定指标", "给反馈"],
-      outputTitle: "学生作品评价量规",
-      outputCue: "把评价重心从格式完整转向判断质量。",
-      artifactLines: {
-        evidence: "学生作品的分类格式较完整，但证据引用和风险边界是低分维度。",
-        action: "用量规逐项评价分类准确性、证据充分性、策略匹配度和风险意识。",
-        constraints: ["评分依据必须可解释", "反馈必须指向下一步修改", "评价不能只看表格是否填满"],
-      },
-    },
-    10: {
-      title: "复盘资产沉淀器",
-      chipLabel: "教学复盘",
-      evidenceTitle: "看什么值得沉淀",
-      evidenceNote: "复盘不是写感想，而是保存下一轮可复用的证据和材料。",
-      bars: [["低分样例", 76], ["反馈语", 68], ["修订案例", 82], ["课堂气氛", 28]],
-      flow: ["看低分", "存样例", "改材料"],
-      outputTitle: "复盘与资产沉淀清单",
-      outputCue: "把本次教学转化为下一轮可用资产。",
-      artifactLines: {
-        evidence: "最有价值的资产不是最终教案，而是低分样例、反馈语和改进后的案例材料。",
-        action: "沉淀低分样例、教师反馈语、学生修订前后作品和下一轮案例材料改动点。",
-        constraints: ["资产必须能复用", "复盘必须连接学生证据", "下一轮改进必须可执行"],
-      },
-    },
-  };
-
-  document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", () => {
       document.body.innerHTML = `<main class="nav-shell"><article class="feedback-panel show"><h2>教学导航契约未加载</h2><p>请确认 teaching-navigation-contract.js 已在 productized 脚本之前加载。</p></article></main>`;
     });
     return;
@@ -346,146 +206,6 @@
       ["plan", "只保存最终教案", "缺少学生证据和迭代依据。", 2.1],
       ["mood", "只记录课堂气氛是否活跃", "不能形成可验证改进。", 1.6],
     ],
-  };
-
-
-
-  const stationSimulators = {
-    2: {
-      title: "学情诊断模拟器",
-      chipLabel: "学情证据",
-      evidenceTitle: "看班级进入状态",
-      evidenceNote: "先判断学生最可能卡在哪里，再决定导学支架。",
-      bars: [["预习", 72], ["前测", 64], ["证据", 42], ["参与", 58]],
-      flow: ["读数据", "判障碍", "定支架"],
-      outputTitle: "学情诊断与导学任务",
-      outputCue: "把首要障碍转成课前导学任务。",
-      artifactLines: {
-        evidence: "预习完成率较高，但开放题证据引用率偏低；部分学生能填写矩阵，却不能说明判断依据。",
-        action: "课前增加证据来源标注任务，并在课堂开头用典型误判完成边界校准。",
-        constraints: ["导学任务必须产生可查看证据", "课堂开头必须处理主要误区", "低参与学生需要低门槛进入任务"],
-      },
-    },
-    3: {
-      title: "目标证据生成器",
-      chipLabel: "学习目标",
-      evidenceTitle: "看目标是否可评价",
-      evidenceNote: "目标不能停在“理解”，必须能被学生产出证明。",
-      bars: [["行为", 46], ["情境", 68], ["产出", 52], ["评价", 38]],
-      flow: ["看缺口", "选补强", "生成目标"],
-      outputTitle: "学习目标与评价证据",
-      outputCue: "把目标改写成可观察、可评价的成果。",
-      artifactLines: {
-        evidence: "当前目标缺少可观察行为和评价证据，无法判断学生是否真正会用 SWOT 完成药事管理判断。",
-        action: "把目标改写为：学生基于药事管理案例完成有证据的 SWOT 矩阵，并说明策略建议与矩阵判断的匹配关系。",
-        constraints: ["目标必须包含行为动词", "目标必须指向学生产出", "评价证据必须能直接证明目标达成"],
-      },
-    },
-    4: {
-      title: "内容问题链生成器",
-      chipLabel: "内容主线",
-      evidenceTitle: "看教材内容如何转成问题链",
-      evidenceNote: "内容不是照搬章节，而是组织学生完成判断的路径。",
-      bars: [["概念", 70], ["边界", 44], ["证据", 48], ["策略", 52]],
-      flow: ["定概念", "排问题", "接任务"],
-      outputTitle: "内容结构与问题链",
-      outputCue: "把教材内容重构为课堂可推进的问题链。",
-      artifactLines: {
-        evidence: "教材顺序能覆盖概念，但不能自动形成学生的证据判断和策略表达。",
-        action: "按“概念边界—证据判断—策略建议”组织内容，让学生逐步完成从分类到管理建议的迁移。",
-        constraints: ["每个概念必须进入问题链", "每个问题必须指向学生动作", "内容顺序必须降低认知负荷"],
-      },
-    },
-    5: {
-      title: "案例证据筛选器",
-      chipLabel: "案例材料",
-      evidenceTitle: "看案例证据是否够用",
-      evidenceNote: "案例不是背景故事，而是学生判断的证据来源。",
-      bars: [["事实", 78], ["政策", 62], ["数据", 55], ["角色", 38], ["边界", 34]],
-      flow: ["看材料", "补证据", "定边界"],
-      outputTitle: "案例材料说明与证据边界",
-      outputCue: "把案例材料转成可提取、可追溯的证据包。",
-      artifactLines: {
-        evidence: "案例已有事实和政策线索，但角色立场与风险边界不足，学生容易凭常识填表。",
-        action: "为材料标注事实、政策、数据、角色和风险边界，并要求学生每项 SWOT 判断都引用至少一条材料证据。",
-        constraints: ["材料必须有可引用事实", "不能让学生凭个人经验完成判断", "案例边界必须写入任务说明"],
-      },
-    },
-    6: {
-      title: "课堂时间编排器",
-      chipLabel: "课堂流程",
-      evidenceTitle: "看 90 分钟如何分配",
-      evidenceNote: "时间线决定学生有没有机会完成高阶判断。",
-      bars: [["讲授", 48], ["分析", 24], ["协作", 10], ["反馈", 8]],
-      flow: ["压讲授", "扩分析", "留反馈"],
-      outputTitle: "90 分钟课堂流程",
-      outputCue: "把时间从教师讲授转向学生证据分析。",
-      artifactLines: {
-        evidence: "原始安排中讲授占比偏高，案例分析和反馈修正时间不足。",
-        action: "压缩概念讲授，增加证据分析、小组复核、展示追问和反馈修正时间。",
-        constraints: ["讲授只保留必要支架", "核心时间给学生产出", "每个活动必须留下评价证据"],
-      },
-    },
-    7: {
-      title: "探究任务组织器",
-      chipLabel: "协作任务",
-      evidenceTitle: "看小组是否真的协作",
-      evidenceNote: "协作不是分组讨论，而是每个角色都有证据产出。",
-      bars: [["资料员", 72], ["判断员", 66], ["质询员", 48], ["汇报员", 58]],
-      flow: ["分角色", "留证据", "互质询"],
-      outputTitle: "小组探究任务单",
-      outputCue: "把小组讨论改造成有角色、有证据的协作任务。",
-      artifactLines: {
-        evidence: "当前任务容易由组长包办，部分学生没有独立证据产出。",
-        action: "为每个角色设置独立证据产出，并用同伴质询检查判断依据。",
-        constraints: ["每名学生必须有可见贡献", "小组产出必须可追溯", "教师追问聚焦证据质量"],
-      },
-    },
-    8: {
-      title: "即时反馈触发器",
-      chipLabel: "形成性反馈",
-      evidenceTitle: "看何时需要打断与反馈",
-      evidenceNote: "反馈要发生在学生带着误区进入核心任务之前。",
-      bars: [["边界", 44], ["证据", 46], ["策略", 62], ["表达", 58]],
-      flow: ["设触发点", "给反馈", "再修正"],
-      outputTitle: "形成性反馈触发点",
-      outputCue: "把课堂反馈前置到关键误区出现的位置。",
-      artifactLines: {
-        evidence: "概念边界和证据引用是进入案例探究前的高风险点。",
-        action: "在案例探究前设置概念边界即时判断，并用错误样例完成快速纠偏。",
-        constraints: ["反馈必须足够早", "反馈必须覆盖主要误区", "反馈后要让学生修正原判断"],
-      },
-    },
-    9: {
-      title: "评价量规校准器",
-      chipLabel: "评价证据",
-      evidenceTitle: "看学生作品如何评分",
-      evidenceNote: "评价不能只看矩阵完整，还要看证据和策略质量。",
-      bars: [["分类", 82], ["证据", 46], ["策略", 68], ["风险", 40]],
-      flow: ["看作品", "定指标", "给反馈"],
-      outputTitle: "学生作品评价量规",
-      outputCue: "把评价重心从格式完整转向判断质量。",
-      artifactLines: {
-        evidence: "学生作品的分类格式较完整，但证据引用和风险边界是低分维度。",
-        action: "用量规逐项评价分类准确性、证据充分性、策略匹配度和风险意识。",
-        constraints: ["评分依据必须可解释", "反馈必须指向下一步修改", "评价不能只看表格是否填满"],
-      },
-    },
-    10: {
-      title: "复盘资产沉淀器",
-      chipLabel: "教学复盘",
-      evidenceTitle: "看什么值得沉淀",
-      evidenceNote: "复盘不是写感想，而是保存下一轮可复用的证据和材料。",
-      bars: [["低分样例", 76], ["反馈语", 68], ["修订案例", 82], ["课堂气氛", 28]],
-      flow: ["看低分", "存样例", "改材料"],
-      outputTitle: "复盘与资产沉淀清单",
-      outputCue: "把本次教学转化为下一轮可用资产。",
-      artifactLines: {
-        evidence: "最有价值的资产不是最终教案，而是低分样例、反馈语和改进后的案例材料。",
-        action: "沉淀低分样例、教师反馈语、学生修订前后作品和下一轮案例材料改动点。",
-        constraints: ["资产必须能复用", "复盘必须连接学生证据", "下一轮改进必须可执行"],
-      },
-    },
   };
 
   document.addEventListener("DOMContentLoaded", () => {
@@ -756,11 +476,10 @@
     const scenario = currentScenario();
     const syllabus = currentSyllabus();
     const profile = currentLearnerProfile();
-    const simulator = stationSimulators[Number(station.id)];
 
     $("phasePill").textContent = `${phase.title || "教学导航"} · 第 ${state.stationIndex + 1} / ${stations.length} 站`;
-    $("activeTitle").textContent = Number(station.id) === 1 ? "教学定位模拟器" : simulator?.title || station.displayName || station.title;
-    $("artifactTitle").textContent = Number(station.id) === 1 ? "定位产物" : simulator?.outputTitle || station.artifactType || "生成本站产物";
+    $("activeTitle").textContent = Number(station.id) === 1 ? "教学定位模拟器" : station.displayName || station.title;
+    $("artifactTitle").textContent = Number(station.id) === 1 ? "定位产物" : station.artifactType || "生成本站产物";
 
     const chips = $("stationInputChips");
     if (!chips) return;
@@ -774,17 +493,9 @@
     }
 
     chips.innerHTML = `
-      <span><b>输入</b>${esc(previousArtifactLabel(station))}</span>
-      <span><b>判断</b>${esc(simulator?.chipLabel || station.title || "教学判断")}</span>
-      <span><b>产物</b>${esc(simulator?.outputTitle || station.artifactType || "教学资产")}</span>`;
-  }
-
-  function previousArtifactLabel(station = currentStation()) {
-    const id = Number(station.id);
-    if (id <= 1) return "课程大纲";
-    const previous = stations.find((item) => Number(item.id) === id - 1);
-    const previousSimulator = previous ? stationSimulators[Number(previous.id)] : null;
-    return previousSimulator?.outputTitle || previous?.artifactType || "上一环节产物";
+      <span><b>当前任务</b>${esc(station.title || station.displayName || "教学判断")}</span>
+      <span><b>产物</b>${esc(station.artifactType || "教学资产")}</span>
+      <span><b>语境</b>${esc(scenario.title || "药事管理")}</span>`;
   }
 
   function supportToolsForStation(station = currentStation()) {
@@ -801,90 +512,54 @@
       bindPositioningLab(target, station);
       return;
     }
-
-    target.className = "evidence-figure station-simulator-host";
-    target.innerHTML = renderStationSimulator(station, selectedOption(station));
-    bindStationSimulator(target, station);
-  }
-
-  function renderStationSimulator(station, selected) {
-    const id = Number(station.id);
-    const model = stationSimulators[id] || stationSimulators[2];
-    const options = decisionOptions(station);
-    const recommended = options.reduce((best, item) => (item.score > (best?.score || 0) ? item : best), options[0]);
-    const selectedLabel = selected?.label || "等待判断";
-    const qualityText = selected
-      ? selected.score >= 3.4 ? "建议采用" : selected.score >= 2.5 ? "可用，需补证据" : "不建议作为主路径"
-      : "先看证据，再选择";
-
-    return `<section class="pp-step-simulator" id="step-${String(id).padStart(2, "0")}" aria-label="第 ${id} 站交互模拟器">
-      <div class="pp-step-sim-grid">
-        <article class="pp-step-card pp-step-evidence-card">
-          <div class="pp-step-card-head">
-            <span>01 看证据</span>
-            <strong>${esc(model.evidenceTitle)}</strong>
-          </div>
-          <div class="pp-mini-bars" aria-label="本环节证据分布">
-            ${model.bars.map(([label, value]) => `<div class="pp-mini-bar">
-              <span>${esc(label)}</span>
-              <i><b style="width:${Math.max(4, Math.min(100, value))}%"></b></i>
-              <em>${value}%</em>
-            </div>`).join("")}
-          </div>
-          <div class="pp-step-flow" aria-label="本环节操作路径">
-            ${model.flow.map((item, index) => `<span>${String(index + 1).padStart(2, "0")} ${esc(item)}</span>`).join("")}
-          </div>
-        </article>
-
-        <article class="pp-step-card pp-step-choice-card">
-          <div class="pp-step-card-head">
-            <span>02 做判断</span>
-            <strong>${esc(station.decisionQuestion || "当前最重要的教学判断是什么？")}</strong>
-          </div>
-          <div class="pp-step-option-list" role="radiogroup" aria-label="教学判断选项">
-            ${options.map((option, index) => {
-              const isSelected = selected?.id === option.id;
-              const isRecommended = recommended?.id === option.id;
-              return `<button type="button" role="radio" aria-checked="${isSelected ? "true" : "false"}" class="pp-step-option${isSelected ? " is-selected" : ""}${isRecommended ? " is-recommended" : ""}" data-station-option="${esc(option.id)}">
-                <span>${String(index + 1).padStart(2, "0")}</span>
-                <strong>${esc(option.label)}</strong>
-                ${isRecommended ? `<em>推荐</em>` : ""}
-              </button>`;
-            }).join("")}
-          </div>
-        </article>
-
-        <article class="pp-step-card pp-step-result-card${selected ? " is-active" : ""}">
-          <div class="pp-step-card-head">
-            <span>03 生成产物</span>
-            <strong>${esc(model.outputTitle)}</strong>
-          </div>
-          <div class="pp-step-result-status">
-            <span>${esc(qualityText)}</span>
-            <strong>${esc(selectedLabel)}</strong>
-          </div>
-          <p>${esc(selected ? selected.rationale : model.evidenceNote)}</p>
-          <div class="pp-step-output-cue">${esc(model.outputCue)}</div>
-          ${selected ? `<ul>${model.artifactLines.constraints.map((rule) => `<li>${esc(rule)}</li>`).join("")}</ul>` : ""}
-        </article>
+    target.className = "evidence-figure";
+    const model = figureModel(station, currentScenario());
+    target.innerHTML = `
+      <div class="panel-head">
+        <div>
+          <span class="eyebrow">证据图</span>
+          <h2>${esc(model.title)}</h2>
+        </div>
+        <span class="figure-type">${esc(model.type)}</span>
       </div>
-    </section>`;
-  }
-
-  function bindStationSimulator(target, station) {
-    target.querySelectorAll("[data-station-option]").forEach((button) => {
-      button.addEventListener("click", () => {
-        setDecision(station, button.dataset.stationOption);
-      });
-    });
+      <div class="figure-canvas">${renderSvg(model)}</div>
+      <p class="figure-caption">${esc(model.caption)}</p>`;
   }
 
   function renderDecision() {
+    const station = currentStation();
+    const selected = selectedOption(station);
     const target = $("decisionPanel");
     if (!target) return;
-    target.hidden = true;
+    if (Number(station.id) === 1) {
+      target.hidden = true;
+      target.className = "decision-panel";
+      target.innerHTML = "";
+      return;
+    }
+    target.hidden = false;
     target.className = "decision-panel";
-    target.innerHTML = "";
+    const question = Number(station.id) === 1
+      ? "看到这三项证据，本节课的主线更应该是什么？"
+      : station.decisionQuestion || "当前最重要的教学判断是什么？";
+    target.innerHTML = `
+      <div class="panel-head">
+        <div>
+          <span class="eyebrow">教学判断题</span>
+          <h2>${esc(question)}</h2>
+        </div>
+      </div>
+      <div class="decision-options">
+        ${decisionOptions(station).map((option, index) => `<button type="button" class="decision-option ${selected?.id === option.id ? "active" : ""}" data-option="${esc(option.id)}">
+          <span class="option-index">${Number(station.id) === 1 ? ["A", "B", "C"][index] : index + 1}</span>
+          <span><strong>${esc(option.label)}</strong>${Number(station.id) === 1 ? "" : `<span class="option-rationale">${esc(option.rationale)}</span>`}</span>
+        </button>`).join("")}
+      </div>`;
+    target.querySelectorAll("[data-option]").forEach((button) => {
+      button.addEventListener("click", () => {
+        setDecision(station, button.dataset.option);
+      });
+    });
   }
 
   function renderPositioningLab(station, selected) {
@@ -1030,11 +705,43 @@
   }
 
   function renderFeedback() {
+    const station = currentStation();
+    const option = selectedOption(station);
     const panel = $("feedbackPanel");
     if (!panel) return;
-    panel.hidden = true;
-    panel.classList.remove("show", "positioning-feedback");
-    panel.innerHTML = "";
+    if (Number(station.id) === 1) {
+      panel.hidden = true;
+      panel.classList.remove("show", "positioning-feedback");
+      panel.innerHTML = "";
+      return;
+    }
+    panel.hidden = false;
+    if (!option) {
+      panel.classList.remove("show", "positioning-feedback");
+      panel.innerHTML = "";
+      return;
+    }
+    if (Number(station.id) === 1) {
+      panel.classList.add("show", "positioning-feedback");
+      panel.innerHTML = `
+        <span class="eyebrow">定位反馈</span>
+        <h2>${option.id === "decision" ? "主线成立" : "需要调整主线"}</h2>
+        <div class="positioning-feedback-list">
+          ${decisionOptions(station).map((item) => `<p class="${item.id === option.id ? "active" : ""}">${esc(item.rationale)}</p>`).join("")}
+        </div>`;
+      return;
+    }
+    panel.classList.remove("positioning-feedback");
+    const dimensionText = (station.qualityDimensions || [])
+      .map((id) => dimensionById[id]?.shortLabel)
+      .filter(Boolean)
+      .join("、");
+    panel.classList.add("show");
+    panel.innerHTML = `
+      <span class="eyebrow">系统反馈</span>
+      <h2>${option.score >= 3.4 ? "建议采用这个判断" : option.score >= 2.5 ? "可以推进，但要补证据" : "不建议作为主路径"}</h2>
+      <p>${esc(option.rationale)} 当前判断主要影响：${esc(dimensionText || "教学质量") }。</p>
+      <div class="feedback-next">下一步：点击“生成”，把这个判断转为「${esc(station.artifactType)}」。</div>`;
   }
 
   function renderArtifact() {
@@ -1088,23 +795,18 @@
       saveState();
       return draft;
     }
-
-    const simulator = stationSimulators[Number(station.id)] || stationSimulators[2];
-    const lines = simulator.artifactLines;
+    const model = figureModel(station, scenario);
+    const decision = option.label;
     const draft = [
-      `【${simulator.outputTitle}】\n${lines.action}`,
-      `【判断依据】\n- 环节证据：${lines.evidence}\n- 教师判断：${option.label}\n- 判断理由：${option.rationale}\n- 案例语境：${scenario.title || "药事管理"}`,
-      `【后续设计约束】\n${lines.constraints.map((rule) => `- ${rule}`).join("\n")}`,
-      `【写入教学设计包】\n本产物将作为下一环节“${nextStationTitle(station)}”的输入，不再额外展示后台依据。`,
+      `【图表观察】\n${model.insight}`,
+      `【教学判断】\n本站选择“${decision}”。该判断服务于“${station.userMindset || station.title}”。`,
+      `【药事管理情境】\n采用“${scenario.title}”案例语境，证据边界为：${scenario.evidenceBoundary}`,
+      `【课堂动作或评价动作】\n${station.how}`,
+      `【证据与资产沉淀】\n本产物保存后进入“${currentPhase(station).outputPackage || "教学资产"}”，供教学实践页继续调用。`,
     ].join("\n\n");
     state.drafts[station.id] = draft;
     saveState();
     return draft;
-  }
-
-  function nextStationTitle(station = currentStation()) {
-    const next = stations.find((item) => Number(item.id) === Number(station.id) + 1);
-    return next?.title || "教学复盘与资产沉淀";
   }
 
   function positioningArtifactDraft() {
